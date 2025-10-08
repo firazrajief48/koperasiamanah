@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
-use App\Http\Controllers\PeminjamController;
+use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\BendaharaKantorController;
 use App\Http\Controllers\BendaharaKoperasiController;
 use App\Http\Controllers\KepalaKoperasiController;
@@ -20,12 +20,12 @@ Route::get('/download-pdf/{filename}', function ($filename) {
 })->name('download.pdf');
 
 // Peminjam Routes
-Route::prefix('peminjam')->name('peminjam.')->group(function () {
-    Route::get('/dashboard', [PeminjamController::class, 'dashboard'])->name('dashboard');
-    Route::get('/profile', [PeminjamController::class, 'profile'])->name('profile');
-    Route::get('/ajukan-pinjaman', [PeminjamController::class, 'ajukanPinjaman'])->name('ajukan');
-    Route::get('/riwayat-pinjaman', [PeminjamController::class, 'riwayatPinjaman'])->name('riwayat');
-    Route::get('/transparansi', [PeminjamController::class, 'transparansi'])->name('transparansi');
+Route::prefix('anggota')->name('anggota.')->group(function () {
+    Route::get('/dashboard', [AnggotaController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [AnggotaController::class, 'profile'])->name('profile');
+    Route::get('/ajukan-pinjaman', [AnggotaController::class, 'ajukanPinjaman'])->name('ajukan');
+    Route::get('/riwayat-pinjaman', [AnggotaController::class, 'riwayatPinjaman'])->name('riwayat');
+    Route::get('/transparansi', [AnggotaController::class, 'transparansi'])->name('transparansi');
 });
 
 // Bendahara Kantor Routes

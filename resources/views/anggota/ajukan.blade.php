@@ -1,12 +1,12 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Ajukan Pinjaman')
-@section('page-title', 'Ajukan Pinjaman')
+@section('title', 'Ajukan Anggota')
+@section('page-title', 'Ajukan Anggota')
 
 @php
-    $role = 'Peminjam';
-    $nama = $peminjam['nama'];
-    $routePrefix = 'peminjam';
+    $role = 'Anggota';
+    $nama = $anggota['nama'];
+    $routePrefix = 'anggota';
     $showAjukan = true;
     $showRiwayat = true;
 @endphp
@@ -104,46 +104,46 @@
                     <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Nama Lengkap</label>
-                        <input type="text" class="form-control" value="{{ $peminjam['nama'] }}" readonly>
+                        <input type="text" class="form-control" value="{{ $anggota['nama'] }}" readonly>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">NIP</label>
-                        <input type="text" class="form-control" value="{{ $peminjam['nip'] }}" readonly>
+                        <input type="text" class="form-control" value="{{ $anggota['nip'] }}" readonly>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Jabatan</label>
-                        <input type="text" class="form-control" value="{{ $peminjam['jabatan'] }}" readonly>
+                        <input type="text" class="form-control" value="{{ $anggota['jabatan'] }}" readonly>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Golongan</label>
-                        <input type="text" class="form-control" value="{{ $peminjam['golongan'] }}" readonly>
+                        <input type="text" class="form-control" value="{{ $anggota['golongan'] }}" readonly>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">No HP</label>
-                        <input type="text" class="form-control" value="{{ $peminjam['no_hp'] }}" readonly>
+                        <input type="text" class="form-control" value="{{ $anggota['no_hp'] }}" readonly>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Email</label>
-                        <input type="email" class="form-control" value="{{ $peminjam['email'] }}" readonly>
+                        <input type="email" class="form-control" value="{{ $anggota['email'] }}" readonly>
                     </div>
                 </div>
 
                 </div>
                 <div class="form-section">
-                    <h5 class="section-title"><i class="bi bi-cash-coin me-2"></i>Detail Pinjaman</h5>
+                    <h5 class="section-title"><i class="bi bi-cash-coin me-2"></i>Detail Anggota</h5>
                     <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Tanggal Pengajuan <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="tanggalPengajuan" readonly>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Jumlah Pinjaman <span class="text-danger">*</span></label>
+                        <label class="form-label">Jumlah Anggota <span class="text-danger">*</span></label>
                         <select class="form-select" id="jumlahPinjaman" required>
-                            <option value="">Pilih Jumlah Pinjaman</option>
+                            <option value="">Pilih Jumlah Anggota</option>
                             <option value="3000000">Rp 3.000.000</option>
                             <option value="3500000">Rp 3.500.000</option>
                             <option value="4000000">Rp 4.000.000</option>
@@ -164,7 +164,6 @@
                         <option value="">Pilih Metode</option>
                         <option value="potong_gaji">Potong Gaji</option>
                         <option value="potong_tukin">Potong Tunjangan Kinerja</option>
-                        <option value="transfer">Transfer Manual</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -176,8 +175,8 @@
                     <i class="bi bi-info-circle"></i> Semua field bertanda <span class="text-danger">*</span> wajib diisi sebelum mengajukan pinjaman.
                 </div>
 
-                <button type="submit" class="btn btn-primary">Ajukan Pinjaman</button>
-                <a href="{{ route('peminjam.dashboard') }}" class="btn btn-secondary">Batal</a>
+                <button type="submit" class="btn btn-primary">Ajukan Anggota</button>
+                <a href="{{ route('anggota.dashboard') }}" class="btn btn-secondary">Batal</a>
             </form>
         </div>
     </div>
@@ -205,7 +204,7 @@
                 }
 
                 alert('Pengajuan pinjaman berhasil disimpan!');
-                window.location.href = '{{ route('peminjam.riwayat') }}';
+                window.location.href = "{{ route('anggota.riwayat') }}";
             });
         </script>
     @endpush

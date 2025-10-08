@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class PeminjamController extends Controller
+class AnggotaController extends Controller
 {
     public function dashboard()
     {
         $data = [
-            'nama' => 'Andi Wijaya',
+            'nama' => 'Aries Kurniawan',
             'nip' => '199001012020',
-            'kas_pribadi' => 15000000,
+            'iuran_pribadi' => 15000000,
             'jumlah_pinjaman' => 20000000,
             'sisa_pinjaman' => 12000000,
             'simulasi' => [
@@ -23,12 +23,12 @@ class PeminjamController extends Controller
             ]
         ];
 
-        return view('peminjam.dashboard', compact('data'));
+        return view('anggota.dashboard', compact('data'));
     }
 
     public function ajukanPinjaman()
     {
-        $peminjam = [
+        $anggota = [
             'nama' => 'Andi Wijaya',
             'nip' => '199001012020',
             'jabatan' => 'Staff IT',
@@ -37,7 +37,7 @@ class PeminjamController extends Controller
             'email' => 'andi.wijaya@example.com'
         ];
 
-        return view('peminjam.ajukan', compact('peminjam'));
+        return view('anggota.ajukan', compact('anggota'));
     }
 
     public function riwayatPinjaman()
@@ -69,7 +69,7 @@ class PeminjamController extends Controller
             ]
         ];
 
-        return view('peminjam.riwayat', compact('riwayat'));
+        return view('anggota.riwayat', compact('riwayat'));
     }
 
     public function transparansi()
@@ -82,7 +82,7 @@ class PeminjamController extends Controller
             ['nama' => 'Eka Putri', 'nip' => '199005052024', 'jumlah' => 12000000, 'sisa' => 0, 'status' => 'Lunas'],
         ];
 
-        return view('peminjam.transparansi', compact('pinjaman'));
+        return view('anggota.transparansi', compact('pinjaman'));
     }
 
     public function profile()
@@ -97,6 +97,6 @@ class PeminjamController extends Controller
             'foto' => 'https://ui-avatars.com/api/?name=Andi+Wijaya&size=200&background=0D8ABC&color=fff'
         ];
 
-        return view('peminjam.profile', compact('user'));
+        return view('anggota.profile', compact('user'));
     }
 }

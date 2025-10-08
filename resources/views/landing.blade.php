@@ -669,7 +669,7 @@
                                             <label for="roleSelect" class="form-label fw-semibold" style="font-size: 0.938rem;">Login Sebagai</label>
                                             <select class="form-select form-select-lg" id="roleSelect"
                                                 style="border-radius: 10px; padding: 0.75rem 1rem; font-size: 0.938rem;">
-                                                <option value="peminjam">Peminjam</option>
+                                                <option value="anggota">Anggota</option>
                                                 <option value="bendahara-kantor">Bendahara Kantor</option>
                                                 <option value="bendahara-koperasi">Bendahara Koperasi</option>
                                                 <option value="kepala-koperasi">Kepala Koperasi</option>
