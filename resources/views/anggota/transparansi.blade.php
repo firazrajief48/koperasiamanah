@@ -4,9 +4,9 @@
 @section('page-title', 'Transparansi Keuangan')
 
 @php
-    $role = 'Peminjam';
+    $role = 'Anggota';
     $nama = 'Andi Wijaya';
-    $routePrefix = 'peminjam';
+    $routePrefix = 'anggota';
     $showAjukan = true;
     $showRiwayat = true;
 @endphp

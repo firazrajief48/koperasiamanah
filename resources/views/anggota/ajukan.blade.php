@@ -100,7 +100,7 @@
         <div class="card-body">
             <form id="formAjukanPinjaman">
                 <div class="form-section">
-                    <h5 class="section-title"><i class="bi bi-person-vcard me-2"></i>Data Peminjam</h5>
+                    <h5 class="section-title"><i class="bi bi-person-vcard me-2"></i>Data Anggota</h5>
                     <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Nama Lengkap</label>

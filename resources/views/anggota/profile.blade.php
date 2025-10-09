@@ -4,8 +4,8 @@
 @section('page-title', 'Profile Akun')
 
 @php
-    $role = 'Peminjam';
-    $routePrefix = 'peminjam';
+    $role = 'Anggota';
+    $routePrefix = 'anggota';
     $showAjukan = true;
     $showRiwayat = true;
 @endphp

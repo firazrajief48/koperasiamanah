@@ -4,9 +4,9 @@
   @section('page-title', 'Riwayat Pinjaman')
 
   @php
-      $role = 'Peminjam';
+      $role = 'anggota';
       $nama = 'Andi Wijaya';
-      $routePrefix = 'peminjam';
+      $routePrefix = 'anggota';
       $showAjukan = true;
       $showRiwayat = true;
   @endphp
