@@ -14,37 +14,7 @@ class AnggotaSeeder extends Seeder
      */
     public function run(): void
     {
-        // Sample data anggota untuk testing
-        $anggotaData = [
-            [
-                'name' => 'Andi Wijaya',
-                'email' => 'andi.wijaya@bps.go.id',
-                'password' => Hash::make('password'),
-                'role' => 'peminjam',
-                'nip' => '196512121990031001',
-                'golongan' => 'III/a',
-                'jabatan' => 'Statistisi Muda',
-                'phone' => '081234567890',
-            ],
-            [
-                'name' => 'Budi Santoso',
-                'email' => 'budi.santoso@bps.go.id',
-                'password' => Hash::make('password'),
-                'role' => 'peminjam',
-                'nip' => '197003151990031002',
-                'golongan' => 'III/b',
-                'jabatan' => 'Statistisi Muda',
-                'phone' => '081234567891',
-            ],
-        ];
-
-        foreach ($anggotaData as $data) {
-            User::updateOrCreate(
-                ['email' => $data['email']],
-                $data
-            );
-        }
-
-        echo "Sample data anggota berhasil ditambahkan!\n";
+        // Anggota (peminjam) data will be created through registration only
+        echo "AnggotaSeeder: Peminjam users will be created through registration.\n";
     }
 }

@@ -6,11 +6,13 @@
             <nav class="col-md-2 d-md-block sidebar p-0">
                 <div class="position-sticky pt-5" style="height: 100vh; display: flex; flex-direction: column;">
                     <div class="text-center px-4 mb-4">
-                        <div class="profile-avatar mx-auto mb-3">
-                            <i class="bi bi-person-circle text-white fs-2"></i>
-                        </div>
-                        <h6 class="fw-bold mb-1 text-dark">{{ $nama ?? 'User' }}</h6>
-                        <small class="text-secondary opacity-70">{{ $role ?? 'Dashboard' }}</small>
+                        <a href="{{ route($routePrefix . '.profile') }}" class="text-decoration-none" style="display: block;">
+                            <div class="profile-avatar mx-auto mb-3" style="cursor: pointer; transition: all 0.3s ease;">
+                                <i class="bi bi-person-circle text-white fs-2"></i>
+                            </div>
+                            <h6 class="fw-bold mb-1 text-dark">{{ $nama ?? 'User' }}</h6>
+                            <small class="text-secondary opacity-70">{{ $role ?? 'Dashboard' }}</small>
+                        </a>
                     </div>
 
                     <hr class="opacity-15 mx-3 mb-4">
@@ -40,7 +42,7 @@
                         @endif
                         @if (isset($showLaporan) && $showLaporan)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->is('*laporan*') ? 'active' : '' }}" href="{{ route($routePrefix . '.laporan-user') }}">
+                                <a class="nav-link {{ request()->is('*laporan*') ? 'active' : '' }}" href="{{ route($routePrefix . ($routePrefix === 'administrator' ? '.laporan-user' : '.laporan')) }}">
                                     <i class="bi bi-file-text me-3"></i>
                                     <span>Laporan {{ $routePrefix === 'administrator' ? 'User' : 'Pinjaman' }}</span>
                                 </a>
@@ -65,7 +67,7 @@
 
                     <hr class="opacity-15 mx-3 my-4">
                     <div class="px-3 pb-3">
-                        <button class="btn btn-logout w-100" onclick="confirmLogout(event)">
+                        <button class="btn btn-logout w-100" onclick="confirmLogout(event)" style="cursor: pointer;">
                             <i class="bi bi-box-arrow-right me-2"></i>Logout
                         </button>
                     </div>
@@ -79,23 +81,7 @@
                         <small class="text-secondary opacity-70">Koperasi Amanah BPS Kota Surabaya</small>
                     </div>
                     <div class="d-flex align-items-center">
-                        <div class="dropdown">
-                            <button class="profile-button dropdown-toggle border-0"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person text-white"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg modern-dropdown">
-                                <li><a class="dropdown-item" href="{{ route($routePrefix . '.profile') }}">
-                                        <i class="bi bi-person-circle me-2"></i>Profile
-                                    </a></li>
-                                <li>
-                                    <hr class="dropdown-divider my-2">
-                                </li>
-                                <li><a class="dropdown-item text-danger" href="#" onclick="confirmLogout(event)">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                    </a></li>
-                            </ul>
-                        </div>
+                        <!-- Profile button removed - now handled by sidebar profile image -->
                     </div>
                 </div>
                 <div class="page-separator mt-3 mb-4"></div>
@@ -174,7 +160,12 @@
         }
 
         .profile-avatar:hover {
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 12px 32px rgba(37, 99, 235, 0.3);
+        }
+
+        a:hover .profile-avatar {
+            transform: translateY(-2px) scale(1.05);
             box-shadow: 0 12px 32px rgba(37, 99, 235, 0.3);
         }
 

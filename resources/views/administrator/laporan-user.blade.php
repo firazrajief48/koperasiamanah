@@ -1,8 +1,16 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Laporan User')
+@section('page-title', 'Laporan User')
 
-@section('content')
+@php
+    $role = 'Administrator';
+    $nama = auth()->user()->name;
+    $routePrefix = 'administrator';
+    $showLaporan = true;
+@endphp
+
+@section('main-content')
 <div class="container-fluid">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">

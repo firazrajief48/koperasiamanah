@@ -49,35 +49,6 @@ class UserSeeder extends Seeder
             );
         }
 
-        // Create sample peminjam (anggota) - multiple allowed
-        $peminjamUsers = [
-            [
-                'name' => 'Andi Wijaya',
-                'email' => 'andi.wijaya@bps.go.id',
-                'password' => Hash::make('password'),
-                'role' => 'peminjam',
-                'nip' => '196512121990031001',
-                'golongan' => 'III/a',
-                'jabatan' => 'Statistisi Muda',
-                'phone' => '081234567890',
-            ],
-            [
-                'name' => 'Budi Santoso',
-                'email' => 'budi.santoso@bps.go.id',
-                'password' => Hash::make('password'),
-                'role' => 'peminjam',
-                'nip' => '197003151990031002',
-                'golongan' => 'III/b',
-                'jabatan' => 'Statistisi Muda',
-                'phone' => '081234567891',
-            ],
-        ];
-
-        foreach ($peminjamUsers as $userData) {
-            User::updateOrCreate(
-                ['email' => $userData['email']],
-                $userData
-            );
-        }
+        // Peminjam users will be created through registration only
     }
 }

@@ -37,7 +37,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Kredensial yang diberikan tidak cocok dengan catatan kami.',
+            'email' => 'Email atau Password yang Anda masukkan salah.',
         ])->onlyInput('email');
     }
 
