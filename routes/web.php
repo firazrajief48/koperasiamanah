@@ -8,6 +8,7 @@ use App\Http\Controllers\BendaharaKantorController;
 use App\Http\Controllers\BendaharaKoperasiController;
 use App\Http\Controllers\KepalaKoperasiController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\PengurusKoperasiController;
 
 // Landing Page
 Route::get('/', [LandingController::class, 'index'])->name('landing');
@@ -84,4 +85,7 @@ Route::prefix('administrator')->name('administrator.')->middleware(['auth', 'rol
     Route::delete('/delete-user/{id}', [AdminController::class, 'deleteUser'])->name('delete-user');
     Route::get('/laporan-user', [AdminController::class, 'laporanUser'])->name('laporan-user');
     Route::get('/transparansi', [AdminController::class, 'transparansi'])->name('transparansi');
+
+    // Pengurus Koperasi Routes
+    Route::resource('pengurus-koperasi', PengurusKoperasiController::class);
 });

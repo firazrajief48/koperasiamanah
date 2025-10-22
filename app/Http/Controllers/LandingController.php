@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\PengurusKoperasi;
 
 class LandingController extends Controller
 {
@@ -19,23 +20,15 @@ class LandingController extends Controller
             ]
         ];
 
-        $staf = [
-            [
-                'nama' => 'Budi Santoso',
-                'jabatan' => 'Ketua Koperasi',
-                'foto' => 'https://ui-avatars.com/api/?name=Budi+Santoso&size=150'
-            ],
-            [
-                'nama' => 'Siti Nurhaliza',
-                'jabatan' => 'Bendahara Koperasi',
-                'foto' => 'https://ui-avatars.com/api/?name=Siti+Nurhaliza&size=150'
-            ],
-            [
-                'nama' => 'Ahmad Rizki',
-                'jabatan' => 'Kepala BPS',
-                'foto' => 'https://ui-avatars.com/api/?name=Ahmad+Rizki&size=150'
-            ]
-        ];
+        // Ambil data pengurus dari database
+        $staf = PengurusKoperasi::aktif()->urut()->get()->map(function($pengurus) {
+            return [
+                'nama' => $pengurus->nama,
+                'jabatan' => $pengurus->jabatan,
+                'deskripsi' => $pengurus->deskripsi,
+                'foto' => $pengurus->foto ? asset('storage/' . $pengurus->foto) : 'https://ui-avatars.com/api/?name=' . urlencode($pengurus->nama) . '&size=150&background=1e40af&color=ffffff'
+            ];
+        })->toArray();
 
         return view('landing', compact('profil', 'staf'));
     }

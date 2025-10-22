@@ -268,6 +268,12 @@
                         </a>
                     </div>
                     <div class="col-md-6">
+                        <a href="{{ route('administrator.pengurus-koperasi.index') }}" class="action-btn w-100" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <i class="bi bi-people-fill"></i>
+                            <span>Kelola Pengurus</span>
+                        </a>
+                    </div>
+                    <div class="col-md-6">
                         <a href="{{ route('administrator.profile') }}" class="action-btn w-100" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
                             <i class="bi bi-person-gear"></i>
                             <span>Profile Admin</span>

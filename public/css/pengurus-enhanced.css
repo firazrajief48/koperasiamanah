@@ -1,0 +1,275 @@
+/* Enhanced Pengurus Koperasi Styles */
+.pengurus-card {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid rgba(30, 64, 175, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(30, 64, 175, 0.08);
+}
+
+.pengurus-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(30, 64, 175, 0.03) 0%, rgba(249, 115, 22, 0.03) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.pengurus-card:hover::before {
+    opacity: 1;
+}
+
+.pengurus-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(30, 64, 175, 0.15);
+    border-color: rgba(30, 64, 175, 0.2);
+}
+
+.pengurus-card img,
+.pengurus-card .rounded-circle {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 4px solid white;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.pengurus-card:hover img,
+.pengurus-card:hover .rounded-circle {
+    transform: scale(1.1) rotate(3deg);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+.pengurus-card h6 {
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.pengurus-card:hover h6 {
+    color: #1e40af;
+}
+
+.pengurus-card .badge-custom {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.pengurus-card .badge-custom::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.pengurus-card:hover .badge-custom::before {
+    left: 100%;
+}
+
+.pengurus-card:hover .badge-custom {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(30, 64, 175, 0.3);
+}
+
+.pengurus-card p {
+    color: #64748b;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    margin-bottom: 0;
+    transition: color 0.3s ease;
+}
+
+.pengurus-card:hover p {
+    color: #475569;
+}
+
+/* Enhanced responsive grid */
+@media (min-width: 1200px) {
+    .pengurus-card {
+        margin-bottom: 1.5rem;
+    }
+
+    .pengurus-card img,
+    .pengurus-card .rounded-circle {
+        width: 120px !important;
+        height: 120px !important;
+    }
+}
+
+@media (max-width: 1199px) and (min-width: 992px) {
+    .pengurus-card {
+        margin-bottom: 1.25rem;
+    }
+
+    .pengurus-card img,
+    .pengurus-card .rounded-circle {
+        width: 110px !important;
+        height: 110px !important;
+    }
+}
+
+@media (max-width: 991px) and (min-width: 768px) {
+    .pengurus-card {
+        margin-bottom: 1rem;
+    }
+
+    .pengurus-card img,
+    .pengurus-card .rounded-circle {
+        width: 100px !important;
+        height: 100px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .pengurus-card {
+        margin-bottom: 0.75rem;
+    }
+
+    .pengurus-card img,
+    .pengurus-card .rounded-circle {
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .pengurus-card h6 {
+        font-size: 0.9rem !important;
+    }
+
+    .pengurus-card .badge-custom {
+        font-size: 0.7rem !important;
+        padding: 0.2rem 0.6rem !important;
+    }
+
+    .pengurus-card p {
+        font-size: 0.7rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .pengurus-card {
+        margin-bottom: 0.5rem;
+    }
+
+    .pengurus-card img,
+    .pengurus-card .rounded-circle {
+        width: 70px !important;
+        height: 70px !important;
+    }
+
+    .pengurus-card h6 {
+        font-size: 0.8rem !important;
+    }
+
+    .pengurus-card .badge-custom {
+        font-size: 0.65rem !important;
+        padding: 0.15rem 0.5rem !important;
+    }
+
+    .pengurus-card p {
+        font-size: 0.65rem !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .pengurus-card img,
+    .pengurus-card .rounded-circle {
+        width: 60px !important;
+        height: 60px !important;
+    }
+
+    .pengurus-card h6 {
+        font-size: 0.75rem !important;
+    }
+
+    .pengurus-card .badge-custom {
+        font-size: 0.6rem !important;
+        padding: 0.1rem 0.4rem !important;
+    }
+
+    .pengurus-card p {
+        font-size: 0.6rem !important;
+    }
+}
+
+/* Enhanced section styling */
+#pengurus {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fbbf24 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+#pengurus::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.5;
+}
+
+#pengurus .container {
+    position: relative;
+    z-index: 2;
+}
+
+#pengurus h2 {
+    background: linear-gradient(135deg, #1e40af 0%, #f97316 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+#pengurus .section-divider {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #1e40af, #f97316);
+    border-radius: 2px;
+    margin: 0 auto;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+#pengurus .section-divider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.8s ease;
+}
+
+#pengurus .section-divider:hover::before {
+    left: 100%;
+}

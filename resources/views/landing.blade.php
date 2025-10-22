@@ -2,6 +2,12 @@
 
 @section('title', 'Koperasi Amanah BPS Kota Surabaya - Beranda')
 
+@push('meta')
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+@endpush
+
 @section('content')
     <style>
         :root {
@@ -309,11 +315,260 @@
             border-radius: 2px;
         }
 
+        /* ==================== ENHANCED UI EFFECTS ==================== */
+
+        /* Smooth scrolling for all devices */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Enhanced button effects */
+        .btn-accent,
+        .btn-outline-custom {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        .btn-accent::before,
+        .btn-outline-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-accent:hover::before,
+        .btn-outline-custom:hover::before {
+            left: 100%;
+        }
+
+        /* Enhanced card hover effects */
+        .card-modern {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, box-shadow;
+        }
+
+        .card-modern:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 80px rgba(30, 64, 175, 0.2);
+        }
+
+        /* Enhanced pengurus card effects */
+        .pengurus-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        .pengurus-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 20px 60px rgba(30, 64, 175, 0.15);
+        }
+
+        .pengurus-card img,
+        .pengurus-card .rounded-circle {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .pengurus-card:hover img,
+        .pengurus-card:hover .rounded-circle {
+            transform: scale(1.1) rotate(3deg);
+        }
+
+        /* Enhanced navbar effects */
+        .navbar {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 10px 40px rgba(30, 64, 175, 0.15);
+        }
+
+        /* Enhanced gradient background */
+        .gradient-bg {
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Enhanced stats badge */
+        .stats-badge {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stats-badge:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Enhanced icon box effects */
+        .icon-box {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        .icon-box:hover {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        /* Enhanced table effects */
+        .table-hover tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table-hover tbody tr:hover {
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.05) 0%, rgba(249, 115, 22, 0.05) 100%);
+            transform: scale(1.01);
+        }
+
+        /* Enhanced modal effects */
+        .modal.fade .modal-dialog {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.9) translateY(30px);
+            opacity: 0;
+        }
+
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* Enhanced form controls */
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.1);
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+
+        /* Enhanced badge effects */
+        .badge-custom {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .badge-custom:hover::before {
+            left: 100%;
+        }
+
+        .badge-custom:hover {
+            transform: scale(1.05);
+        }
+
+        /* Enhanced section dividers */
+        .section-divider {
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .section-divider:hover::before {
+            left: 100%;
+        }
+
+        /* Enhanced gradient text */
         .gradient-text {
             background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-orange) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Enhanced loading states */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Enhanced focus states for accessibility */
+        .btn:focus,
+        .form-control:focus,
+        .form-select:focus,
+        .nav-link:focus {
+            outline: 2px solid var(--primary-blue);
+            outline-offset: 2px;
+        }
+
+        /* Enhanced print styles */
+        @media print {
+            .navbar,
+            .btn,
+            .modal,
+            .action-card {
+                display: none !important;
+            }
+
+            .card-modern {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+            }
+
+            .gradient-bg {
+                background: #f8f9fa !important;
+                color: #000 !important;
+            }
         }
 
         .hero-image {
@@ -490,25 +745,396 @@
             }
         }
 
+        /* ==================== RESPONSIVE DESIGN ==================== */
+
+        /* Tablet Landscape */
+        @media (max-width: 1024px) {
+            .gradient-bg .display-3,
+            .gradient-bg .display-5,
+            .gradient-bg h1,
+            .gradient-bg h2,
+            .gradient-bg h3 {
+                font-size: 2.2rem !important;
+            }
+
+            .hero-image img.img-fluid {
+                max-width: 400px !important;
+            }
+
+            .stats-badge {
+                max-width: 220px !important;
+                padding: .6rem .8rem !important;
+            }
+
+            .stats-badge h4 {
+                font-size: 1.4rem !important;
+            }
+
+            .feature-card .icon-box {
+                width: 65px !important;
+                height: 65px !important;
+            }
+        }
+
+        /* Tablet Portrait */
         @media (max-width: 768px) {
+            .gradient-bg {
+                padding-top: 120px !important;
+                padding-bottom: 60px !important;
+            }
+
             .display-3 {
                 font-size: 2rem !important;
             }
             .display-5 {
                 font-size: 1.75rem !important;
             }
+
             .hero-image {
                 margin-top: 2rem;
             }
+
+            .hero-image img.img-fluid {
+                max-width: 350px !important;
+            }
+
+            .stats-badge {
+                max-width: 200px !important;
+                padding: .5rem .7rem !important;
+            }
+
+            .stats-badge h4 {
+                font-size: 1.2rem !important;
+            }
+
+            .feature-card {
+                margin-bottom: 1.5rem;
+            }
+
+            .feature-card .icon-box {
+                width: 60px !important;
+                height: 60px !important;
+            }
+
+            .btn-accent,
+            .btn-outline-custom {
+                padding: .6rem 1.5rem !important;
+                font-size: 0.9rem !important;
+            }
+
+            .card-modern {
+                padding: 1.2rem !important;
+            }
+
+            .pengurus-card {
+                margin-bottom: 1rem;
+            }
+
+            .pengurus-card img,
+            .pengurus-card .rounded-circle {
+                width: 100px !important;
+                height: 100px !important;
+            }
+
+            .pengurus-card .position-absolute {
+                width: 20px !important;
+                height: 20px !important;
+            }
         }
 
+        /* Mobile Landscape */
         @media (max-width: 576px) {
+            .gradient-bg {
+                padding-top: 100px !important;
+                padding-bottom: 40px !important;
+            }
+
+            .display-3 {
+                font-size: 1.8rem !important;
+                line-height: 1.2 !important;
+            }
+            .display-5 {
+                font-size: 1.5rem !important;
+            }
+
+            .hero-image img.img-fluid {
+                max-width: 280px !important;
+            }
+
+            .stats-badge {
+                max-width: 180px !important;
+                padding: .4rem .6rem !important;
+            }
+
+            .stats-badge h4 {
+                font-size: 1.1rem !important;
+            }
+
+            .stats-badge .icon-box {
+                width: 45px !important;
+                height: 45px !important;
+            }
+
+            .btn-accent,
+            .btn-outline-custom {
+                padding: .5rem 1.2rem !important;
+                font-size: 0.85rem !important;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .d-flex.gap-3 {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+
+            .card-modern {
+                padding: 1rem !important;
+                margin-bottom: 1rem;
+            }
+
+            .feature-card .icon-box {
+                width: 50px !important;
+                height: 50px !important;
+            }
+
+            .feature-card h5 {
+                font-size: 1.1rem !important;
+            }
+
+            .pengurus-card {
+                padding: 0.8rem !important;
+            }
+
+            .pengurus-card img,
+            .pengurus-card .rounded-circle {
+                width: 80px !important;
+                height: 80px !important;
+            }
+
+            .pengurus-card h6 {
+                font-size: 0.9rem !important;
+            }
+
+            .pengurus-card .badge-custom {
+                font-size: 0.7rem !important;
+                padding: 0.2rem 0.6rem !important;
+            }
+
+            .pengurus-card p {
+                font-size: 0.7rem !important;
+            }
+
             .join-section {
                 padding-top: 1.75rem;
                 padding-bottom: 1.75rem;
             }
             .join-section .display-5 {
-                font-size: 1.6rem;
+                font-size: 1.4rem;
+            }
+
+            .join-section .btn-accent {
+                font-size: 0.9rem !important;
+                padding: 0.6rem 1.5rem !important;
+            }
+
+            .modal-dialog {
+                margin: 0.5rem;
+            }
+
+            .modal-content {
+                border-radius: 15px !important;
+            }
+
+            .table-responsive {
+                font-size: 0.8rem;
+            }
+
+            .compact-loan-table {
+                min-width: 600px !important;
+            }
+        }
+
+        /* Mobile Portrait */
+        @media (max-width: 480px) {
+            .gradient-bg {
+                padding-top: 80px !important;
+                padding-bottom: 30px !important;
+            }
+
+            .display-3 {
+                font-size: 1.6rem !important;
+            }
+            .display-5 {
+                font-size: 1.3rem !important;
+            }
+
+            .hero-image img.img-fluid {
+                max-width: 250px !important;
+            }
+
+            .stats-badge {
+                max-width: 160px !important;
+                padding: .3rem .5rem !important;
+            }
+
+            .stats-badge h4 {
+                font-size: 1rem !important;
+            }
+
+            .stats-badge .icon-box {
+                width: 40px !important;
+                height: 40px !important;
+            }
+
+            .btn-accent,
+            .btn-outline-custom {
+                padding: .4rem 1rem !important;
+                font-size: 0.8rem !important;
+            }
+
+            .card-modern {
+                padding: 0.8rem !important;
+            }
+
+            .feature-card .icon-box {
+                width: 45px !important;
+                height: 45px !important;
+            }
+
+            .feature-card h5 {
+                font-size: 1rem !important;
+            }
+
+            .pengurus-card {
+                padding: 0.6rem !important;
+            }
+
+            .pengurus-card img,
+            .pengurus-card .rounded-circle {
+                width: 70px !important;
+                height: 70px !important;
+            }
+
+            .pengurus-card h6 {
+                font-size: 0.8rem !important;
+            }
+
+            .pengurus-card .badge-custom {
+                font-size: 0.65rem !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            .pengurus-card p {
+                font-size: 0.65rem !important;
+            }
+
+            .join-section .display-5 {
+                font-size: 1.2rem;
+            }
+
+            .join-section .btn-accent {
+                font-size: 0.8rem !important;
+                padding: 0.5rem 1.2rem !important;
+            }
+
+            .compact-loan-table {
+                min-width: 500px !important;
+            }
+
+            .compact-loan-table thead th,
+            .compact-loan-table tbody td {
+                padding: .2rem .3rem !important;
+                font-size: 0.7rem !important;
+            }
+        }
+
+        /* Extra Small Devices */
+        @media (max-width: 360px) {
+            .display-3 {
+                font-size: 1.4rem !important;
+            }
+            .display-5 {
+                font-size: 1.1rem !important;
+            }
+
+            .hero-image img.img-fluid {
+                max-width: 200px !important;
+            }
+
+            .stats-badge {
+                max-width: 140px !important;
+                padding: .25rem .4rem !important;
+            }
+
+            .stats-badge h4 {
+                font-size: 0.9rem !important;
+            }
+
+            .stats-badge .icon-box {
+                width: 35px !important;
+                height: 35px !important;
+            }
+
+            .btn-accent,
+            .btn-outline-custom {
+                padding: .35rem 0.8rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            .card-modern {
+                padding: 0.6rem !important;
+            }
+
+            .feature-card .icon-box {
+                width: 40px !important;
+                height: 40px !important;
+            }
+
+            .feature-card h5 {
+                font-size: 0.9rem !important;
+            }
+
+            .pengurus-card {
+                padding: 0.5rem !important;
+            }
+
+            .pengurus-card img,
+            .pengurus-card .rounded-circle {
+                width: 60px !important;
+                height: 60px !important;
+            }
+
+            .pengurus-card h6 {
+                font-size: 0.75rem !important;
+            }
+
+            .pengurus-card .badge-custom {
+                font-size: 0.6rem !important;
+                padding: 0.1rem 0.4rem !important;
+            }
+
+            .pengurus-card p {
+                font-size: 0.6rem !important;
+            }
+
+            .join-section .display-5 {
+                font-size: 1rem;
+            }
+
+            .join-section .btn-accent {
+                font-size: 0.75rem !important;
+                padding: 0.4rem 1rem !important;
+            }
+
+            .compact-loan-table {
+                min-width: 450px !important;
+            }
+
+            .compact-loan-table thead th,
+            .compact-loan-table tbody td {
+                padding: .15rem .25rem !important;
+                font-size: 0.65rem !important;
             }
         }
 
@@ -523,6 +1149,42 @@
 
         #tentang, #tabel-pinjaman, #pengurus {
             display: none !important;
+        }
+
+        /* Force refresh CSS untuk memastikan perubahan terlihat */
+        .pengurus-card {
+            transform: none !important;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .pengurus-card:hover {
+            transform: translateY(-5px) scale(1.03) !important;
+            box-shadow: 0 20px 60px rgba(30, 64, 175, 0.15) !important;
+        }
+
+        /* Enhanced responsive grid untuk pengurus */
+        @media (min-width: 1200px) {
+            .pengurus-card {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media (max-width: 1199px) and (min-width: 992px) {
+            .pengurus-card {
+                margin-bottom: 1.25rem;
+            }
+        }
+
+        @media (max-width: 991px) and (min-width: 768px) {
+            .pengurus-card {
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .pengurus-card {
+                margin-bottom: 0.75rem;
+            }
         }
     </style>
 
@@ -1043,64 +1705,144 @@
             <div class="row g-4">
                 @if (isset($staf) && count($staf) > 0)
                     @foreach ($staf as $s)
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card-modern pengurus-card p-5 h-100 text-center">
-                                <div class="position-relative d-inline-block mb-4">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                            <div class="card-modern pengurus-card p-4 h-100 text-center">
+                                <div class="position-relative d-inline-block mb-3">
                                     <img src="{{ $s['foto'] }}" class="rounded-circle shadow-lg" alt="{{ $s['nama'] }}"
-                                        style="width: 140px; height: 140px; object-fit: cover; border: 5px solid white;">
+                                        style="width: 120px; height: 120px; object-fit: cover; border: 4px solid white;">
                                     <div class="position-absolute bottom-0 end-0 rounded-circle"
-                                        style="width: 30px; height: 30px; border: 4px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
+                                        style="width: 25px; height: 25px; border: 3px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
                                 </div>
-                                <h5 class="fw-bold mb-3" style="font-size: 1.25rem; color: var(--dark-navy);">{{ $s['nama'] }}</h5>
-                                <div class="badge-custom d-inline-block mb-3">{{ $s['jabatan'] }}</div>
-                                <p class="text-muted small mb-0" style="line-height: 1.6;">Siap melayani dengan sepenuh hati</p>
+                                <h6 class="fw-bold mb-2" style="font-size: 1rem; color: var(--dark-navy); line-height: 1.3;">{{ $s['nama'] }}</h6>
+                                <div class="badge-custom d-inline-block mb-2" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;">{{ $s['jabatan'] }}</div>
+                                @if(isset($s['deskripsi']) && $s['deskripsi'])
+                                    <p class="text-muted small mb-0" style="line-height: 1.4; font-size: 0.75rem;">{{ Str::limit($s['deskripsi'], 80) }}</p>
+                                @else
+                                    <p class="text-muted small mb-0" style="line-height: 1.4; font-size: 0.75rem;">Siap melayani dengan sepenuh hati</p>
+                                @endif
                             </div>
                         </div>
                     @endforeach
                 @else
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card-modern pengurus-card p-5 h-100 text-center">
-                            <div class="position-relative d-inline-block mb-4">
+                    <!-- Fallback jika tidak ada data -->
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card-modern pengurus-card p-4 h-100 text-center">
+                            <div class="position-relative d-inline-block mb-3">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto"
-                                    style="width: 140px; height: 140px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 5px solid white;">
-                                    <i class="bi bi-person text-white" style="font-size: 4rem;"></i>
+                                    style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 4px solid white;">
+                                    <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
                                 </div>
                                 <div class="position-absolute bottom-0 end-0 rounded-circle"
-                                    style="width: 30px; height: 30px; border: 4px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
+                                    style="width: 25px; height: 25px; border: 3px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
                             </div>
-                            <h5 class="fw-bold mb-3" style="font-size: 1.25rem; color: var(--dark-navy);">Ahmad Budi Santoso</h5>
-                            <div class="badge-custom d-inline-block mb-3">Ketua Koperasi</div>
-                            <p class="text-muted small mb-0" style="line-height: 1.6;">Memimpin dengan integritas dan dedikasi</p>
+                            <h6 class="fw-bold mb-2" style="font-size: 1rem; color: var(--dark-navy);">Dr. Ahmad Rizki, S.Si., M.Si.</h6>
+                            <div class="badge-custom d-inline-block mb-2" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;">Kepala BPS</div>
+                            <p class="text-muted small mb-0" style="line-height: 1.4; font-size: 0.75rem;">Memimpin dengan visi yang jelas</p>
                         </div>
                     </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card-modern pengurus-card p-5 h-100 text-center">
-                            <div class="position-relative d-inline-block mb-4">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card-modern pengurus-card p-4 h-100 text-center">
+                            <div class="position-relative d-inline-block mb-3">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto"
-                                    style="width: 140px; height: 140px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 5px solid white;">
-                                    <i class="bi bi-person text-white" style="font-size: 4rem;"></i>
+                                    style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 4px solid white;">
+                                    <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
                                 </div>
                                 <div class="position-absolute bottom-0 end-0 rounded-circle"
-                                    style="width: 30px; height: 30px; border: 4px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
+                                    style="width: 25px; height: 25px; border: 3px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
                             </div>
-                            <h5 class="fw-bold mb-3" style="font-size: 1.25rem; color: var(--dark-navy);">Siti Nur Azizah</h5>
-                            <div class="badge-custom d-inline-block mb-3">Bendahara Koperasi</div>
-                            <p class="text-muted small mb-0" style="line-height: 1.6;">Mengelola keuangan dengan cermat</p>
+                            <h6 class="fw-bold mb-2" style="font-size: 1rem; color: var(--dark-navy);">Budi Santoso, S.E.</h6>
+                            <div class="badge-custom d-inline-block mb-2" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;">Ketua Koperasi</div>
+                            <p class="text-muted small mb-0" style="line-height: 1.4; font-size: 0.75rem;">Memimpin dengan integritas</p>
                         </div>
                     </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card-modern pengurus-card p-5 h-100 text-center">
-                            <div class="position-relative d-inline-block mb-4">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card-modern pengurus-card p-4 h-100 text-center">
+                            <div class="position-relative d-inline-block mb-3">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto"
-                                    style="width: 140px; height: 140px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 5px solid white;">
-                                    <i class="bi bi-person text-white" style="font-size: 4rem;"></i>
+                                    style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 4px solid white;">
+                                    <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
                                 </div>
                                 <div class="position-absolute bottom-0 end-0 rounded-circle"
-                                    style="width: 30px; height: 30px; border: 4px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
+                                    style="width: 25px; height: 25px; border: 3px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
                             </div>
-                            <h5 class="fw-bold mb-3" style="font-size: 1.25rem; color: var(--dark-navy);">Rina Pratiwi</h5>
-                            <div class="badge-custom d-inline-block mb-3">Sekretaris Koperasi</div>
-                            <p class="text-muted small mb-0" style="line-height: 1.6;">Mengorganisir dengan profesional</p>
+                            <h6 class="fw-bold mb-2" style="font-size: 1rem; color: var(--dark-navy);">Siti Nurhaliza, S.E., M.M.</h6>
+                            <div class="badge-custom d-inline-block mb-2" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;">Wakil Ketua Koperasi</div>
+                            <p class="text-muted small mb-0" style="line-height: 1.4; font-size: 0.75rem;">Mendukung kepemimpinan</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card-modern pengurus-card p-4 h-100 text-center">
+                            <div class="position-relative d-inline-block mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                    style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 4px solid white;">
+                                    <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
+                                </div>
+                                <div class="position-absolute bottom-0 end-0 rounded-circle"
+                                    style="width: 25px; height: 25px; border: 3px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
+                            </div>
+                            <h6 class="fw-bold mb-2" style="font-size: 1rem; color: var(--dark-navy);">Rina Pratiwi, S.H.</h6>
+                            <div class="badge-custom d-inline-block mb-2" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;">Sekretaris Koperasi</div>
+                            <p class="text-muted small mb-0" style="line-height: 1.4; font-size: 0.75rem;">Mengorganisir administrasi</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card-modern pengurus-card p-4 h-100 text-center">
+                            <div class="position-relative d-inline-block mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                    style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 4px solid white;">
+                                    <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
+                                </div>
+                                <div class="position-absolute bottom-0 end-0 rounded-circle"
+                                    style="width: 25px; height: 25px; border: 3px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
+                            </div>
+                            <h6 class="fw-bold mb-2" style="font-size: 1rem; color: var(--dark-navy);">Dedi Kurniawan, S.E.</h6>
+                            <div class="badge-custom d-inline-block mb-2" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;">Bendahara Koperasi 1</div>
+                            <p class="text-muted small mb-0" style="line-height: 1.4; font-size: 0.75rem;">Mengelola keuangan transparan</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card-modern pengurus-card p-4 h-100 text-center">
+                            <div class="position-relative d-inline-block mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                    style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 4px solid white;">
+                                    <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
+                                </div>
+                                <div class="position-absolute bottom-0 end-0 rounded-circle"
+                                    style="width: 25px; height: 25px; border: 3px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
+                            </div>
+                            <h6 class="fw-bold mb-2" style="font-size: 1rem; color: var(--dark-navy);">Citra Dewi, S.Ak.</h6>
+                            <div class="badge-custom d-inline-block mb-2" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;">Bendahara Koperasi 2</div>
+                            <p class="text-muted small mb-0" style="line-height: 1.4; font-size: 0.75rem;">Keahlian akuntansi mumpuni</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card-modern pengurus-card p-4 h-100 text-center">
+                            <div class="position-relative d-inline-block mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                    style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 4px solid white;">
+                                    <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
+                                </div>
+                                <div class="position-absolute bottom-0 end-0 rounded-circle"
+                                    style="width: 25px; height: 25px; border: 3px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
+                            </div>
+                            <h6 class="fw-bold mb-2" style="font-size: 1rem; color: var(--dark-navy);">Andi Wijaya, S.T., M.M.</h6>
+                            <div class="badge-custom d-inline-block mb-2" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;">Bidang Usaha Koperasi</div>
+                            <p class="text-muted small mb-0" style="line-height: 1.4; font-size: 0.75rem;">Mengembangkan usaha inovatif</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card-modern pengurus-card p-4 h-100 text-center">
+                            <div class="position-relative d-inline-block mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                    style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 4px solid white;">
+                                    <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
+                                </div>
+                                <div class="position-absolute bottom-0 end-0 rounded-circle"
+                                    style="width: 25px; height: 25px; border: 3px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
+                            </div>
+                            <h6 class="fw-bold mb-2" style="font-size: 1rem; color: var(--dark-navy);">Eko Prasetyo, S.Kom.</h6>
+                            <div class="badge-custom d-inline-block mb-2" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;">Administrator Koperasi</div>
+                            <p class="text-muted small mb-0" style="line-height: 1.4; font-size: 0.75rem;">Mengelola sistem informasi</p>
                         </div>
                     </div>
                 @endif

@@ -48,6 +48,20 @@
                                 </a>
                             </li>
                         @endif
+                        @if (isset($routePrefix) && $routePrefix === 'administrator')
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->is('administrator/pengurus-koperasi*') ? 'active' : '' }}" href="{{ route('administrator.pengurus-koperasi.index') }}">
+                                    <i class="bi bi-people-fill me-3"></i>
+                                    <span>Kelola Pengurus</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->is('administrator/kelola-user*') ? 'active' : '' }}" href="{{ route('administrator.kelola-user') }}">
+                                    <i class="bi bi-person-gear me-3"></i>
+                                    <span>Kelola User</span>
+                                </a>
+                            </li>
+                        @endif
                         @if (isset($routePrefix) && $routePrefix === 'bendahara_koperasi')
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->is('bendahara-koperasi/iuran-pegawai*') ? 'active' : '' }}" href="{{ route('bendahara_koperasi.iuran_pegawai') }}">
@@ -74,7 +88,7 @@
                 </div>
             </nav>
 
-            <main class="col-md-10 ms-sm-auto px-md-4" style="min-height: 100vh; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+            <main class="col-md-10 ms-sm-auto px-md-4" style="min-height: 100vh; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); margin-left: 280px;">
                 <div class="d-flex justify-content-between align-items-center py-4 mb-2">
                     <div>
                         <h2 class="fw-bold mb-1 gradient-text-modern" style="font-size: 2rem;">@yield('page-title')</h2>
@@ -145,6 +159,31 @@
             border-right: 1px solid var(--gray-200);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            z-index: 1000;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(37, 99, 235, 0.3) transparent;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(37, 99, 235, 0.3);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(37, 99, 235, 0.5);
         }
 
         .profile-avatar {
@@ -450,6 +489,10 @@
 
             .sidebar.show {
                 left: 0;
+            }
+
+            main {
+                margin-left: 0 !important;
             }
         }
 
