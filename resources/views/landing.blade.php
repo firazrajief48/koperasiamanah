@@ -1748,20 +1748,13 @@
                                 <div class="position-relative d-inline-block mb-3">
                                     @if($s['foto'] && strpos($s['foto'], 'ui-avatars.com') === false)
                                         <img src="{{ $s['foto'] }}" class="rounded-circle shadow-lg pengurus-photo" alt="{{ $s['nama'] }}"
-                                            style="width: 120px; height: 120px; object-fit: cover; border: 4px solid white;"
-                                            onerror="console.log('Image failed to load:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                        <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto pengurus-photo-placeholder"
-                                            style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 4px solid white; display: none;">
-                                            <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
-                                        </div>
+                                            style="width: 120px; height: 120px; object-fit: cover; border: 4px solid white;">
                                     @else
                                         <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto pengurus-photo-placeholder"
                                             style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 4px solid white;">
                                             <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
                                         </div>
                                     @endif
-                                    <div class="position-absolute bottom-0 end-0 rounded-circle"
-                                        style="width: 25px; height: 25px; border: 3px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
                                 </div>
                                 <h6 class="fw-bold mb-2" style="font-size: 1rem; color: var(--dark-navy); line-height: 1.3;">{{ $s['nama'] }}</h6>
                                 <div class="badge-custom d-inline-block mb-2" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;">{{ $s['jabatan'] }}</div>

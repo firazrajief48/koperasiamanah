@@ -1005,6 +1005,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const formInputs = form.querySelectorAll('input, textarea, select');
     formInputs.forEach(input => {
         input.addEventListener('change', function() {
+            console.log('Form input changed:', input.name, input.value);
             hasChanges = true;
         });
     });
@@ -1013,6 +1014,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const aktifCheckbox = document.getElementById('aktif');
     if (aktifCheckbox) {
         aktifCheckbox.addEventListener('change', function() {
+            console.log('Aktif checkbox changed:', this.checked);
             hasChanges = true;
         });
     }
@@ -1020,26 +1022,37 @@ document.addEventListener('DOMContentLoaded', function() {
     // File input change handler
     fileInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
+        console.log('File input changed, file:', file);
         if (file) {
+            console.log('File details:', {
+                name: file.name,
+                size: file.size,
+                type: file.type
+            });
+
             // Validate file size (2MB max)
             if (file.size > 2 * 1024 * 1024) {
+                console.log('File too large:', file.size);
                 showAlert('File terlalu besar. Maksimal 2MB.', 'error');
                 return;
             }
 
             // Validate file type
             if (!file.type.startsWith('image/')) {
+                console.log('Invalid file type:', file.type);
                 showAlert('File harus berupa gambar.', 'error');
                 return;
             }
 
             currentFile = file;
             hasChanges = true;
+            console.log('File validated, hasChanges set to:', hasChanges);
             const reader = new FileReader();
             reader.onload = function(e) {
                 photoPreview.src = e.target.result;
                 photoPreviewContainer.style.display = 'block';
                 fileUploadArea.style.display = 'none';
+                console.log('Photo preview updated');
             };
             reader.readAsDataURL(file);
         }
@@ -1107,17 +1120,46 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Save button with confirmation
-    saveBtn.addEventListener('click', function() {
+    saveBtn.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        console.log('Save button clicked, hasChanges:', hasChanges);
+        console.log('Current file:', currentFile);
+        console.log('Form data:', new FormData(form));
+
         if (hasChanges) {
+            console.log('Changes detected, showing confirmation modal...');
             confirmMessage.textContent = 'Apakah Anda yakin ingin menyimpan perubahan data pengurus?';
             confirmAction.innerHTML = '<i class="bi bi-check-lg me-1"></i>Ya, Simpan';
             confirmAction.onclick = function() {
-                form.submit();
+                console.log('Confirming save, submitting form...');
+                console.log('Form action:', form.action);
+                console.log('Form method:', form.method);
+                console.log('Form enctype:', form.enctype);
+                console.log('Form elements:', form.elements);
+
+                // Check if form has file input
+                const fileInput = form.querySelector('input[type="file"]');
+                console.log('File input:', fileInput);
+                console.log('File input files:', fileInput ? fileInput.files : 'No file input');
+
+                // Submit form
+                try {
+                    form.submit();
+                    console.log('Form submitted successfully');
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                }
             };
             const modal = new bootstrap.Modal(confirmModal);
             modal.show();
         } else {
-            form.submit();
+            console.log('No changes detected, submitting form directly...');
+            try {
+                form.submit();
+                console.log('Form submitted directly');
+            } catch (error) {
+                console.error('Error submitting form directly:', error);
+            }
         }
     });
 
