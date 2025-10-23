@@ -33,4 +33,19 @@ class PengurusKoperasi extends Model
     {
         return $query->orderBy('urutan', 'asc');
     }
+
+    // Accessor untuk foto URL
+    public function getFotoUrlAttribute()
+    {
+        if ($this->foto) {
+            return asset('storage/' . $this->foto);
+        }
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->nama) . '&size=150&background=1e40af&color=ffffff';
+    }
+
+    // Accessor untuk status text
+    public function getStatusTextAttribute()
+    {
+        return $this->aktif ? 'Aktif' : 'Tidak Aktif';
+    }
 }

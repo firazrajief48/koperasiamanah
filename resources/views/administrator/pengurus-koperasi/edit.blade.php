@@ -191,65 +191,534 @@
         font-size: 0.9rem;
     }
 
+    /* Enhanced Photo Styling */
     .current-photo {
-        width: 80px;
-        height: 80px;
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
         object-fit: cover;
-        border: 3px solid white;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem;
+        border: 4px solid #e5e7eb;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .current-photo-placeholder {
-        width: 80px;
-        height: 80px;
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        border: 4px solid #e5e7eb;
+    }
+
+    .photo-preview {
+        width: 200px;
+        height: 200px;
+        border-radius: 12px;
+        object-fit: cover;
+        border: 2px solid #d1d5db;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .photo-preview-container {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        border: 2px solid #e5e7eb;
+    }
+
+    /* Crop Modal Styles */
+    .crop-modal .modal-dialog {
+        max-width: 700px;
+    }
+
+    .crop-container {
+        position: relative;
+        width: 100%;
+        height: 500px;
+        background: #f9fafb;
+        border-radius: 8px;
+        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-weight: 700;
-        font-size: 1.5rem;
-        border: 3px solid white;
+    }
+
+    .crop-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        cursor: grab;
+        transition: transform 0.1s ease;
+    }
+
+    .crop-image:active {
+        cursor: grabbing;
+    }
+
+    .crop-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 250px;
+        height: 250px;
+        border: 3px dashed #2563eb;
+        border-radius: 50%;
+        background: rgba(37, 99, 235, 0.05);
+        pointer-events: none;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.3);
+    }
+
+    .crop-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+    }
+
+    .crop-slider {
+        width: 250px;
+    }
+
+    /* Confirmation Modal Styles */
+    .modal-content {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #e5e7eb;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: 12px 12px 0 0;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #e5e7eb;
+        background: #f8fafc;
+        border-radius: 0 0 12px 12px;
+    }
+
+    /* Enhanced Photo Upload Card */
+    .photo-upload-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .photo-upload-card:hover {
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border-color: #d1d5db;
+    }
+
+    /* Current Photo Section */
+    .current-photo-section {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .current-photo-wrapper,
+    .no-photo-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .current-photo {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #e5e7eb;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .no-photo-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid #e5e7eb;
+    }
+
+    .no-photo-icon i {
+        font-size: 3rem;
+        color: #9ca3af;
+    }
+
+    .photo-status {
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #6b7280;
+    }
+
+    /* Upload Section */
+    .upload-section {
         margin-bottom: 1rem;
     }
+
+    .upload-area {
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    }
+
+    .upload-area:hover {
+        border-color: #2563eb;
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        transform: translateY(-2px);
+    }
+
+    .upload-icon {
+        font-size: 2.5rem;
+        color: #6b7280;
+        margin-bottom: 1rem;
+    }
+
+    .upload-area:hover .upload-icon {
+        color: #2563eb;
+    }
+
+    .upload-text h6 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-text p {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    .upload-info {
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    /* Preview Section */
+    .preview-section {
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+
+    .preview-header {
+        background: #e5e7eb;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #d1d5db;
+    }
+
+    .preview-header h6 {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .preview-content {
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .preview-image {
+        width: 150px;
+        height: 150px;
+        border-radius: 12px;
+        object-fit: cover;
+        border: 2px solid #d1d5db;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .preview-actions {
+        padding: 1rem;
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+        background: white;
+        border-top: 1px solid #e2e8f0;
+    }
+
 
     .action-buttons {
         display: flex;
         gap: 1rem;
-        justify-content: flex-end;
+        justify-content: center;
         margin-top: 2rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid rgba(37, 99, 235, 0.1);
+        padding: 2rem;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 576px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .action-buttons .btn {
+            width: 100%;
+        }
+    }
+
+    /* Form Card Styling */
+    .form-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .admin-form-header {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .admin-form-header h4 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .admin-form-body {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .form-control {
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc2626;
+    }
+
+    .invalid-feedback {
+        font-size: 0.75rem;
+        color: #dc2626;
+        margin-top: 0.25rem;
+    }
+
+
+    /* Enhanced Form Spacing */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Row spacing consistency */
+    .row {
+        margin-bottom: 1.5rem;
+    }
+
+    .row:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Photo upload card spacing */
+    .photo-upload-card .form-group {
+        margin-bottom: 0;
+    }
+
+    /* Button Styling */
+    .btn {
+        border-radius: 8px;
+        font-weight: 500;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-lg {
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+        border: none;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-outline-secondary {
+        border: 1px solid #d1d5db;
+        color: #6b7280;
+    }
+
+    .btn-outline-secondary:hover {
+        background: #f9fafb;
+        border-color: #9ca3af;
+        color: #374151;
+        transform: translateY(-1px);
     }
 
     @media (max-width: 768px) {
-        .admin-form-body {
+        .form-container {
             padding: 1rem;
+        }
+
+        .admin-form-body {
+            padding: 1.5rem;
+        }
+
+        .admin-form-header {
+            padding: 1rem 1.5rem;
+        }
+
+        .admin-form-header h4 {
+            font-size: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .photo-upload-card {
+            padding: 1rem;
+        }
+
+        .current-photo-section {
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area {
+            padding: 1.5rem;
         }
 
         .action-buttons {
             flex-direction: column;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
         }
 
-        .btn-primary-admin,
-        .btn-secondary-admin {
+        .action-buttons .btn {
             width: 100%;
-            justify-content: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .form-container {
+            padding: 0.5rem;
+        }
+
+        .admin-form-body {
+            padding: 1rem;
+        }
+
+        .admin-form-header {
+            padding: 0.75rem 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .photo-upload-card {
+            padding: 0.75rem;
+        }
+
+        .current-photo-section {
+            padding: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .upload-area {
+            padding: 1rem;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .upload-text h6 {
+            font-size: 0.875rem;
+        }
+
+        .upload-text p {
+            font-size: 0.75rem;
+        }
+
+        .action-buttons {
+            padding: 1rem;
+            margin-top: 1rem;
         }
     }
 </style>
 
-<div class="admin-form-card">
-    <div class="admin-form-header">
-        <h4 class="admin-form-title mb-0">
-            <i class="bi bi-person-gear-fill me-2"></i>Form Edit Pengurus Koperasi
-        </h4>
-    </div>
-    <div class="admin-form-body">
+<div class="form-container">
+    <div class="form-card">
+        <div class="admin-form-header">
+            <h4>
+                <i class="bi bi-person-gear me-2"></i>Form Edit Pengurus Koperasi
+            </h4>
+        </div>
+        <div class="admin-form-body">
         <form action="{{ route('administrator.pengurus-koperasi.update', $pengurus->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -337,54 +806,422 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="foto" class="form-label">Foto Profil</label>
-                        @if($pengurus->foto)
-                            <div class="text-center mb-3">
-                                <img src="{{ asset('storage/' . $pengurus->foto) }}" alt="{{ $pengurus->nama }}"
-                                     class="current-photo">
-                                <div class="form-text">Foto saat ini</div>
-                            </div>
-                        @else
-                            <div class="text-center mb-3">
-                                <div class="current-photo-placeholder">
-                                    {{ substr($pengurus->nama, 0, 2) }}
-                                </div>
-                                <div class="form-text">Belum ada foto</div>
-                            </div>
-                        @endif
-                        <div class="file-upload-area">
-                            <div class="file-upload-icon">
-                                <i class="bi bi-cloud-upload"></i>
-                            </div>
-                            <div class="file-upload-text mb-2">Klik untuk mengganti foto atau drag & drop</div>
-                            <input type="file" class="form-control @error('foto') is-invalid @enderror"
-                                   id="foto" name="foto" accept="image/*">
-                            <div class="form-text">Format: JPG, PNG, GIF. Maksimal 2MB</div>
+                        <label class="form-label">Status</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="aktif" name="aktif" value="1"
+                                   {{ old('aktif', $pengurus->aktif) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="aktif">
+                                Aktif (ditampilkan di halaman depan)
+                            </label>
                         </div>
-                        @error('foto')
+                        @error('aktif')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
             </div>
 
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="aktif" name="aktif"
-                       {{ old('aktif', $pengurus->aktif) ? 'checked' : '' }}>
-                <label class="form-check-label" for="aktif">
-                    Aktif (akan ditampilkan di halaman depan)
-                </label>
+            <div class="form-group">
+                <label for="foto" class="form-label">Foto Profil</label>
+                <!-- Photo Upload Card -->
+                        <div class="photo-upload-card">
+                            <!-- Current Photo Display -->
+                            <div class="current-photo-section">
+                                @if($pengurus->foto && file_exists(public_path('storage/' . $pengurus->foto)))
+                                    <div class="current-photo-wrapper">
+                                        <img src="http://127.0.0.1:8000/storage/{{ $pengurus->foto }}" alt="{{ $pengurus->nama }}"
+                                             class="current-photo" id="currentPhoto">
+                                        <div class="photo-status">
+                                            <i class="bi bi-check-circle text-success me-1"></i>
+                                            <span>Foto saat ini</span>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="no-photo-wrapper">
+                                        <div class="no-photo-icon">
+                                            <i class="bi bi-person-circle"></i>
+                                        </div>
+                                        <div class="photo-status">
+                                            <i class="bi bi-exclamation-circle text-warning me-1"></i>
+                                            <span>Belum ada foto</span>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Upload Area -->
+                            <div class="upload-section" id="fileUploadArea">
+                                <div class="upload-area" onclick="document.getElementById('foto').click()">
+                                    <div class="upload-icon">
+                                        <i class="bi bi-cloud-upload"></i>
+                                    </div>
+                                    <div class="upload-text">
+                                        <h6>Upload Foto Profil</h6>
+                                        <p>Klik untuk memilih foto atau drag & drop</p>
+                                    </div>
+                                    <input type="file" class="form-control @error('foto') is-invalid @enderror"
+                                           id="foto" name="foto" accept="image/*" style="display: none;">
+                                </div>
+                                <div class="upload-info">
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Format: JPG, PNG, GIF. Maksimal 2MB
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Preview Area -->
+                            <div class="preview-section" id="photoPreviewContainer" style="display: none;">
+                                <div class="preview-header">
+                                    <h6><i class="bi bi-eye me-2"></i>Preview Foto</h6>
+                                </div>
+                                <div class="preview-content">
+                                    <img id="photoPreview" class="preview-image" alt="Preview">
+                                </div>
+                                <div class="preview-actions">
+                                    <button type="button" class="btn btn-primary btn-sm" id="cropPhotoBtn">
+                                        <i class="bi bi-scissors me-1"></i>Crop Foto
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" id="cancelUploadBtn">
+                                        <i class="bi bi-x me-1"></i>Batal
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Hidden input for cropped photo -->
+                            <input type="hidden" id="croppedPhoto" name="cropped_photo">
+
+                            @error('foto')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
             </div>
 
+
             <div class="action-buttons">
-                <a href="{{ route('administrator.pengurus-koperasi.index') }}" class="btn-secondary-admin">
-                    <i class="bi bi-arrow-left"></i>Kembali
+                <a href="{{ route('administrator.pengurus-koperasi.index') }}" class="btn btn-outline-secondary btn-lg" id="backBtn">
+                    <i class="bi bi-arrow-left me-2"></i>Kembali
                 </a>
-                <button type="submit" class="btn-primary-admin">
-                    <i class="bi bi-check-lg"></i>Update Data
+                <button type="button" class="btn btn-primary btn-lg" id="saveBtn">
+                    <i class="bi bi-check-lg me-2"></i>Update Data
                 </button>
             </div>
         </form>
+        </div>
     </div>
 </div>
+
+<!-- Crop Photo Modal -->
+<div class="modal fade crop-modal" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cropModalLabel">
+                    <i class="bi bi-scissors me-2"></i>Crop Foto Profil
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="crop-container">
+                    <img id="cropImage" class="crop-image" alt="Crop Image">
+                    <div class="crop-overlay" id="cropOverlay"></div>
+                </div>
+                <div class="crop-controls">
+                    <label for="cropSlider" class="form-label">Zoom:</label>
+                    <input type="range" class="form-range crop-slider" id="cropSlider" min="0.5" max="3" step="0.1" value="1">
+                    <span id="zoomValue">100%</span>
+                </div>
+                <div class="text-center mt-3">
+                    <small class="text-muted">Drag untuk memindahkan foto, gunakan slider untuk zoom</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="applyCropBtn">
+                    <i class="bi bi-check-lg me-1"></i>Terapkan Crop
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">
+                    <i class="bi bi-question-circle me-2"></i>Konfirmasi
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Apakah Anda yakin ingin menyimpan perubahan?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="confirmAction">
+                    <i class="bi bi-check-lg me-1"></i>Ya, Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('foto');
+    const photoPreview = document.getElementById('photoPreview');
+    const photoPreviewContainer = document.getElementById('photoPreviewContainer');
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const cropPhotoBtn = document.getElementById('cropPhotoBtn');
+    const cancelUploadBtn = document.getElementById('cancelUploadBtn');
+    const cropModal = document.getElementById('cropModal');
+    const cropImage = document.getElementById('cropImage');
+    const cropOverlay = document.getElementById('cropOverlay');
+    const cropSlider = document.getElementById('cropSlider');
+    const zoomValue = document.getElementById('zoomValue');
+    const applyCropBtn = document.getElementById('applyCropBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const backBtn = document.getElementById('backBtn');
+    const confirmModal = document.getElementById('confirmModal');
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmAction = document.getElementById('confirmAction');
+    const form = document.querySelector('form');
+
+    let currentFile = null;
+    let currentScale = 1;
+    let currentX = 0;
+    let currentY = 0;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let hasChanges = false;
+
+    // Track form changes
+    const formInputs = form.querySelectorAll('input, textarea, select');
+    formInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            hasChanges = true;
+        });
+    });
+
+    // Handle checkbox change for aktif status
+    const aktifCheckbox = document.getElementById('aktif');
+    if (aktifCheckbox) {
+        aktifCheckbox.addEventListener('change', function() {
+            hasChanges = true;
+        });
+    }
+
+    // File input change handler
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate file size (2MB max)
+            if (file.size > 2 * 1024 * 1024) {
+                showAlert('File terlalu besar. Maksimal 2MB.', 'error');
+                return;
+            }
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showAlert('File harus berupa gambar.', 'error');
+                return;
+            }
+
+            currentFile = file;
+            hasChanges = true;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                photoPreview.src = e.target.result;
+                photoPreviewContainer.style.display = 'block';
+                fileUploadArea.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Crop photo button
+    cropPhotoBtn.addEventListener('click', function() {
+        if (currentFile) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                cropImage.src = e.target.result;
+                const modal = new bootstrap.Modal(cropModal);
+                modal.show();
+                resetCropSettings();
+            };
+            reader.readAsDataURL(currentFile);
+        }
+    });
+
+    // Cancel upload button
+    cancelUploadBtn.addEventListener('click', function() {
+        photoPreviewContainer.style.display = 'none';
+        fileUploadArea.style.display = 'block';
+        fileInput.value = '';
+        currentFile = null;
+        hasChanges = false;
+    });
+
+    // Crop slider change
+    cropSlider.addEventListener('input', function() {
+        currentScale = parseFloat(this.value);
+        zoomValue.textContent = Math.round(currentScale * 100) + '%';
+        updateCropImage();
+    });
+
+    // Apply crop button
+    applyCropBtn.addEventListener('click', function() {
+        if (currentFile) {
+            cropImageToCanvas();
+        }
+    });
+
+    // Drag functionality for crop image
+    cropImage.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        dragStartX = e.clientX - currentX;
+        dragStartY = e.clientY - currentY;
+        cropImage.style.cursor = 'grabbing';
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function(e) {
+        if (isDragging) {
+            currentX = e.clientX - dragStartX;
+            currentY = e.clientY - dragStartY;
+            updateCropImage();
+        }
+    });
+
+    document.addEventListener('mouseup', function() {
+        if (isDragging) {
+            isDragging = false;
+            cropImage.style.cursor = 'grab';
+        }
+    });
+
+    // Save button with confirmation
+    saveBtn.addEventListener('click', function() {
+        if (hasChanges) {
+            confirmMessage.textContent = 'Apakah Anda yakin ingin menyimpan perubahan data pengurus?';
+            confirmAction.innerHTML = '<i class="bi bi-check-lg me-1"></i>Ya, Simpan';
+            confirmAction.onclick = function() {
+                form.submit();
+            };
+            const modal = new bootstrap.Modal(confirmModal);
+            modal.show();
+        } else {
+            form.submit();
+        }
+    });
+
+    // Back button with confirmation
+    backBtn.addEventListener('click', function(e) {
+        if (hasChanges) {
+            e.preventDefault();
+            confirmMessage.textContent = 'Apakah Anda yakin ingin keluar? Perubahan yang belum disimpan akan hilang.';
+            confirmAction.innerHTML = '<i class="bi bi-arrow-left me-1"></i>Ya, Keluar';
+            confirmAction.onclick = function() {
+                window.location.href = backBtn.href;
+            };
+            const modal = new bootstrap.Modal(confirmModal);
+            modal.show();
+        }
+    });
+
+    function resetCropSettings() {
+        currentScale = 1;
+        currentX = 0;
+        currentY = 0;
+        cropSlider.value = 1;
+        zoomValue.textContent = '100%';
+        updateCropImage();
+    }
+
+    function updateCropImage() {
+        cropImage.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale})`;
+    }
+
+    function cropImageToCanvas() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size to 400x400 for better quality
+        canvas.width = 400;
+        canvas.height = 400;
+
+        // Create a circular clipping path
+        ctx.beginPath();
+        ctx.arc(200, 200, 200, 0, 2 * Math.PI);
+        ctx.clip();
+
+        // Calculate the source rectangle for cropping
+        const img = new Image();
+        img.onload = function() {
+            const imgWidth = img.width;
+            const imgHeight = img.height;
+
+            // Calculate the crop area (center of the image)
+            const cropSize = Math.min(imgWidth, imgHeight);
+            const cropX = (imgWidth - cropSize) / 2;
+            const cropY = (imgHeight - cropSize) / 2;
+
+            // Draw the cropped image
+            ctx.drawImage(img, cropX, cropY, cropSize, cropSize, 0, 0, 400, 400);
+
+            // Convert to blob and update the form
+            canvas.toBlob(function(blob) {
+                const croppedFile = new File([blob], currentFile.name, { type: 'image/jpeg' });
+
+                // Update the file input
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(croppedFile);
+                fileInput.files = dataTransfer.files;
+
+                // Update preview
+                photoPreview.src = canvas.toDataURL();
+
+                // Hide preview container and show upload area
+                photoPreviewContainer.style.display = 'none';
+                fileUploadArea.style.display = 'block';
+
+                // Hide modal
+                const modal = bootstrap.Modal.getInstance(cropModal);
+                modal.hide();
+
+                // Show success message
+                showAlert('Foto berhasil di-crop dan siap diupload!', 'success');
+            }, 'image/jpeg', 0.9);
+        };
+        img.src = cropImage.src;
+    }
+
+    function showAlert(message, type = 'info') {
+        const alertClass = type === 'error' ? 'alert-danger' : 'alert-success';
+        const icon = type === 'error' ? 'bi-exclamation-triangle' : 'bi-check-circle';
+
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+        alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alertDiv.innerHTML = `
+            <i class="bi ${icon} me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alertDiv);
+
+        // Auto remove after 4 seconds
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.parentNode.removeChild(alertDiv);
+            }
+        }, 4000);
+    }
+});
+</script>
+@endpush

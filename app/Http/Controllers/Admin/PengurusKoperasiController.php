@@ -38,22 +38,23 @@ class PengurusKoperasiController extends Controller
             'deskripsi' => 'nullable|string',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:20',
-            'urutan' => 'required|integer|min:1',
+            'urutan' => 'required|integer|min:1|max:10',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'aktif' => 'boolean'
+            'aktif' => 'nullable|boolean'
         ]);
 
-        $data = $request->all();
+        $data = $request->only(['nama', 'jabatan', 'deskripsi', 'email', 'telepon', 'urutan']);
 
         // Handle foto upload
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
-            $filename = time() . '_' . Str::slug($request->nama) . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/pengurus', $filename);
+            $filename = time() . '_' . Str::slug($request->nama) . '.jpg'; // Always save as JPG for consistency
+            $file->storeAs('pengurus', $filename, 'public');
             $data['foto'] = 'pengurus/' . $filename;
         }
 
-        $data['aktif'] = $request->has('aktif');
+        // Handle aktif status - default to true if not provided
+        $data['aktif'] = $request->has('aktif') ? (bool) $request->aktif : true;
 
         PengurusKoperasi::create($data);
 
@@ -92,27 +93,28 @@ class PengurusKoperasiController extends Controller
             'deskripsi' => 'nullable|string',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:20',
-            'urutan' => 'required|integer|min:1',
+            'urutan' => 'required|integer|min:1|max:10',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'aktif' => 'boolean'
+            'aktif' => 'nullable|boolean'
         ]);
 
-        $data = $request->all();
+        $data = $request->only(['nama', 'jabatan', 'deskripsi', 'email', 'telepon', 'urutan']);
 
         // Handle foto upload
         if ($request->hasFile('foto')) {
             // Delete old foto
             if ($pengurus->foto) {
-                Storage::delete('public/' . $pengurus->foto);
+                Storage::disk('public')->delete($pengurus->foto);
             }
 
             $file = $request->file('foto');
-            $filename = time() . '_' . Str::slug($request->nama) . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/pengurus', $filename);
+            $filename = time() . '_' . Str::slug($request->nama) . '.jpg'; // Always save as JPG for consistency
+            $file->storeAs('pengurus', $filename, 'public');
             $data['foto'] = 'pengurus/' . $filename;
         }
 
-        $data['aktif'] = $request->has('aktif');
+        // Handle aktif status - default to true if not provided
+        $data['aktif'] = $request->has('aktif') ? (bool) $request->aktif : true;
 
         $pengurus->update($data);
 

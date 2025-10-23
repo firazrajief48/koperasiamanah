@@ -380,6 +380,44 @@
             transform: scale(1.1) rotate(3deg);
         }
 
+        /* Enhanced pengurus photo styling */
+        .pengurus-photo {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        .pengurus-photo:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .pengurus-photo-placeholder {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        .pengurus-photo-placeholder:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive photo sizing */
+        @media (max-width: 768px) {
+            .pengurus-photo,
+            .pengurus-photo-placeholder {
+                width: 100px !important;
+                height: 100px !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .pengurus-photo,
+            .pengurus-photo-placeholder {
+                width: 80px !important;
+                height: 80px !important;
+            }
+        }
+
         /* Enhanced navbar effects */
         .navbar {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1708,8 +1746,20 @@
                         <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                             <div class="card-modern pengurus-card p-4 h-100 text-center">
                                 <div class="position-relative d-inline-block mb-3">
-                                    <img src="{{ $s['foto'] }}" class="rounded-circle shadow-lg" alt="{{ $s['nama'] }}"
-                                        style="width: 120px; height: 120px; object-fit: cover; border: 4px solid white;">
+                                    @if($s['foto'] && strpos($s['foto'], 'ui-avatars.com') === false)
+                                        <img src="{{ $s['foto'] }}" class="rounded-circle shadow-lg pengurus-photo" alt="{{ $s['nama'] }}"
+                                            style="width: 120px; height: 120px; object-fit: cover; border: 4px solid white;"
+                                            onerror="console.log('Image failed to load:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto pengurus-photo-placeholder"
+                                            style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 4px solid white; display: none;">
+                                            <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
+                                        </div>
+                                    @else
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto pengurus-photo-placeholder"
+                                            style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%); border: 4px solid white;">
+                                            <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
+                                        </div>
+                                    @endif
                                     <div class="position-absolute bottom-0 end-0 rounded-circle"
                                         style="width: 25px; height: 25px; border: 3px solid white; background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
                                 </div>
