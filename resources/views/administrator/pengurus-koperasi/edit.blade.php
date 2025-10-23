@@ -1047,6 +1047,10 @@ document.addEventListener('DOMContentLoaded', function() {
             currentFile = file;
             hasChanges = true;
             console.log('File validated, hasChanges set to:', hasChanges);
+            console.log('Current file set to:', currentFile);
+            console.log('File input files after change:', e.target.files);
+            console.log('File input files length:', e.target.files.length);
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 photoPreview.src = e.target.result;
@@ -1055,6 +1059,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Photo preview updated');
             };
             reader.readAsDataURL(file);
+        } else {
+            console.log('No file selected');
+            currentFile = null;
+            hasChanges = true;
         }
     });
 
@@ -1144,6 +1152,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Submit form
                 try {
+                    console.log('About to submit form...');
+                    console.log('Form before submit:', form);
+                    console.log('Form action before submit:', form.action);
+                    console.log('Form method before submit:', form.method);
+                    console.log('Form enctype before submit:', form.enctype);
+
+                    // Check if form has file input
+                    const fileInput = form.querySelector('input[type="file"]');
+                    console.log('File input before submit:', fileInput);
+                    console.log('File input files before submit:', fileInput ? fileInput.files : 'No file input');
+
+                    if (fileInput && fileInput.files.length > 0) {
+                        console.log('File selected for upload:', fileInput.files[0]);
+                        console.log('File name:', fileInput.files[0].name);
+                        console.log('File size:', fileInput.files[0].size);
+                        console.log('File type:', fileInput.files[0].type);
+                    } else {
+                        console.log('No file selected for upload');
+                    }
+
                     form.submit();
                     console.log('Form submitted successfully');
                 } catch (error) {
@@ -1155,6 +1183,26 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             console.log('No changes detected, submitting form directly...');
             try {
+                console.log('About to submit form directly...');
+                console.log('Form before direct submit:', form);
+                console.log('Form action before direct submit:', form.action);
+                console.log('Form method before direct submit:', form.method);
+                console.log('Form enctype before direct submit:', form.enctype);
+
+                // Check if form has file input
+                const fileInput = form.querySelector('input[type="file"]');
+                console.log('File input before direct submit:', fileInput);
+                console.log('File input files before direct submit:', fileInput ? fileInput.files : 'No file input');
+
+                if (fileInput && fileInput.files.length > 0) {
+                    console.log('File selected for direct upload:', fileInput.files[0]);
+                    console.log('File name:', fileInput.files[0].name);
+                    console.log('File size:', fileInput.files[0].size);
+                    console.log('File type:', fileInput.files[0].type);
+                } else {
+                    console.log('No file selected for direct upload');
+                }
+
                 form.submit();
                 console.log('Form submitted directly');
             } catch (error) {
