@@ -5,7 +5,7 @@
 
 @php
     $role = 'Kepala BPS Kota Surabaya';
-    $nama = 'Ahmad Rizki';
+    $nama = auth()->user()->name;
     $routePrefix = 'kepala_bps';
     $showLaporan = true;
 @endphp
@@ -773,7 +773,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="table-responsive">
             <table class="modern-table">
                 <thead>
@@ -1011,7 +1011,7 @@
 
                 rows.forEach(row => {
                     const status = row.getAttribute('data-status');
-                    
+
                     if (filter === 'all') {
                         row.style.display = '';
                         visibleCount++;
@@ -1073,7 +1073,7 @@
 
         function loadVerifikasiSection(data) {
             const verifikasiSection = document.getElementById('verifikasiSection');
-            
+
             if (data.status === 'Diverifikasi' || data.status === 'Ditolak') {
                 verifikasiSection.innerHTML = `
                     <div class="detail-section-title">
@@ -1089,7 +1089,7 @@
                                 <span>${data.status}</span>
                             </span>
                         </div>
-                        
+
                         <div class="histori-meta">
                             <div class="histori-meta-item">
                                 <i class="bi bi-clock"></i>
@@ -1134,7 +1134,7 @@
                                 <span>Sedang Diproses</span>
                             </span>
                         </div>
-                        
+
                         <div class="histori-meta">
                             <div class="histori-meta-item">
                                 <i class="bi bi-info-circle"></i>

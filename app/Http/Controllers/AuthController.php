@@ -36,9 +36,10 @@ class AuthController extends Controller
             return $this->redirectToRole($user);
         }
 
+        // Return with error but don't redirect - stay on same page
         return back()->withErrors([
             'email' => 'Email atau Password yang Anda masukkan salah.',
-        ])->onlyInput('email');
+        ])->withInput($request->only('email'))->with('showModal', true);
     }
 
     /**
@@ -82,7 +83,7 @@ class AuthController extends Controller
         if ($request->role !== 'peminjam') {
             return back()->withErrors([
                 'role' => 'Hanya anggota (peminjam) yang dapat mendaftar melalui form ini.',
-            ])->withInput();
+            ])->withInput()->with('showModal', true);
         }
 
         $user = User::create([
@@ -99,6 +100,15 @@ class AuthController extends Controller
         Auth::login($user);
 
         return $this->redirectToRole($user);
+    }
+
+    /**
+     * Clear modal session flag
+     */
+    public function clearModalSession(Request $request)
+    {
+        $request->session()->forget('showModal');
+        return response()->json(['success' => true]);
     }
 
     /**

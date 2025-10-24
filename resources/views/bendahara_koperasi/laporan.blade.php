@@ -5,7 +5,7 @@
 
 @php
     $role = 'Bendahara Koperasi';
-    $nama = 'Siti Nurhaliza';
+    $nama = auth()->user()->name;
     $routePrefix = 'bendahara_koperasi';
     $showLaporan = true;
 @endphp
@@ -782,7 +782,7 @@
     </style>
 
     {{-- ==================== HTML CONTENT ==================== --}}
-    
+
     {{-- Header Halaman --}}
     <div class="page-header">
         <h4>📊 Laporan Pinjaman</h4>
@@ -825,7 +825,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="table-responsive">
             <table class="modern-table">
                 <thead>
@@ -1048,9 +1048,9 @@
                 tanggal_pengajuan: "{{ $l['tanggal'] }}",
                 tujuan: "{{ ['Renovasi rumah dan kebutuhan mendesak', 'Pendidikan anak', 'Biaya pengobatan', 'Investasi usaha'][$index % 4] }}",
                 status: "{{ $l['status'] }}",
-                verifier: "{{ 
-                    strpos($l['status'], 'Ketua') !== false ? 'Ketua Koperasi' : 
-                    (strpos($l['status'], 'Kepala') !== false || strpos($l['status'], 'BPS') !== false ? 'Kepala BPS Kota Surabaya' : 
+                verifier: "{{
+                    strpos($l['status'], 'Ketua') !== false ? 'Ketua Koperasi' :
+                    (strpos($l['status'], 'Kepala') !== false || strpos($l['status'], 'BPS') !== false ? 'Kepala BPS Kota Surabaya' :
                     ($l['status'] == 'Diverifikasi' || $l['status'] == 'Ditolak' ? 'Bendahara Koperasi' : 'Proses Verifikasi'))
                 }}",
                 gaji_pokok: {{ $l['status'] == 'Diverifikasi' || $l['status'] == 'Ditolak' ? rand(5000000, 15000000) : 'null' }},
@@ -1088,7 +1088,7 @@
 
                 rows.forEach(row => {
                     const status = row.getAttribute('data-status');
-                    
+
                     if (filter === 'all') {
                         row.style.display = '';
                         visibleCount++;
@@ -1153,7 +1153,7 @@
         /* ========== Fungsi untuk Load Section Verifikasi ========== */
         function loadVerifikasiSection(data) {
             const verifikasiSection = document.getElementById('verifikasiSection');
-            
+
             if (data.status === 'Diverifikasi' || data.status === 'Ditolak') {
                 verifikasiSection.innerHTML = `
                     <div class="detail-section-title">
@@ -1169,7 +1169,7 @@
                                 <span>${data.status}</span>
                             </span>
                         </div>
-                        
+
                         <div class="histori-meta">
                             <div class="histori-meta-item">
                                 <i class="bi bi-clock"></i>
@@ -1214,7 +1214,7 @@
                                 <span>Sedang Diproses</span>
                             </span>
                         </div>
-                        
+
                         <div class="histori-meta">
                             <div class="histori-meta-item">
                                 <i class="bi bi-info-circle"></i>

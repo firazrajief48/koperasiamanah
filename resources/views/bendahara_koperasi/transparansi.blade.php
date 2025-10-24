@@ -5,7 +5,7 @@
 
 @php
     $role = 'Bendahara Koperasi';
-    $nama = 'Siti Nurhaliza';
+    $nama = auth()->user()->name;
     $routePrefix = 'bendahara_koperasi';
     $showLaporan = true;
 @endphp
@@ -732,12 +732,12 @@
     </div>
 
     <!-- Table -->
-    <div class="table-modern-card"> 
+    <div class="table-modern-card">
         <div class="table-header">
             <h5>Daftar Pinjaman Anggota</h5>
             <p>Pantau dan kelola status pembayaran pinjaman anggota koperasi</p>
         </div>
-        
+
         <div class="table-responsive">
             <table class="modern-table">
                 <thead>
@@ -892,8 +892,8 @@
                                                             <i class="bi bi-check-circle-fill"></i> Lunas
                                                         </span>
                                                     @else
-                                                        <button type="button" 
-                                                                class="btn-bayar" 
+                                                        <button type="button"
+                                                                class="btn-bayar"
                                                                 onclick="bayarAngsuran({{ $p['id'] }}, {{ $bulan }}, {{ $nominalAngsuran }}, {{ $sisaBulanIni }})">
                                                             <i class="bi bi-cash-coin"></i> Bayar
                                                         </button>
@@ -917,8 +917,8 @@
 
                             <div class="manual-input-group">
                                 <label>Nominal Pembayaran</label>
-                                <input type="number" 
-                                       class="manual-input" 
+                                <input type="number"
+                                       class="manual-input"
                                        id="manualInput{{ $p['id'] }}"
                                        placeholder="Masukkan nominal..."
                                        max="{{ $p['sisa'] }}"
@@ -960,7 +960,7 @@
             function bayarAngsuran(id, bulan, nominal, sisaBulanIni) {
                 // Get current values
                 const totalBayarLama = parseFloat(document.getElementById('modalTotalBayar' + id).textContent.replace(/[^0-9]/g, ''));
-                
+
                 // Calculate new values
                 const totalBayarBaru = totalBayarLama + nominal;
                 const sisaBaru = sisaBulanIni;
@@ -1015,7 +1015,7 @@
                 const modal = document.getElementById('editModal' + id);
                 const buttons = modal.querySelectorAll('.mode-btn');
                 buttons.forEach(btn => btn.classList.remove('active'));
-                
+
                 // Find and activate the clicked button
                 if (mode === 'otomatis') {
                     buttons[0].classList.add('active');
@@ -1075,7 +1075,7 @@
                 // Get current values
                 const totalBayarLama = parseFloat(document.getElementById('modalTotalBayar' + id).textContent.replace(/[^0-9]/g, ''));
                 const sisaLama = parseFloat(document.getElementById('modalSisa' + id).textContent.replace(/[^0-9]/g, ''));
-                
+
                 // Calculate new values
                 const totalBayarBaru = totalBayarLama + nominal;
                 const sisaBaru = sisaLama - nominal;
@@ -1112,7 +1112,7 @@
                     document.getElementById('summaryManual' + id).style.display = 'none';
                     document.getElementById('btnPayManual' + id).disabled = true;
                     document.getElementById('manualInput' + id).value = '';
-                    
+
                     // Reset mode to otomatis
                     const buttons = modalEl.querySelectorAll('.mode-btn');
                     buttons[0].classList.add('active');
@@ -1134,11 +1134,11 @@
             document.getElementById('searchInput').addEventListener('input', function() {
                 const searchText = this.value.toLowerCase();
                 const rows = document.querySelectorAll('#tableBody tr');
-                
+
                 rows.forEach(row => {
                     const nama = row.getAttribute('data-nama');
                     const nip = row.getAttribute('data-nip').toLowerCase();
-                    
+
                     if (nama.includes(searchText) || nip.includes(searchText)) {
                         row.style.display = '';
                     } else {

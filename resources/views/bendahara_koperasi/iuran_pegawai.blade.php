@@ -5,7 +5,7 @@
 
 @php
     $role = 'Bendahara Koperasi';
-    $nama = 'Siti Nurhaliza';
+    $nama = auth()->user()->name;
     $routePrefix = 'bendahara_koperasi';
     $showLaporan = true;
 @endphp
@@ -293,12 +293,12 @@
                 </label>
                 <div class="month-tabs" id="monthTabs">
                     @php
-                        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
                                   'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
                     @endphp
                     @foreach ($bulan as $index => $namaBulan)
-                        <div class="month-tab {{ $index + 1 == date('n') ? 'active' : '' }}" 
-                             data-month="{{ $index + 1 }}" 
+                        <div class="month-tab {{ $index + 1 == date('n') ? 'active' : '' }}"
+                             data-month="{{ $index + 1 }}"
                              onclick="selectMonth({{ $index + 1 }})">
                             🔹 {{ $namaBulan }}
                         </div>
@@ -371,7 +371,7 @@
         // Configuration
         const NOMINAL_IURAN = 50000;
         const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.content || '';
-        
+
         // State Management
         let currentMonth = {{ date('n') }};
         let currentYear = {{ date('Y') }};
@@ -399,9 +399,9 @@
         // Load Data from Server
         function loadData() {
             showLoading(true);
-            
+
             const url = `/bendahara-koperasi/iuran-pegawai/data?bulan=${currentMonth}&tahun=${currentYear}&status=${statusFilter}`;
-            
+
             fetch(url, {
                 method: 'GET',
                 headers: {
@@ -434,7 +434,7 @@
         function renderTable(data) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
-            
+
             if (data.length === 0) {
                 renderEmptyTable();
                 return;
@@ -443,12 +443,12 @@
             data.forEach((pegawai, index) => {
                 const sudahBayar = pegawai.sudah_bayar == 1;
                 const nominal = parseInt(pegawai.nominal) || 0;
-                
+
                 const row = `
                     <tr>
                         <td class="text-center">${index + 1}</td>
                         <td>
-                            <a href="#" onclick="showRiwayat(${pegawai.id}, '${pegawai.nama.replace(/'/g, "\\'")}'); return false;" 
+                            <a href="#" onclick="showRiwayat(${pegawai.id}, '${pegawai.nama.replace(/'/g, "\\'")}'); return false;"
                                class="nama-pegawai-link">
                                 ${pegawai.nama}
                             </a>
@@ -459,12 +459,12 @@
                             Rp ${nominal.toLocaleString('id-ID')}
                         </td>
                         <td>
-                            ${sudahBayar 
-                                ? '<span class="badge-lunas">✓ Lunas</span>' 
+                            ${sudahBayar
+                                ? '<span class="badge-lunas">✓ Lunas</span>'
                                 : '<span class="badge-belum">✗ Belum Lunas</span>'}
                         </td>
                         <td>
-                            <button class="btn btn-bayar btn-sm w-100" 
+                            <button class="btn btn-bayar btn-sm w-100"
                                     onclick="bayarIuran(${pegawai.id}, '${pegawai.nama.replace(/'/g, "\\'")}')"
                                     ${sudahBayar ? 'disabled' : ''}>
                                 ${sudahBayar ? '✓ Lunas' : '💰 Bayar'}
@@ -501,11 +501,11 @@
                     jumlahLunas++;
                 }
             });
-            
-            document.getElementById('totalPemasukan').textContent = 
+
+            document.getElementById('totalPemasukan').textContent =
                 'Rp ' + totalPemasukan.toLocaleString('id-ID');
-            
-            document.getElementById('rekapDetail').textContent = 
+
+            document.getElementById('rekapDetail').textContent =
                 `${jumlahLunas} dari ${totalPegawai} pegawai sudah membayar`;
         }
 
@@ -558,14 +558,14 @@
         // Bayar Semua Pegawai
         function bayarSemua() {
             const belumBayar = currentData.filter(p => p.sudah_bayar == 0).length;
-            
+
             if (belumBayar === 0) {
                 showError('Semua pegawai sudah membayar untuk bulan ini');
                 return;
             }
 
             const totalBayar = belumBayar * NOMINAL_IURAN;
-            
+
             if (!confirm(`Konfirmasi pembayaran MASSAL:\n\n` +
                         `Jumlah Pegawai: ${belumBayar} orang\n` +
                         `Total Pembayaran: Rp ${totalBayar.toLocaleString('id-ID')}\n` +
@@ -615,9 +615,9 @@
 
         function showRiwayat(pegawaiId, namaPegawai) {
             document.getElementById('namaPegawaiModal').textContent = namaPegawai;
-            document.getElementById('riwayatContent').innerHTML = 
+            document.getElementById('riwayatContent').innerHTML =
                 '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
-            
+
             fetch(`/bendahara-koperasi/iuran-pegawai/riwayat/${pegawaiId}?tahun=${currentYear}`, {
                 method: 'GET',
                 headers: {
@@ -630,43 +630,43 @@
                 if (result.success) {
                     renderRiwayat(result.riwayat);
                 } else {
-                    document.getElementById('riwayatContent').innerHTML = 
+                    document.getElementById('riwayatContent').innerHTML =
                         '<div class="alert alert-danger">Gagal memuat riwayat</div>';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                document.getElementById('riwayatContent').innerHTML = 
+                document.getElementById('riwayatContent').innerHTML =
                     '<div class="alert alert-danger">Terjadi kesalahan koneksi</div>';
             });
-            
+
             new bootstrap.Modal(document.getElementById('riwayatModal')).show();
         }
 
         function renderRiwayat(riwayat) {
-            const bulanNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+            const bulanNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
                                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            
+
             const riwayatMap = {};
             riwayat.forEach(item => {
                 riwayatMap[item.bulan] = item;
             });
-            
+
             let html = '<div class="table-responsive"><table class="table table-sm table-hover">';
             html += '<thead class="table-light"><tr><th>Bulan</th><th>Status</th><th>Nominal</th><th>Tanggal Bayar</th></tr></thead><tbody>';
-            
+
             let totalBayar = 0;
             let jumlahBulanLunas = 0;
-            
+
             for (let i = 1; i <= 12; i++) {
                 const item = riwayatMap[i];
                 const sudahBayar = item !== undefined;
-                
+
                 if (sudahBayar) {
                     totalBayar += parseFloat(item.nominal);
                     jumlahBulanLunas++;
                 }
-                
+
                 html += `<tr class="${sudahBayar ? 'table-success' : ''}">
                     <td><strong>${bulanNames[i-1]}</strong></td>
                     <td>${sudahBayar ? '<span class="badge-lunas">Lunas</span>' : '<span class="badge-belum">Belum</span>'}</td>
@@ -674,7 +674,7 @@
                     <td>${sudahBayar ? formatTanggal(item.tanggal_bayar) : '-'}</td>
                 </tr>`;
             }
-            
+
             html += '</tbody>';
             html += `<tfoot class="table-light">
                 <tr>
@@ -683,7 +683,7 @@
                 </tr>
             </tfoot>`;
             html += '</table></div>';
-            
+
             document.getElementById('riwayatContent').innerHTML = html;
         }
 
@@ -694,17 +694,17 @@
          */
 
         function getBulanName(bulan) {
-            const names = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+            const names = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
                           'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             return names[bulan - 1];
         }
 
         function formatTanggal(tanggal) {
             const date = new Date(tanggal);
-            return date.toLocaleDateString('id-ID', { 
-                day: 'numeric', 
-                month: 'long', 
-                year: 'numeric' 
+            return date.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
             });
         }
 
@@ -715,13 +715,13 @@
         function showToast(message) {
             const toast = document.getElementById('toastNotification');
             const alert = toast.querySelector('.alert');
-            
+
             document.getElementById('toastMessage').textContent = message;
             alert.classList.remove('alert-danger');
             alert.classList.add('alert-success');
-            
+
             toast.style.display = 'block';
-            
+
             setTimeout(() => {
                 hideToast();
             }, 5000);
@@ -730,13 +730,13 @@
         function showError(message) {
             const toast = document.getElementById('toastNotification');
             const alert = toast.querySelector('.alert');
-            
+
             document.getElementById('toastMessage').textContent = '❌ ' + message;
             alert.classList.remove('alert-success');
             alert.classList.add('alert-danger');
-            
+
             toast.style.display = 'block';
-            
+
             setTimeout(() => {
                 hideToast();
             }, 5000);
@@ -759,13 +759,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Load initial data
             loadData();
-            
+
             // Year filter
             document.getElementById('yearFilter')?.addEventListener('change', function() {
                 currentYear = parseInt(this.value);
                 loadData();
             });
-            
+
             // Status filter
             document.getElementById('statusFilter')?.addEventListener('change', function() {
                 statusFilter = this.value;

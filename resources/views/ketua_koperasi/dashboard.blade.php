@@ -5,7 +5,7 @@
 
 @php
     $role = 'Ketua Koperasi';
-    $nama = 'Budi Santoso';
+    $nama = auth()->user()->name;
     $routePrefix = 'ketua_koperasi';
     $showLaporan = true;
 @endphp
@@ -559,7 +559,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="table-responsive">
             <table class="modern-table">
                 <thead>

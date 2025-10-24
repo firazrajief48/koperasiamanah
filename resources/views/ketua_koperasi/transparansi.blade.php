@@ -5,7 +5,7 @@
 
 @php
     $role = 'Ketua Koperasi';
-    $nama = 'Budi Santoso';
+    $nama = auth()->user()->name;
     $routePrefix = 'ketua_koperasi';
     $showLaporan = true;
 @endphp
@@ -349,12 +349,12 @@
         <i class="fas fa-search search-icon"></i>
     </div>
 
-    <div class="table-modern-card"> 
+    <div class="table-modern-card">
         <div class="table-header">
             <h5>Daftar Pinjaman Anggota</h5>
             <p>Pantau status pembayaran pinjaman anggota koperasi secara transparan</p>
         </div>
-        
+
         <div class="table-responsive">
             <table class="modern-table">
                 <thead>
@@ -417,11 +417,11 @@
             document.getElementById('searchInput').addEventListener('input', function() {
                 const searchText = this.value.toLowerCase();
                 const rows = document.querySelectorAll('#tableBody tr');
-                
+
                 rows.forEach(row => {
                     const nama = row.getAttribute('data-nama');
                     const nip = row.getAttribute('data-nip').toLowerCase();
-                    
+
                     if (nama.includes(searchText) || nip.includes(searchText)) {
                         row.style.display = '';
                     } else {

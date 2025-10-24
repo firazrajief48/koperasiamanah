@@ -5,7 +5,7 @@
 
 @php
     $role = 'Peminjam';
-    $nama = 'Andi Wijaya';
+    $nama = auth()->user()->name;
     $routePrefix = 'peminjam';
     $showAjukan = true;
     $showRiwayat = true;

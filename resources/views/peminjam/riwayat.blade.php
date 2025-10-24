@@ -5,11 +5,11 @@
 
 @php
     $role = 'Peminjam';
-    $nama = 'Andi Wijaya';
+    $nama = auth()->user()->name;
     $routePrefix = 'peminjam';
     $showAjukan = true;
     $showRiwayat = true;
-    
+
     // Logika pengurutan riwayat pinjaman
     // Urutkan berdasarkan tanggal DESC (terbaru di atas, terlama di bawah)
     $riwayatSorted = collect($riwayat)
@@ -557,7 +557,7 @@
             <h5>Daftar Pengajuan Pinjaman</h5>
             <p>Berikut adalah seluruh riwayat pengajuan pinjaman Anda (diurutkan dari pengajuan terbaru ke terlama)</p>
         </div>
-        
+
         <div class="table-responsive">
             @if(count($riwayat) > 0)
                 <table class="modern-table">
@@ -593,7 +593,7 @@
                                 <td>
                                     <span class="tenor-badge">
                                         <i class="bi bi-hourglass-split"></i>
-                                        {{ $r['tenor'] }} 
+                                        {{ $r['tenor'] }}
                                     </span>
                                 </td>
                                 <td>
@@ -617,7 +617,7 @@
                                             @php
                                                 // Cek tahap verifikasi berdasarkan data tambahan
                                                 $tahapVerifikasi = $r['tahap_verifikasi'] ?? 'validator1';
-                                                
+
                                                 if ($tahapVerifikasi == 'validator1' || !isset($r['tahap_verifikasi'])) {
                                                     $textVerifikasi = 'Bendahara Koperasi';
                                                 } elseif ($tahapVerifikasi == 'validator2') {

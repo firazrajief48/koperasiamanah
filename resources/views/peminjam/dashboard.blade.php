@@ -5,11 +5,11 @@
 
 @php
     $role = 'Peminjam';
-    $nama = $data['nama'];
+    $nama = auth()->user()->name;
     $routePrefix = 'peminjam';
     $showAjukan = true;
     $showRiwayat = true;
-    
+
     // Data untuk simulasi
     $totalPinjaman = 3000000;
     $cicilanPerBulan = 600000;
@@ -631,7 +631,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="table-responsive">
             <table class="modern-table">
                 <thead>

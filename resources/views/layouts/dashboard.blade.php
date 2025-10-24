@@ -81,7 +81,7 @@
 
                     <hr class="opacity-15 mx-3 my-4">
                     <div class="px-3 pb-3">
-                        <button class="btn btn-logout w-100" onclick="confirmLogout(event)" style="cursor: pointer;">
+                        <button class="btn btn-logout w-100" data-bs-toggle="modal" data-bs-target="#logoutModal" style="cursor: pointer;">
                             <i class="bi bi-box-arrow-right me-2"></i>Logout
                         </button>
                     </div>
@@ -107,16 +107,70 @@
         </div>
     </div>
 
+    <!-- Logout Confirmation Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);">
+                <div class="modal-header" style="border-bottom: 1px solid #e5e7eb; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px 16px 0 0;">
+                    <div class="d-flex align-items-center">
+                        <div class="logout-icon me-3" style="width: 48px; height: 48px; background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-box-arrow-right text-white fs-5"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel" style="color: #1f2937;">Konfirmasi Logout</h5>
+                            <small class="text-muted">Keluar dari sistem</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; font-size: 1.5rem; color: #6b7280;"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <div class="text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-question-circle text-warning" style="font-size: 3rem;"></i>
+                        </div>
+                        <h6 class="fw-semibold mb-2" style="color: #374151;">Apakah Anda yakin ingin keluar?</h6>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            Anda akan keluar dari sistem dan perlu login kembali untuk mengakses dashboard.
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #e5e7eb; background: #f8fafc; border-radius: 0 0 16px 16px; padding: 1rem 1.5rem;">
+                    <div class="d-flex gap-2 w-100">
+                        <button type="button" class="btn btn-outline-secondary flex-fill" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 500; padding: 0.75rem;">
+                            <i class="bi bi-x-circle me-2"></i>Batal
+                        </button>
+                        <button type="button" class="btn btn-danger flex-fill" id="confirmLogoutBtn" style="border-radius: 10px; font-weight: 500; padding: 0.75rem; background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); border: none;">
+                            <i class="bi bi-box-arrow-right me-2"></i>Ya, Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
         <script>
-            function confirmLogout(event) {
-                event.preventDefault();
-                if (confirm('Apakah Anda yakin ingin keluar?')) {
-                    window.location.href = '/';
-                }
-            }
-
             document.addEventListener('DOMContentLoaded', function() {
+                // Handle logout confirmation
+                const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+                if (confirmLogoutBtn) {
+                    confirmLogoutBtn.addEventListener('click', function() {
+                        // Show loading state
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Logging out...';
+                        this.disabled = true;
+
+                        // Add loading animation
+                        this.style.opacity = '0.7';
+
+                        // Redirect to logout
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 500);
+                    });
+                }
+
+                // Move modals to body if needed
                 try {
                     document.querySelectorAll('.modal').forEach(function(modalEl) {
                         if (modalEl.parentElement !== document.body) {
@@ -125,6 +179,31 @@
                     });
                 } catch (e) {
                     console.error('Error moving modals to body', e);
+                }
+
+                // Add smooth animations to modal
+                const logoutModal = document.getElementById('logoutModal');
+                if (logoutModal) {
+                    logoutModal.addEventListener('show.bs.modal', function() {
+                        // Add entrance animation
+                        const modalContent = this.querySelector('.modal-content');
+                        modalContent.style.transform = 'scale(0.8)';
+                        modalContent.style.opacity = '0';
+
+                        setTimeout(() => {
+                            modalContent.style.transition = 'all 0.3s ease';
+                            modalContent.style.transform = 'scale(1)';
+                            modalContent.style.opacity = '1';
+                        }, 10);
+                    });
+
+                    logoutModal.addEventListener('hide.bs.modal', function() {
+                        // Add exit animation
+                        const modalContent = this.querySelector('.modal-content');
+                        modalContent.style.transition = 'all 0.2s ease';
+                        modalContent.style.transform = 'scale(0.8)';
+                        modalContent.style.opacity = '0';
+                    });
                 }
             });
         </script>
@@ -320,10 +399,46 @@
 
         .modern-dropdown .dropdown-item {
             border-radius: 8px;
-            padding: 0.75rem 1rem;
-            transition: all 0.2s ease;
-            font-weight: 500;
+        }
+
+        /* Logout Modal Styles */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            border: none;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #f8fafc;
+            border-color: #d1d5db;
             color: #374151;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .logout-icon {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
         }
 
         .modern-dropdown .dropdown-item:hover {

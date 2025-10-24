@@ -546,7 +546,7 @@
                     </h5>
                 </div>
                 <div class="admin-card-body">
-                    @foreach($users_by_role as $role)
+                    @foreach($users_by_role as $roleData)
                     <div class="role-item">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
@@ -559,12 +559,12 @@
                                         'administrator' => 'bg-danger'
                                     ];
                                 @endphp
-                                <span class="badge-role {{ $roleColors[$role->role] ?? 'bg-secondary' }}">
-                                    {{ ucfirst(str_replace('_', ' ', $role->role)) }}
+                                <span class="badge-role {{ $roleColors[$roleData->role] ?? 'bg-secondary' }}">
+                                    {{ ucfirst(str_replace('_', ' ', $roleData->role)) }}
                                 </span>
                             </div>
                             <div class="text-end">
-                                <h4 class="fw-bold mb-0" style="color: #0f172a;">{{ $role->total }}</h4>
+                                <h4 class="fw-bold mb-0" style="color: #0f172a;">{{ $roleData->total }}</h4>
                                 <small class="text-muted">user</small>
                             </div>
                         </div>
@@ -619,11 +619,11 @@
         </div>
         <div class="admin-card-body">
             <div class="row g-4">
-                @foreach($users_by_role as $role)
+                @foreach($users_by_role as $roleData)
                 <div class="col-lg-4 col-md-6">
                     <div class="detail-stat-card">
-                        <h2 class="detail-stat-number">{{ $role->total }}</h2>
-                        <h6 class="detail-stat-label">{{ ucfirst(str_replace('_', ' ', $role->role)) }}</h6>
+                        <h2 class="detail-stat-number">{{ $roleData->total }}</h2>
+                        <h6 class="detail-stat-label">{{ ucfirst(str_replace('_', ' ', $roleData->role)) }}</h6>
                     </div>
                 </div>
                 @endforeach

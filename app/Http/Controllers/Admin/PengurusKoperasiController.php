@@ -51,6 +51,9 @@ class PengurusKoperasiController extends Controller
             $filename = time() . '_' . Str::slug($request->nama) . '.jpg'; // Always save as JPG for consistency
             $file->storeAs('pengurus', $filename, 'public');
             $data['foto'] = 'pengurus/' . $filename;
+
+            // Sync storage to public
+            $this->syncStorageToPublic();
         }
 
         // Handle aktif status - default to true if not provided
@@ -87,6 +90,7 @@ class PengurusKoperasiController extends Controller
     {
         $pengurus = PengurusKoperasi::findOrFail($id);
 
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
@@ -111,6 +115,9 @@ class PengurusKoperasiController extends Controller
             $filename = time() . '_' . Str::slug($request->nama) . '.jpg'; // Always save as JPG for consistency
             $file->storeAs('pengurus', $filename, 'public');
             $data['foto'] = 'pengurus/' . $filename;
+
+            // Sync storage to public
+            $this->syncStorageToPublic();
         }
 
         // Handle aktif status - default to true if not provided
@@ -138,5 +145,33 @@ class PengurusKoperasiController extends Controller
 
         return redirect()->route('administrator.pengurus-koperasi.index')
             ->with('success', 'Data pengurus koperasi berhasil dihapus.');
+    }
+
+    /**
+     * Sync storage to public directory
+     */
+    private function syncStorageToPublic()
+    {
+        $source = storage_path('app/public');
+        $destination = public_path('storage');
+
+        if (is_dir($source)) {
+            // Remove existing public/storage directory
+            if (is_dir($destination)) {
+                $files = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($destination, \RecursiveDirectoryIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::CHILD_FIRST
+                );
+
+                foreach ($files as $fileinfo) {
+                    $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+                    $todo($fileinfo->getRealPath());
+                }
+                rmdir($destination);
+            }
+
+            // Copy files from storage to public
+            shell_exec("xcopy /E /I /Y \"$source\" \"$destination\"");
+        }
     }
 }

@@ -856,7 +856,7 @@
                                 <td class="fw-bold">{{ $index + 1 }}</td>
                                 <td>
                                     @if($p->foto && file_exists(public_path('storage/' . $p->foto)))
-                                        <img src="http://127.0.0.1:8000/storage/{{ $p->foto }}" alt="{{ $p->nama }}"
+                                        <img src="{{ asset('storage/' . $p->foto) }}" alt="{{ $p->nama }}"
                                              class="pengurus-avatar">
                                     @else
                                         <div class="pengurus-avatar-placeholder">

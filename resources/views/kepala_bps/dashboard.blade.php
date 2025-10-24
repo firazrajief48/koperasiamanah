@@ -4,8 +4,8 @@
 @section('page-title', 'Dashboard Kepala BPS')
 
 @php
-    $role = 'Kepala BPS Kota Surabaya';
-    $nama = 'Ahmad Rizki';
+    $role = 'Kepala BPS';
+    $nama = auth()->user()->name;
     $routePrefix = 'kepala_bps';
     $showLaporan = true;
 @endphp
@@ -567,7 +567,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="table-responsive">
             <table class="modern-table">
                 <thead>

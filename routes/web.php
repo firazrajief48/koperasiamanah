@@ -17,6 +17,7 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/clear-modal-session', [AuthController::class, 'clearModalSession'])->name('clear-modal-session');
 
 // Download PDF
 Route::get('/download-pdf/{filename}', function ($filename) {
@@ -31,6 +32,7 @@ Route::get('/download-pdf/{filename}', function ($filename) {
 Route::prefix('peminjam')->name('peminjam.')->middleware(['auth', 'role:peminjam'])->group(function () {
     Route::get('/dashboard', [PeminjamController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [PeminjamController::class, 'profile'])->name('profile');
+    Route::put('/profile', [PeminjamController::class, 'updateProfile'])->name('profile.update');
     Route::get('/ajukan-pinjaman', [PeminjamController::class, 'ajukanPinjaman'])->name('ajukan');
     Route::get('/riwayat-pinjaman', [PeminjamController::class, 'riwayatPinjaman'])->name('riwayat');
     Route::get('/transparansi', [PeminjamController::class, 'transparansi'])->name('transparansi');
@@ -40,6 +42,7 @@ Route::prefix('peminjam')->name('peminjam.')->middleware(['auth', 'role:peminjam
 Route::prefix('kepala-bps')->name('kepala_bps.')->middleware(['auth', 'role:kepala_bps'])->group(function () {
     Route::get('/dashboard', [BendaharaKantorController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [BendaharaKantorController::class, 'profile'])->name('profile');
+    Route::put('/profile', [BendaharaKantorController::class, 'updateProfile'])->name('profile.update');
     Route::get('/detail-pengajuan/{id}', [BendaharaKantorController::class, 'detailPengajuan'])->name('detail');
     Route::get('/laporan-pinjaman', [BendaharaKantorController::class, 'laporanPinjaman'])->name('laporan');
     Route::get('/transparansi', [BendaharaKantorController::class, 'transparansi'])->name('transparansi');
@@ -53,6 +56,7 @@ Route::redirect('/bendahara-kantor/{any}', '/kepala-bps/{any}')->where('any', '.
 Route::prefix('bendahara-koperasi')->name('bendahara_koperasi.')->middleware(['auth', 'role:bendahara_koperasi'])->group(function () {
     Route::get('/dashboard', [BendaharaKoperasiController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [BendaharaKoperasiController::class, 'profile'])->name('profile');
+    Route::put('/profile', [BendaharaKoperasiController::class, 'updateProfile'])->name('profile.update');
     Route::get('/detail-pengajuan/{id}', [BendaharaKoperasiController::class, 'detailPengajuan'])->name('detail');
     Route::get('/laporan-pinjaman', [BendaharaKoperasiController::class, 'laporanPinjaman'])->name('laporan');
     Route::get('/transparansi', [BendaharaKoperasiController::class, 'transparansi'])->name('transparansi');
@@ -67,6 +71,7 @@ Route::redirect('/kepala-koperasi/{any}', '/ketua-koperasi/{any}')->where('any',
 Route::prefix('ketua-koperasi')->name('ketua_koperasi.')->middleware(['auth', 'role:ketua_koperasi'])->group(function () {
     Route::get('/dashboard', [KepalaKoperasiController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [KepalaKoperasiController::class, 'profile'])->name('profile');
+    Route::put('/profile', [KepalaKoperasiController::class, 'updateProfile'])->name('profile.update');
     Route::get('/detail-pengajuan/{id}', [KepalaKoperasiController::class, 'detailPengajuan'])->name('detail');
     Route::get('/laporan-pinjaman', [KepalaKoperasiController::class, 'laporanPinjaman'])->name('laporan');
     Route::get('/transparansi', [KepalaKoperasiController::class, 'transparansi'])->name('transparansi');
@@ -76,6 +81,7 @@ Route::prefix('ketua-koperasi')->name('ketua_koperasi.')->middleware(['auth', 'r
 Route::prefix('administrator')->name('administrator.')->middleware(['auth', 'role:administrator'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
+    Route::put('/profile', [AdminController::class, 'updateProfile'])->name('profile.update');
     Route::get('/kelola-user', [AdminController::class, 'kelolaUser'])->name('kelola-user');
     Route::get('/tambah-user', [AdminController::class, 'tambahUser'])->name('tambah-user');
     Route::post('/store-user', [AdminController::class, 'storeUser'])->name('store-user');

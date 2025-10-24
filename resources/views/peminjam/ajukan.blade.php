@@ -5,7 +5,7 @@
 
 @php
     $role = 'Peminjam';
-    $nama = $peminjam['nama'];
+    $nama = auth()->user()->name;
     $routePrefix = 'peminjam';
     $showAjukan = true;
     $showRiwayat = true;
@@ -444,18 +444,18 @@
                         <i class="bi bi-cash-coin"></i>
                         <span>Detail Pinjaman</span>
                     </h5>
-                    
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
-                                Tanggal Pengajuan 
+                                Tanggal Pengajuan
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" id="tanggalPengajuan" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
-                                Metode Pembayaran 
+                                Metode Pembayaran
                                 <span class="text-danger">*</span>
                             </label>
                             <select class="form-select" id="metodePembayaran" required>
@@ -468,7 +468,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">
-                            Jumlah Pinjaman 
+                            Jumlah Pinjaman
                             <span class="text-danger">*</span>
                         </label>
                         <div class="amount-grid">
@@ -521,7 +521,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">
-                            Tenor/Cicilan 
+                            Tenor/Cicilan
                             <span class="text-danger">*</span>
                         </label>
                         <select class="form-select" id="tenorCicilan" required disabled>
@@ -557,7 +557,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">
-                            Keperluan 
+                            Keperluan
                             <span class="text-danger">*</span>
                         </label>
                         <textarea class="form-control" id="keperluan" rows="4" placeholder="Jelaskan keperluan pinjaman Anda secara detail..." required></textarea>
@@ -789,11 +789,11 @@
                     const jumlah = parseInt(this.value);
                     const data = tabelPinjaman[jumlah];
                     const tenorSelect = document.getElementById('tenorCicilan');
-                    
+
                     // Reset dan enable tenor select
                     tenorSelect.innerHTML = '<option value="">Pilih Tenor Cicilan</option>';
                     tenorSelect.disabled = false;
-                    
+
                     // Populate tenor options berdasarkan max tenor
                     const tenorOptions = Object.keys(data.cicilan).sort((a, b) => a - b);
                     tenorOptions.forEach(tenor => {
@@ -802,7 +802,7 @@
                         option.textContent = `${tenor} Bulan - ${formatRupiah(data.cicilan[tenor])}/bulan`;
                         tenorSelect.appendChild(option);
                     });
-                    
+
                     // Hide cicilan info
                     document.getElementById('cicilanInfo').style.display = 'none';
                 });
@@ -811,14 +811,14 @@
             // Handle perubahan tenor
             document.getElementById('tenorCicilan').addEventListener('change', function() {
                 const jumlahPinjaman = document.querySelector('input[name="jumlahPinjaman"]:checked');
-                
+
                 if (jumlahPinjaman && this.value) {
                     const jumlah = parseInt(jumlahPinjaman.value);
                     const tenor = parseInt(this.value);
                     const data = tabelPinjaman[jumlah];
                     const cicilanPerBulan = data.cicilan[tenor];
                     const totalDibayar = cicilanPerBulan * tenor;
-                    
+
                     // Update info cicilan
                     document.getElementById('cicilanPerBulan').textContent = formatRupiah(cicilanPerBulan);
                     document.getElementById('totalDibayar').textContent = formatRupiah(totalDibayar);
@@ -845,7 +845,7 @@
                 const data = tabelPinjaman[parseInt(jumlahPinjaman.value)];
                 const tenor = parseInt(tenorCicilan);
                 const cicilan = data.cicilan[tenor];
-                
+
                 alert(`✅ Pengajuan pinjaman berhasil disimpan!\n\nDetail:\n- Jumlah: ${formatRupiah(parseInt(jumlahPinjaman.value))}\n- Tenor: ${tenor} bulan\n- Cicilan: ${formatRupiah(cicilan)}/bulan\n- Diterima: ${formatRupiah(data.terima)}\n\nPinjaman Anda akan segera diproses oleh admin.`);
                 window.location.href = '{{ route('peminjam.riwayat') }}';
             });

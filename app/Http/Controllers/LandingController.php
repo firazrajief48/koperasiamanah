@@ -26,7 +26,7 @@ class LandingController extends Controller
 
             // Cek apakah foto ada dan file benar-benar ada
             if ($pengurus->foto && file_exists(public_path('storage/' . $pengurus->foto))) {
-                $fotoUrl = 'http://127.0.0.1:8000/storage/' . $pengurus->foto . '?v=' . time();
+                $fotoUrl = asset('storage/' . $pengurus->foto) . '?v=' . time();
             }
 
             return [

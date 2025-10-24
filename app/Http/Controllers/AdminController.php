@@ -32,8 +32,83 @@ class AdminController extends Controller
      */
     public function profile()
     {
+        $user = auth()->user();
         $routePrefix = 'administrator';
-        return view('administrator.profile', compact('routePrefix'));
+        return view('administrator.profile', compact('user', 'routePrefix'));
+    }
+
+    /**
+     * Update Profile Administrator
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'nip' => 'nullable|string|max:20',
+            'golongan' => 'nullable|string|max:50',
+            'jabatan' => 'nullable|string|max:100',
+            'phone' => 'nullable|string|max:15',
+            'password' => 'nullable|string|min:8|confirmed',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $updateData = $request->only(['name', 'email', 'nip', 'golongan', 'jabatan', 'phone']);
+
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+
+        // Handle photo upload
+        if ($request->hasFile('photo')) {
+            // Delete old photo if exists
+            if ($user->photo && file_exists(public_path('storage/' . $user->photo))) {
+                unlink(public_path('storage/' . $user->photo));
+            }
+
+            $photo = $request->file('photo');
+            $filename = time() . '_' . $user->id . '.' . $photo->getClientOriginalExtension();
+            $path = $photo->storeAs('public/photos', $filename);
+            $updateData['photo'] = 'photos/' . $filename;
+
+            // Sync to public directory
+            $this->syncStorageToPublic();
+        }
+
+        $user->update($updateData);
+
+        return redirect()->route('administrator.profile')->with('success', 'Profile berhasil diupdate!');
+    }
+
+    private function syncStorageToPublic()
+    {
+        $source = storage_path('app/public');
+        $destination = public_path('storage');
+
+        if (is_dir($source)) {
+            // Remove existing public/storage directory
+            if (is_dir($destination)) {
+                $files = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($destination, \RecursiveDirectoryIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::CHILD_FIRST
+                );
+
+                foreach ($files as $fileinfo) {
+                    $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+                    $todo($fileinfo->getRealPath());
+                }
+                rmdir($destination);
+            }
+
+            // Copy files from storage to public
+            shell_exec("xcopy /E /I /Y \"$source\" \"$destination\"");
+        }
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class PeminjamController extends Controller
 {
@@ -87,16 +89,81 @@ class PeminjamController extends Controller
 
     public function profile()
     {
-        $user = [
-            'nama' => 'Andi Wijaya',
-            'nip' => '199001012020',
-            'jabatan' => 'Staff IT',
-            'golongan' => 'III/A',
-            'no_hp' => '081234567890',
-            'email' => 'andi.wijaya@example.com',
-            'foto' => 'https://ui-avatars.com/api/?name=Andi+Wijaya&size=200&background=0D8ABC&color=fff'
-        ];
-
+        $user = auth()->user();
         return view('peminjam.profile', compact('user'));
+    }
+
+    /**
+     * Update Profile Peminjam
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'nip' => 'nullable|string|max:20',
+            'golongan' => 'nullable|string|max:50',
+            'jabatan' => 'nullable|string|max:100',
+            'phone' => 'nullable|string|max:15',
+            'password' => 'nullable|string|min:8|confirmed',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $updateData = $request->only(['name', 'email', 'nip', 'golongan', 'jabatan', 'phone']);
+
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+
+        // Handle photo upload
+        if ($request->hasFile('photo')) {
+            // Delete old photo if exists
+            if ($user->photo && file_exists(public_path('storage/' . $user->photo))) {
+                unlink(public_path('storage/' . $user->photo));
+            }
+
+            $photo = $request->file('photo');
+            $filename = time() . '_' . $user->id . '.' . $photo->getClientOriginalExtension();
+            $path = $photo->storeAs('public/photos', $filename);
+            $updateData['photo'] = 'photos/' . $filename;
+
+            // Sync to public directory
+            $this->syncStorageToPublic();
+        }
+
+        $user->update($updateData);
+
+        return redirect()->route('peminjam.profile')->with('success', 'Profile berhasil diupdate!');
+    }
+
+    private function syncStorageToPublic()
+    {
+        $source = storage_path('app/public');
+        $destination = public_path('storage');
+
+        if (is_dir($source)) {
+            // Remove existing public/storage directory
+            if (is_dir($destination)) {
+                $files = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($destination, \RecursiveDirectoryIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::CHILD_FIRST
+                );
+
+                foreach ($files as $fileinfo) {
+                    $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+                    $todo($fileinfo->getRealPath());
+                }
+                rmdir($destination);
+            }
+
+            // Copy files from storage to public
+            shell_exec("xcopy /E /I /Y \"$source\" \"$destination\"");
+        }
     }
 }

@@ -26,6 +26,7 @@ class User extends Authenticatable
         'golongan',
         'jabatan',
         'phone',
+        'photo',
     ];
 
     /**

@@ -1240,16 +1240,16 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item mx-lg-2 my-2 my-lg-0">
-                        <a class="nav-link" href="#beranda">Beranda</a>
+                        <a class="nav-link" href="#" onclick="event.preventDefault(); scrollToTop(); return false;">Beranda</a>
                     </li>
                     <li class="nav-item mx-lg-2 my-2 my-lg-0">
-                        <a class="nav-link" href="#tentang">Tentang</a>
+                        <a class="nav-link" href="#" onclick="event.preventDefault(); scrollToSection('tentang'); return false;">Tentang</a>
                     </li>
                     <li class="nav-item mx-lg-2 my-2 my-lg-0">
-                        <a class="nav-link" href="#pengurus">Pengurus</a>
+                        <a class="nav-link" href="#" onclick="event.preventDefault(); openPengurusModal(); return false;">Pengurus</a>
                     </li>
                     <li class="nav-item ms-lg-3 my-2 my-lg-0">
-                        <button class="btn btn-accent btn-sm px-4 py-2 rounded-pill w-100" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <button class="btn btn-accent btn-sm px-4 py-2 rounded-pill w-100" data-bs-toggle="modal" data-bs-target="#loginModal" onclick="openLoginTab()">
                             <i class="bi bi-box-arrow-in-right me-2"></i>Masuk
                         </button>
                     </li>
@@ -1273,7 +1273,7 @@
                         {{ $profil['deskripsi'] ?? 'Wujudkan impian finansial Anda bersama koperasi yang terpercaya dan transparan. Layanan modern untuk kesejahteraan bersama.' }}
                     </p>
                     <div class="d-flex gap-3 flex-wrap" style="animation: fadeInUp 0.6s ease-out 0.3s both;">
-                        <button class="btn btn-accent px-4 py-2 rounded-pill shadow-lg" data-bs-toggle="modal" data-bs-target="#loginModal" style="font-size: 0.95rem; position: relative; z-index: 5;">
+                        <button class="btn btn-accent px-4 py-2 rounded-pill shadow-lg" data-bs-toggle="modal" data-bs-target="#loginModal" onclick="openLoginTab()" style="font-size: 0.95rem; position: relative; z-index: 5;">
                             <span style="position: relative, z-index: 1;">Mulai Sekarang</span>
                             <i class="bi bi-arrow-right ms-2" style="position: relative, z-index: 1;"></i>
                         </button>
@@ -1349,7 +1349,7 @@
         </div>
     </section>
 
-    <section id="tentang" class="py-5 bg-white">
+    <section id="tentang" class="py-5 bg-white" style="padding-top: 120px !important;">
         <div class="container py-5">
             <div class="text-center mb-5">
                 <h2 class="display-5 fw-bold gradient-text mb-3">Visi & Misi</h2>
@@ -1897,7 +1897,7 @@
         <div class="container text-center">
             <h2 class="display-5 fw-bold mb-4">Siap Bergabung dengan Kami?</h2>
             <p class="fs-5 mb-5 opacity-90" style="line-height: 1.8; max-width: 700px; margin: 0 auto;">Daftarkan diri Anda sekarang dan nikmati berbagai kemudahan layanan koperasi digital</p>
-            <button class="btn btn-accent btn-lg px-5 py-3 rounded-pill shadow-lg" data-bs-toggle="modal" data-bs-target="#loginModal">
+            <button class="btn btn-accent btn-lg px-5 py-3 rounded-pill shadow-lg" data-bs-toggle="modal" data-bs-target="#loginModal" onclick="openRegisterTab()">
                 <span style="position: relative, z-index: 1;">Daftar Sekarang</span>
                 <i class="bi bi-arrow-right ms-2" style="position: relative, z-index: 1;"></i>
             </button>
@@ -1944,12 +1944,16 @@
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="login" role="tabpanel">
                                     @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul class="mb-0">
-                                                @foreach ($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
+                                        <div class="alert alert-danger d-flex align-items-center error-alert" style="border-radius: 10px; border: none; background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); color: #dc2626; animation: slideInDown 0.5s ease-out;">
+                                            <i class="bi bi-exclamation-triangle-fill me-3" style="font-size: 1.2rem; animation: pulse 2s infinite;"></i>
+                                            <div>
+                                                <strong class="d-block mb-1">Terjadi Kesalahan!</strong>
+                                                <ul class="mb-0" style="font-size: 0.9rem;">
+                                                    @foreach ($errors->all() as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
                                         </div>
                                     @endif
 
@@ -1982,6 +1986,20 @@
                                 </div>
 
                                 <div class="tab-pane fade" id="register" role="tabpanel">
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger d-flex align-items-center mb-3 error-alert" style="border-radius: 10px; border: none; background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); color: #dc2626; animation: slideInDown 0.5s ease-out;">
+                                            <i class="bi bi-exclamation-triangle-fill me-3" style="font-size: 1.2rem; animation: pulse 2s infinite;"></i>
+                                            <div>
+                                                <strong class="d-block mb-1">Terjadi Kesalahan!</strong>
+                                                <ul class="mb-0" style="font-size: 0.9rem;">
+                                                    @foreach ($errors->all() as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     <div class="alert alert-info">
                                         <i class="bi bi-info-circle me-2"></i>
                                         <strong>Pendaftaran Anggota Baru</strong><br>
@@ -2059,6 +2077,73 @@
             </div>
         </div>
     </div>
+
+    <!-- Pengurus Koperasi Modal -->
+    <div class="modal fade" id="pengurusModal" tabindex="-1" aria-labelledby="pengurusModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);">
+                <div class="modal-header" style="border-bottom: 1px solid #e5e7eb; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 20px 20px 0 0;">
+                    <div class="d-flex align-items-center">
+                        <div class="pengurus-icon me-3" style="width: 50px; height: 50px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-people-fill text-white fs-5"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="pengurusModalLabel" style="color: #1f2937;">Informasi Koperasi</h5>
+                            <small class="text-muted">Pengurus Koperasi</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; font-size: 1.5rem; color: #6b7280;"></button>
+                </div>
+                <div class="modal-body py-4" style="max-height: 70vh; overflow-y: auto;">
+                    <div class="text-center mb-4">
+                        <h4 class="fw-bold mb-2" style="color: #1f2937;">Pengurus Koperasi</h4>
+                        <p class="text-muted mb-0">Tim profesional yang berpengalaman dan berdedikasi</p>
+                    </div>
+
+                    <div class="row g-4">
+                        @if (isset($staf) && count($staf) > 0)
+                            @foreach ($staf as $s)
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                                    <div class="card-modern pengurus-card p-4 h-100 text-center" style="border-radius: 16px; border: 1px solid #e5e7eb; background: white; transition: all 0.3s ease;">
+                                        <div class="position-relative d-inline-block mb-3">
+                                            @if($s['foto'] && strpos($s['foto'], 'ui-avatars.com') === false)
+                                                <img src="{{ $s['foto'] }}" class="rounded-circle shadow-lg pengurus-photo" alt="{{ $s['nama'] }}"
+                                                    style="width: 100px; height: 100px; object-fit: cover; border: 4px solid white;">
+                                            @else
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto pengurus-photo-placeholder"
+                                                    style="width: 100px; height: 100px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border: 4px solid white;">
+                                                    <i class="bi bi-person text-white" style="font-size: 2.5rem;"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <h6 class="fw-bold mb-2" style="font-size: 0.95rem; color: #1f2937; line-height: 1.3;">{{ $s['nama'] }}</h6>
+                                        <div class="badge-custom d-inline-block mb-2" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; border-radius: 20px;">{{ $s['jabatan'] }}</div>
+                                        @if(isset($s['deskripsi']) && $s['deskripsi'])
+                                            <p class="text-muted small mb-0" style="line-height: 1.4; font-size: 0.8rem;">{{ Str::limit($s['deskripsi'], 60) }}</p>
+                                        @else
+                                            <p class="text-muted small mb-0" style="line-height: 1.4; font-size: 0.8rem;">Siap melayani dengan sepenuh hati</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <!-- Fallback jika tidak ada data -->
+                            <div class="col-12 text-center py-5">
+                                <i class="bi bi-people text-muted" style="font-size: 4rem;"></i>
+                                <h5 class="text-muted mt-3">Data Pengurus Belum Tersedia</h5>
+                                <p class="text-muted">Informasi pengurus koperasi akan segera diupdate.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #e5e7eb; background: #f8fafc; border-radius: 0 0 20px 20px; padding: 1rem 1.5rem;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 500; padding: 0.75rem 1.5rem;">
+                        <i class="bi bi-x-circle me-2"></i>Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -2071,12 +2156,59 @@
             const absoluteTop = window.pageYOffset + rect.top;
             window.scrollTo({ top: absoluteTop - navbarHeight - 16, behavior: 'smooth' });
         }
+
+        // Function to scroll to top of page
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Function to scroll to specific section
+        function scrollToSection(sectionId) {
+            console.log('Scrolling to section:', sectionId);
+            const element = document.getElementById(sectionId);
+            if (element) {
+                console.log('Element found:', element);
+
+                // Calculate position with navbar offset
+                const navbarHeight = document.querySelector('.navbar')?.offsetHeight || 80;
+                const elementPosition = element.offsetTop;
+                const offsetPosition = elementPosition - navbarHeight - 20;
+
+                console.log('Navbar height:', navbarHeight);
+                console.log('Element position:', elementPosition);
+                console.log('Target position:', offsetPosition);
+
+                // Scroll to calculated position
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            } else {
+                console.log('Element not found:', sectionId);
+            }
+        }
+
+        // Function to open pengurus modal
+        function openPengurusModal() {
+            const pengurusModal = document.getElementById('pengurusModal');
+            if (pengurusModal) {
+                const modal = new bootstrap.Modal(pengurusModal);
+                modal.show();
+            }
+        }
         // Function removed - login now handled by form submission
 
         // Register form now handled by Laravel form submission
 
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
+                // Skip if this is our custom navigation link
+                if (this.onclick) {
+                    return; // Let the onclick handler take care of it
+                }
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
@@ -2249,5 +2381,166 @@
                 document.body.classList.add('has-join-section');
             }
         })();
+
+        // Add CSS for error alert animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInDown {
+                from {
+                    transform: translateY(-20px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.1);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
+
+            .error-alert {
+                box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+                border-left: 4px solid #dc2626;
+            }
+
+            /* Pengurus Modal Styles */
+            .pengurus-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .pengurus-icon {
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+                }
+                70% {
+                    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+                }
+                100% {
+                    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Function to open login tab when "Masuk" button is clicked
+        function openLoginTab() {
+            // Wait for modal to be shown, then switch to login tab
+            const loginModal = document.getElementById('loginModal');
+            if (loginModal) {
+                loginModal.addEventListener('shown.bs.modal', function() {
+                    // Switch to login tab
+                    const loginTab = document.getElementById('login-tab');
+                    const loginPane = document.getElementById('login');
+                    const registerTab = document.getElementById('register-tab');
+                    const registerPane = document.getElementById('register');
+
+                    if (loginTab && loginPane && registerTab && registerPane) {
+                        // Remove active class from register tab and pane
+                        registerTab.classList.remove('active');
+                        registerPane.classList.remove('active', 'show');
+
+                        // Add active class to login tab and pane
+                        loginTab.classList.add('active');
+                        loginPane.classList.add('active', 'show');
+                    }
+                }, { once: true }); // Use once: true to prevent multiple listeners
+            }
+        }
+
+        // Function to open register tab when "Daftar Sekarang" button is clicked
+        function openRegisterTab() {
+            // Wait for modal to be shown, then switch to register tab
+            const loginModal = document.getElementById('loginModal');
+            if (loginModal) {
+                loginModal.addEventListener('shown.bs.modal', function() {
+                    // Switch to register tab
+                    const registerTab = document.getElementById('register-tab');
+                    const registerPane = document.getElementById('register');
+                    const loginTab = document.getElementById('login-tab');
+                    const loginPane = document.getElementById('login');
+
+                    if (registerTab && registerPane && loginTab && loginPane) {
+                        // Remove active class from login tab and pane
+                        loginTab.classList.remove('active');
+                        loginPane.classList.remove('active', 'show');
+
+                        // Add active class to register tab and pane
+                        registerTab.classList.add('active');
+                        registerPane.classList.add('active', 'show');
+                    }
+                }, { once: true }); // Use once: true to prevent multiple listeners
+            }
+        }
+
+        // Handle login/register form submission to prevent modal close on error
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginModal = document.getElementById('loginModal');
+            const loginForm = document.querySelector('form[action="{{ route('login') }}"]');
+            const registerForm = document.querySelector('form[action="{{ route('register') }}"]');
+
+            // Check if we should show modal (from session or errors)
+            const shouldShowModal = @json(session('showModal', false));
+            const hasErrors = document.querySelector('.alert-danger');
+
+            if (loginModal && (shouldShowModal || hasErrors)) {
+                // Show modal if there are errors or session flag is set
+                const modal = new bootstrap.Modal(loginModal);
+                modal.show();
+
+                // Clear the session flag after showing modal
+                @if(session('showModal'))
+                    // Clear the session flag via AJAX
+                    fetch('{{ route("clear-modal-session") }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        },
+                    }).catch(console.error);
+                @endif
+            }
+
+            // Handle form submission
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    // Add loading state
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Memproses...';
+                    submitBtn.disabled = true;
+
+                    // Store original form action for potential retry
+                    this.setAttribute('data-original-action', this.action);
+                });
+            }
+
+            if (registerForm) {
+                registerForm.addEventListener('submit', function(e) {
+                    // Add loading state
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Memproses...';
+                    submitBtn.disabled = true;
+
+                    // Store original form action for potential retry
+                    this.setAttribute('data-original-action', this.action);
+                });
+            }
+        });
     </script>
 @endpush

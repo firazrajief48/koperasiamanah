@@ -5,7 +5,7 @@
 
 @php
     $role = 'Ketua Koperasi';
-    $nama = 'Budi Santoso';
+    $nama = auth()->user()->name;
     $routePrefix = 'ketua_koperasi';
     $showLaporan = true;
 @endphp
@@ -777,7 +777,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="table-responsive">
             <table class="modern-table">
                 <thead>
@@ -987,9 +987,9 @@
                 tanggal_pengajuan: "{{ $l['tanggal_verifikasi'] ?? $l['tanggal'] ?? date('Y-m-d') }}",
                 tujuan: "{{ ['Renovasi rumah dan kebutuhan mendesak', 'Pendidikan anak', 'Biaya pengobatan', 'Investasi usaha'][$index % 4] }}",
                 status: "{{ $l['status'] }}",
-                verifier: "{{ 
-                    strpos($l['status'], 'Ketua') !== false ? 'Ketua Koperasi' : 
-                    (strpos($l['status'], 'Kepala') !== false || strpos($l['status'], 'BPS') !== false ? 'Kepala BPS Kota Surabaya' : 
+                verifier: "{{
+                    strpos($l['status'], 'Ketua') !== false ? 'Ketua Koperasi' :
+                    (strpos($l['status'], 'Kepala') !== false || strpos($l['status'], 'BPS') !== false ? 'Kepala BPS Kota Surabaya' :
                     ($l['status'] == 'Diverifikasi' || $l['status'] == 'Ditolak' ? 'Bendahara Koperasi' : 'Kepala BPS Kota Surabaya'))
                 }}",
                 gaji_pokok: {{ $l['status'] == 'Diverifikasi' || $l['status'] == 'Ditolak' ? rand(5000000, 15000000) : 'null' }},
@@ -1025,7 +1025,7 @@
 
                 rows.forEach(row => {
                     const status = row.getAttribute('data-status');
-                    
+
                     if (filter === 'all') {
                         row.style.display = '';
                         visibleCount++;
@@ -1087,7 +1087,7 @@
 
         function loadVerifikasiSection(data) {
             const verifikasiSection = document.getElementById('verifikasiSection');
-            
+
             if (data.status === 'Diverifikasi' || data.status === 'Ditolak') {
                 verifikasiSection.innerHTML = `
                     <div class="detail-section-title">
@@ -1103,7 +1103,7 @@
                                 <span>${data.status}</span>
                             </span>
                         </div>
-                        
+
                         <div class="histori-meta">
                             <div class="histori-meta-item">
                                 <i class="bi bi-clock"></i>
@@ -1148,7 +1148,7 @@
                                 <span>Sedang Diproses</span>
                             </span>
                         </div>
-                        
+
                         <div class="histori-meta">
                             <div class="histori-meta-item">
                                 <i class="bi bi-info-circle"></i>

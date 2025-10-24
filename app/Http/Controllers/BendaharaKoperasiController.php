@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class BendaharaKoperasiController extends Controller
 {
@@ -44,10 +46,10 @@ class BendaharaKoperasiController extends Controller
     {
         $laporan = [
             [
-                'nama' => 'Andi Wijaya', 
-                'jumlah' => 10000000, 
-                'status' => 'Sedang Diverifikasi Ketua Koperasi', 
-                'tanggal' => '2024-09-15', 
+                'nama' => 'Andi Wijaya',
+                'jumlah' => 10000000,
+                'status' => 'Sedang Diverifikasi Ketua Koperasi',
+                'tanggal' => '2024-09-15',
                 'link_pdf' => route('download.pdf', 'laporan-pinjaman-andi-wijaya.pdf'),
                 'nip' => '199001012020',
                 'jabatan' => 'Staff IT',
@@ -61,10 +63,10 @@ class BendaharaKoperasiController extends Controller
                 'riwayat' => []
             ],
             [
-                'nama' => 'Budi Santoso', 
-                'jumlah' => 15000000, 
-                'status' => 'Diverifikasi', 
-                'tanggal' => '2024-01-10', 
+                'nama' => 'Budi Santoso',
+                'jumlah' => 15000000,
+                'status' => 'Diverifikasi',
+                'tanggal' => '2024-01-10',
                 'link_pdf' => route('download.pdf', 'laporan-pinjaman-budi-santoso.pdf'),
                 'nip' => '199002022021',
                 'jabatan' => 'Kepala Bagian Keuangan',
@@ -86,10 +88,10 @@ class BendaharaKoperasiController extends Controller
                 ]
             ],
             [
-                'nama' => 'Citra Dewi', 
-                'jumlah' => 15000000, 
-                'status' => 'Diverifikasi', 
-                'tanggal' => '2024-09-20', 
+                'nama' => 'Citra Dewi',
+                'jumlah' => 15000000,
+                'status' => 'Diverifikasi',
+                'tanggal' => '2024-09-20',
                 'link_pdf' => route('download.pdf', 'laporan-pinjaman-citra-dewi.pdf'),
                 'nip' => '199003032022',
                 'jabatan' => 'Staff Administrasi',
@@ -111,10 +113,10 @@ class BendaharaKoperasiController extends Controller
                 ]
             ],
             [
-                'nama' => 'Dedi Kurniawan', 
-                'jumlah' => 18000000, 
-                'status' => 'Sedang Diverifikasi Kepala BPS Kota Surabaya', 
-                'tanggal' => '2024-03-15', 
+                'nama' => 'Dedi Kurniawan',
+                'jumlah' => 18000000,
+                'status' => 'Sedang Diverifikasi Kepala BPS Kota Surabaya',
+                'tanggal' => '2024-03-15',
                 'link_pdf' => route('download.pdf', 'laporan-pinjaman-dedi-kurniawan.pdf'),
                 'nip' => '199004042023',
                 'jabatan' => 'Supervisor Operasional',
@@ -128,10 +130,10 @@ class BendaharaKoperasiController extends Controller
                 'riwayat' => []
             ],
             [
-                'nama' => 'Eka Putri', 
-                'jumlah' => 12000000, 
-                'status' => 'Ditolak', 
-                'tanggal' => '2024-05-20', 
+                'nama' => 'Eka Putri',
+                'jumlah' => 12000000,
+                'status' => 'Ditolak',
+                'tanggal' => '2024-05-20',
                 'link_pdf' => route('download.pdf', 'laporan-pinjaman-eka-putri.pdf'),
                 'nip' => '199005052024',
                 'jabatan' => 'Staff IT',
@@ -153,10 +155,10 @@ class BendaharaKoperasiController extends Controller
                 ]
             ],
             [
-                'nama' => 'Fajar Ramadhan', 
-                'jumlah' => 20000000, 
-                'status' => 'Sedang Diverifikasi Ketua Koperasi', 
-                'tanggal' => '2024-08-10', 
+                'nama' => 'Fajar Ramadhan',
+                'jumlah' => 20000000,
+                'status' => 'Sedang Diverifikasi Ketua Koperasi',
+                'tanggal' => '2024-08-10',
                 'link_pdf' => route('download.pdf', 'laporan-pinjaman-fajar-ramadhan.pdf'),
                 'nip' => '199006062025',
                 'jabatan' => 'Kepala Bagian IT',
@@ -345,8 +347,8 @@ class BendaharaKoperasiController extends Controller
 
         $response = [
             'success' => true,
-            'message' => $validated['status'] === 'Diverifikasi' 
-                ? 'Pinjaman berhasil disetujui!' 
+            'message' => $validated['status'] === 'Diverifikasi'
+                ? 'Pinjaman berhasil disetujui!'
                 : 'Pinjaman berhasil ditolak!',
             'data' => [
                 'status' => $validated['status'],
@@ -355,8 +357,8 @@ class BendaharaKoperasiController extends Controller
                 'tanggal' => now()->format('d/m/Y H:i'),
                 'gaji_pokok' => $validated['gaji_pokok'],
                 'sisa_gaji' => $validated['sisa_gaji'],
-                'catatan' => $validated['catatan'] ?: ($validated['status'] === 'Diverifikasi' 
-                    ? 'Dokumen lengkap dan memenuhi syarat' 
+                'catatan' => $validated['catatan'] ?: ($validated['status'] === 'Diverifikasi'
+                    ? 'Dokumen lengkap dan memenuhi syarat'
                     : 'Tidak memenuhi syarat')
             ]
         ];
@@ -379,17 +381,82 @@ class BendaharaKoperasiController extends Controller
 
     public function profile()
     {
-        $user = [
-            'nama' => 'Siti Nurhaliza',
-            'nip' => '198701012012',
-            'jabatan' => 'Bendahara Koperasi',
-            'golongan' => 'III/D',
-            'no_hp' => '081234567892',
-            'email' => 'siti.nurhaliza@example.com',
-            'foto' => 'https://ui-avatars.com/api/?name=Siti+Nurhaliza&size=200&background=dc3545&color=fff'
-        ];
-
+        $user = auth()->user();
         return view('bendahara_koperasi.profile', compact('user'));
+    }
+
+    /**
+     * Update Profile Bendahara Koperasi
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'nip' => 'nullable|string|max:20',
+            'golongan' => 'nullable|string|max:50',
+            'jabatan' => 'nullable|string|max:100',
+            'phone' => 'nullable|string|max:15',
+            'password' => 'nullable|string|min:8|confirmed',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $updateData = $request->only(['name', 'email', 'nip', 'golongan', 'jabatan', 'phone']);
+
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+
+        // Handle photo upload
+        if ($request->hasFile('photo')) {
+            // Delete old photo if exists
+            if ($user->photo && file_exists(public_path('storage/' . $user->photo))) {
+                unlink(public_path('storage/' . $user->photo));
+            }
+
+            $photo = $request->file('photo');
+            $filename = time() . '_' . $user->id . '.' . $photo->getClientOriginalExtension();
+            $path = $photo->storeAs('public/photos', $filename);
+            $updateData['photo'] = 'photos/' . $filename;
+
+            // Sync to public directory
+            $this->syncStorageToPublic();
+        }
+
+        $user->update($updateData);
+
+        return redirect()->route('bendahara_koperasi.profile')->with('success', 'Profile berhasil diupdate!');
+    }
+
+    private function syncStorageToPublic()
+    {
+        $source = storage_path('app/public');
+        $destination = public_path('storage');
+
+        if (is_dir($source)) {
+            // Remove existing public/storage directory
+            if (is_dir($destination)) {
+                $files = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($destination, \RecursiveDirectoryIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::CHILD_FIRST
+                );
+
+                foreach ($files as $fileinfo) {
+                    $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+                    $todo($fileinfo->getRealPath());
+                }
+                rmdir($destination);
+            }
+
+            // Copy files from storage to public
+            shell_exec("xcopy /E /I /Y \"$source\" \"$destination\"");
+        }
     }
 
     public function kelolaIuran()

@@ -719,7 +719,7 @@
             </h4>
         </div>
         <div class="admin-form-body">
-        <form action="{{ route('administrator.pengurus-koperasi.update', $pengurus->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('administrator.pengurus-koperasi.update', $pengurus->id) }}" method="POST" enctype="multipart/form-data" id="editForm">
             @csrf
             @method('PUT')
             <div class="row">
@@ -829,7 +829,7 @@
                             <div class="current-photo-section">
                                 @if($pengurus->foto && file_exists(public_path('storage/' . $pengurus->foto)))
                                     <div class="current-photo-wrapper">
-                                        <img src="http://127.0.0.1:8000/storage/{{ $pengurus->foto }}" alt="{{ $pengurus->nama }}"
+                                        <img src="{{ asset('storage/' . $pengurus->foto) }}" alt="{{ $pengurus->nama }}"
                                              class="current-photo" id="currentPhoto">
                                         <div class="photo-status">
                                             <i class="bi bi-check-circle text-success me-1"></i>
@@ -990,7 +990,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const confirmModal = document.getElementById('confirmModal');
     const confirmMessage = document.getElementById('confirmMessage');
     const confirmAction = document.getElementById('confirmAction');
-    const form = document.querySelector('form');
+    const form = document.getElementById('editForm');
 
     let currentFile = null;
     let currentScale = 1;
@@ -1034,6 +1034,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (file.size > 2 * 1024 * 1024) {
                 console.log('File too large:', file.size);
                 showAlert('File terlalu besar. Maksimal 2MB.', 'error');
+                fileInput.value = ''; // Clear the input
                 return;
             }
 
@@ -1041,6 +1042,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!file.type.startsWith('image/')) {
                 console.log('Invalid file type:', file.type);
                 showAlert('File harus berupa gambar.', 'error');
+                fileInput.value = ''; // Clear the input
                 return;
             }
 
@@ -1062,7 +1064,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             console.log('No file selected');
             currentFile = null;
-            hasChanges = true;
+            // Don't set hasChanges to true when no file is selected
         }
     });
 
@@ -1086,7 +1088,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fileUploadArea.style.display = 'block';
         fileInput.value = '';
         currentFile = null;
-        hasChanges = false;
+        // Don't reset hasChanges here as other form fields might have changes
     });
 
     // Crop slider change
@@ -1132,9 +1134,16 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault(); // Prevent default form submission
         console.log('Save button clicked, hasChanges:', hasChanges);
         console.log('Current file:', currentFile);
-        console.log('Form data:', new FormData(form));
 
-        if (hasChanges) {
+        // Check if there are any changes or if a file is selected
+        const fileInput = form.querySelector('input[type="file"]');
+        const hasFileSelected = fileInput && fileInput.files.length > 0;
+        const hasFormChanges = hasChanges || hasFileSelected;
+
+        console.log('Has file selected:', hasFileSelected);
+        console.log('Has form changes:', hasFormChanges);
+
+        if (hasFormChanges) {
             console.log('Changes detected, showing confirmation modal...');
             confirmMessage.textContent = 'Apakah Anda yakin ingin menyimpan perubahan data pengurus?';
             confirmAction.innerHTML = '<i class="bi bi-check-lg me-1"></i>Ya, Simpan';
@@ -1143,33 +1152,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Form action:', form.action);
                 console.log('Form method:', form.method);
                 console.log('Form enctype:', form.enctype);
-                console.log('Form elements:', form.elements);
 
                 // Check if form has file input
                 const fileInput = form.querySelector('input[type="file"]');
                 console.log('File input:', fileInput);
                 console.log('File input files:', fileInput ? fileInput.files : 'No file input');
 
+                if (fileInput && fileInput.files.length > 0) {
+                    console.log('File selected for upload:', fileInput.files[0]);
+                    console.log('File name:', fileInput.files[0].name);
+                    console.log('File size:', fileInput.files[0].size);
+                    console.log('File type:', fileInput.files[0].type);
+                } else {
+                    console.log('No file selected for upload');
+                }
+
                 // Submit form
                 try {
-                    console.log('About to submit form...');
-                    console.log('Form before submit:', form);
-                    console.log('Form action before submit:', form.action);
-                    console.log('Form method before submit:', form.method);
-                    console.log('Form enctype before submit:', form.enctype);
-
-                    // Check if form has file input
-                    const fileInput = form.querySelector('input[type="file"]');
-                    console.log('File input before submit:', fileInput);
-                    console.log('File input files before submit:', fileInput ? fileInput.files : 'No file input');
+                    // Double check form attributes before submit
+                    console.log('Form attributes before submit:');
+                    console.log('- action:', form.action);
+                    console.log('- method:', form.method);
+                    console.log('- enctype:', form.enctype);
+                    console.log('- file input files:', fileInput ? fileInput.files.length : 'No file input');
 
                     if (fileInput && fileInput.files.length > 0) {
-                        console.log('File selected for upload:', fileInput.files[0]);
-                        console.log('File name:', fileInput.files[0].name);
-                        console.log('File size:', fileInput.files[0].size);
-                        console.log('File type:', fileInput.files[0].type);
-                    } else {
-                        console.log('No file selected for upload');
+                        console.log('File details before submit:');
+                        console.log('- name:', fileInput.files[0].name);
+                        console.log('- size:', fileInput.files[0].size);
+                        console.log('- type:', fileInput.files[0].type);
                     }
 
                     form.submit();
@@ -1183,26 +1194,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             console.log('No changes detected, submitting form directly...');
             try {
-                console.log('About to submit form directly...');
-                console.log('Form before direct submit:', form);
-                console.log('Form action before direct submit:', form.action);
-                console.log('Form method before direct submit:', form.method);
-                console.log('Form enctype before direct submit:', form.enctype);
-
-                // Check if form has file input
-                const fileInput = form.querySelector('input[type="file"]');
-                console.log('File input before direct submit:', fileInput);
-                console.log('File input files before direct submit:', fileInput ? fileInput.files : 'No file input');
-
-                if (fileInput && fileInput.files.length > 0) {
-                    console.log('File selected for direct upload:', fileInput.files[0]);
-                    console.log('File name:', fileInput.files[0].name);
-                    console.log('File size:', fileInput.files[0].size);
-                    console.log('File type:', fileInput.files[0].type);
-                } else {
-                    console.log('No file selected for direct upload');
-                }
-
                 form.submit();
                 console.log('Form submitted directly');
             } catch (error) {
