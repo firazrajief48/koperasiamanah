@@ -119,6 +119,9 @@
             padding: 1.5rem;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             border: 1px solid #f3f4f6;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
         }
 
         .info-card-header {
@@ -149,6 +152,7 @@
 
         .info-table {
             width: 100%;
+            border-collapse: collapse;
         }
 
         .info-table tr {
@@ -160,20 +164,30 @@
         }
 
         .info-table td {
-            padding: 0.75rem 0;
+            padding: 0.875rem 0;
             vertical-align: top;
         }
 
         .label-col {
-            font-weight: 500;
+            font-weight: 600;
             color: #6b7280;
-            width: 40%;
-            font-size: 0.9rem;
+            width: 35%;
+            font-size: 0.875rem;
+            padding-right: 1rem;
+            white-space: nowrap;
         }
 
         .value-col {
             color: #1f2937;
             font-weight: 500;
+            word-break: break-word;
+            line-height: 1.6;
+        }
+
+        .value-col .empty-text {
+            color: #9ca3af;
+            font-style: italic;
+            font-weight: 400;
         }
 
         /* Modal Styles */
@@ -365,11 +379,17 @@
                 <table class="info-table">
                     <tr>
                         <td class="label-col">No. HP</td>
-                        <td class="value-col">: {{ $user->phone ?? '-' }}</td>
+                        <td class="value-col">
+                            @if($user->phone)
+                                {{ $user->phone }}
+                            @else
+                                <span class="empty-text">Belum diisi</span>
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td class="label-col">Email</td>
-                        <td class="value-col">: {{ $user->email }}</td>
+                        <td class="value-col">{{ $user->email }}</td>
                     </tr>
                 </table>
             </div>
@@ -389,6 +409,7 @@
                 <form action="{{ route('ketua_koperasi.profile.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
+                    <input type="hidden" name="update_type" value="photo">
                     <div class="modal-body">
                         <div class="text-center mb-3">
                             <div class="profile-avatar mx-auto mb-3" style="width: 80px; height: 80px;">
@@ -555,6 +576,26 @@
     </div>
 
     <script>
+        // Preview foto before upload
+        document.addEventListener('DOMContentLoaded', function() {
+            const photoInput = document.querySelector('#editPhotoModal input[type="file"]');
+            if (photoInput) {
+                photoInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewImg = document.querySelector('#editPhotoModal .profile-avatar img');
+                            if (previewImg) {
+                                previewImg.src = e.target.result;
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        });
+
         // Show success message if redirected with success
         @if(session('success'))
             document.addEventListener('DOMContentLoaded', function() {
@@ -563,10 +604,13 @@
             });
         @endif
 
-        // Show validation errors
-        @if($errors->any())
+        // Show validation errors in correct modal
+        @if($errors->any() && isset($errors) && count($errors) > 0)
             document.addEventListener('DOMContentLoaded', function() {
-                const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+                // Check if photo error exists
+                const hasPhotoError = {{ $errors->has('photo') ? 'true' : 'false' }};
+                const modalId = hasPhotoError ? 'editPhotoModal' : 'editProfileModal';
+                const modal = new bootstrap.Modal(document.getElementById(modalId));
                 modal.show();
             });
         @endif

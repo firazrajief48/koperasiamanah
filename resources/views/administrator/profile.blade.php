@@ -256,11 +256,11 @@
         }
 
         .toast {
-            background: #10b981;
+            background: #dc2626;
             color: white;
             border: none;
             border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3);
         }
 
         .toast-header {
