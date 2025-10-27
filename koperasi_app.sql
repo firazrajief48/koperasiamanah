@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 22, 2025 at 05:06 AM
+-- Generation Time: Oct 27, 2025 at 03:44 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -118,7 +118,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (3, '0001_01_01_000002_create_jobs_table', 1),
 (4, '2025_10_21_015616_add_role_to_users_table', 1),
 (5, '2025_10_21_020852_add_additional_fields_to_users_table', 1),
-(6, '2025_10_22_020253_create_pengurus_koperasis_table', 2);
+(6, '2025_10_22_020253_create_pengurus_koperasis_table', 2),
+(7, '2025_10_24_031223_add_photo_to_users_table', 3);
 
 -- --------------------------------------------------------
 
@@ -157,14 +158,14 @@ CREATE TABLE `pengurus_koperasis` (
 --
 
 INSERT INTO `pengurus_koperasis` (`id`, `nama`, `jabatan`, `deskripsi`, `foto`, `email`, `telepon`, `urutan`, `aktif`, `created_at`, `updated_at`) VALUES
-(1, 'Dr. Arrief Chandra Setiawan, S.ST, M.Si.', 'Kepala BPS', 'Memimpin dengan visi yang jelas dan dedikasi tinggi untuk kemajuan koperasi', NULL, 'ahmad.rizki@bps.go.id', '081234567890', 1, 1, '2025-10-21 19:03:56', '2025-10-21 19:03:56'),
-(2, 'Nurcholis, S.Si.', 'Ketua Koperasi', 'Memimpin koperasi dengan integritas dan komitmen untuk kesejahteraan anggota', NULL, 'budi.santoso@koperasi.com', '081234567891', 2, 1, '2025-10-21 19:03:56', '2025-10-21 19:03:56'),
-(3, 'Fadjar Suhaeri, SE, M.SE.', 'Wakil Ketua Koperasi', 'Mendukung kepemimpinan dengan pengalaman dan dedikasi yang tinggi', NULL, 'siti.nurhaliza@koperasi.com', '081234567892', 3, 1, '2025-10-21 19:03:56', '2025-10-21 19:03:56'),
-(6, 'Fitri Kusumowardhani, SST', 'Bendahara Koperasi 2', 'Mendukung pengelolaan keuangan dengan keahlian akuntansi yang mumpuni', NULL, 'citra.dewi@koperasi.com', '081234567895', 6, 1, '2025-10-21 19:03:56', '2025-10-21 19:03:56'),
-(12, 'Iir Lismawati, S.Si.', 'Sekretaris Koperasi', 'Mengorganisir administrasi dengan profesional dan teliti', NULL, 'rina.pratiwi@koperasi.com', '081234567893', 4, 1, '2025-10-21 19:20:29', '2025-10-21 19:20:29'),
-(13, 'Retno Larasati, S.M.', 'Bendahara Koperasi 1', 'Mengelola keuangan dengan transparansi dan akuntabilitas tinggi', NULL, 'dedi.kurniawan@koperasi.com', '081234567894', 5, 1, '2025-10-21 19:20:29', '2025-10-21 19:20:29'),
-(15, 'Sulistyorini, SE.', 'Bidang Usaha Koperasi', 'Mengembangkan usaha koperasi dengan inovasi dan strategi bisnis yang tepat', NULL, 'andi.wijaya@koperasi.com', '081234567896', 7, 1, '2025-10-21 19:20:29', '2025-10-21 19:20:29'),
-(16, 'Bilal Ali Maghshar Sri Muljono, SST', 'Administrator Koperasi', 'Mengelola sistem informasi dan teknologi untuk mendukung operasional koperasi', NULL, 'eko.prasetyo@koperasi.com', '081234567897', 8, 1, '2025-10-21 19:20:29', '2025-10-21 19:20:29');
+(1, 'Dr. Arrief Chandra Setiawan, S.ST, M.Si.', 'Kepala BPS', 'Memimpin dengan visi yang jelas dan dedikasi tinggi untuk kemajuan koperasi.', 'pengurus/1761270754_dr-arrief-chandra-setiawan-sst-msi.jpg', 'arriefchandra@gmail.com', '082257649266', 1, 1, '2025-10-21 19:03:56', '2025-10-23 18:52:34'),
+(2, 'Nurcholis, S.Si.', 'Ketua Koperasi', 'Memimpin koperasi dengan integritas dan komitmen untuk kesejahteraan anggota', 'pengurus/1761270785_nurcholis-ssi.jpg', 'nurcholis@gmail.com', '081234567891', 2, 1, '2025-10-21 19:03:56', '2025-10-23 18:53:05'),
+(3, 'Fadjar Suhaeri, SE, M.SE.', 'Wakil Ketua Koperasi', 'Mendukung kepemimpinan dengan pengalaman dan dedikasi yang tinggi', 'pengurus/1761270830_fadjar-suhaeri-se-mse.jpg', 'fadjarsuhaeri@gmail.com', '081234567892', 3, 1, '2025-10-21 19:03:56', '2025-10-23 18:53:50'),
+(6, 'Fitri Kusumowardhani, SST', 'Bendahara Koperasi 2', 'Mendukung pengelolaan keuangan dengan keahlian akuntansi yang mumpuni', 'pengurus/1761270867_fitri-kusumowardhani-sst.jpg', 'fitrikusumowardhani@gmail.com', '081234567895', 6, 1, '2025-10-21 19:03:56', '2025-10-23 18:54:27'),
+(12, 'Iir Lismawati, S.Si.', 'Sekretaris Koperasi', 'Mengorganisir administrasi dengan profesional dan teliti', 'pengurus/1761270841_iir-lismawati-ssi.jpg', 'iirlismawati@gmail.com', '081234567893', 4, 1, '2025-10-21 19:20:29', '2025-10-23 18:54:01'),
+(13, 'Retno Larasati, S.M.', 'Bendahara Koperasi 1', 'Mengelola keuangan dengan transparansi dan akuntabilitas tinggi', 'pengurus/1761270854_retno-larasati-sm.jpg', 'retnolarasati@gmail.com', '081234567894', 5, 1, '2025-10-21 19:20:29', '2025-10-23 18:54:14'),
+(15, 'Sulistyorini, SE.', 'Bidang Usaha Koperasi', 'Mengembangkan usaha koperasi dengan inovasi dan strategi bisnis yang tepat', 'pengurus/1761270877_sulistyorini-se.jpg', 'sulistyorini@gmail.com', '081234567896', 7, 1, '2025-10-21 19:20:29', '2025-10-23 18:54:37'),
+(16, 'Bilal Ali Maghshar Sri Muljono, SST', 'Administrator Koperasi', 'Mengelola sistem informasi dan teknologi untuk mendukung operasional koperasi', 'pengurus/1761270888_bilal-ali-maghshar-sri-muljono-sst.jpg', 'bilalali@gmail.com', '081234567897', 8, 1, '2025-10-21 19:20:29', '2025-10-23 18:54:48');
 
 -- --------------------------------------------------------
 
@@ -186,9 +187,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('9GqvUqXQSc07jANSlPMXgF4mwqKymlhlXLF8c2tw', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiWThuZ2lSZEdCWXFiaVFIM3o4VTR3b25kcjdENlliU0Q0N0lIZzVqaiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbmlzdHJhdG9yL2Rhc2hib2FyZCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjQ7fQ==', 1761098944),
-('lbYew8j0p0oEt5wEOKcIzIjJBmizqUMYh7gJWTBN', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSVc5MWlVQUZOazNwYlpZbUpjZXpLS0pOaHVPNVo1ZThSZUlXc3FJayI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjQ7fQ==', 1761102210),
-('YijiQmpLQfMD9co2iObwRfJ43dAkivAS8GuVunQl', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZk1yZ3B4VXR4QjVqbEZ5Q3dUcktKZkU4VzdLN1NBaU1VbXA2ZlVabCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1761099027);
+('KrhWFjOxuwpsQCFK42jT1gRXXMSjSTjgUvfUBDY0', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYmdneDNqdkhCR0RObzE2OW8zb0pFbEZDSjlvaFFuSTA1TVVjTzF1WiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbmlzdHJhdG9yL3Byb2ZpbGUiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTo0O30=', 1761532623);
 
 -- --------------------------------------------------------
 
@@ -203,6 +202,7 @@ CREATE TABLE `users` (
   `golongan` varchar(255) DEFAULT NULL,
   `jabatan` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
+  `photo` varchar(255) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `role` enum('peminjam','kepala_bps','bendahara_koperasi','ketua_koperasi','administrator') NOT NULL DEFAULT 'peminjam',
   `email_verified_at` timestamp NULL DEFAULT NULL,
@@ -216,12 +216,12 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `nip`, `golongan`, `jabatan`, `phone`, `email`, `role`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Dr. Arrief Chandra Setiawan, S.ST, M.Si.', NULL, NULL, 'Kepala BPS Kota Surabaya', NULL, 'arriefchandra@gmail.com', 'kepala_bps', NULL, '$2y$12$rGnoAX8ysFQNubkRQo52ceetBDECbX8X6HIxYggPQiifN4GFmYXxK', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
-(2, 'Retno Larasati, S.M.', NULL, NULL, 'Bendahara Koperasi Amanah BPS Kota Surabaya', NULL, 'retnolarasati@gmail.com', 'bendahara_koperasi', NULL, '$2y$12$LIlxqz0a8aRwB9okBPYJ/e1eCnXu/hbnzEsTFylWBewLuQmzBn/8G', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
-(3, 'Nurcholis, S.Si.', NULL, NULL, 'Ketua Koperasi Amanah BPS Kota Surabaya', NULL, 'nurcholis@gmail.com', 'ketua_koperasi', NULL, '$2y$12$.7Ol.DXCJXUwAJs9jWqHf.YZcV/A3lFiQD/6zddYD3.cKhRxF5LJG', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
-(4, 'Bilal Ali Maghshar Sri Muljono, SST', NULL, NULL, 'Administrator Website Koperasi Amanah BPS Kota Surabaya', NULL, 'bilalali@gmail.com', 'administrator', NULL, '$2y$12$PIpqdqMnO.iONxovCOeQ8u0DGA9RY.qmn5qNvfDio0Q1s2LztbnJ2', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
-(8, 'Mohammed Firaz Rajief Bismaka', '23051204330', 'Mahasiwa', 'Magang', '085748867167', 'mohammed.23330@mhs.unesa.ac.id', 'peminjam', NULL, '$2y$12$ppuyMMsFwP4sdGWUIpb1t.4GTbImz4rrIlIc0Cml3YfKTXnVYr9wK', NULL, '2025-10-21 01:05:30', '2025-10-21 01:05:30');
+INSERT INTO `users` (`id`, `name`, `nip`, `golongan`, `jabatan`, `phone`, `photo`, `email`, `role`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Dr. Arrief Chandra Setiawan, S.ST, M.Si.', NULL, NULL, 'Kepala BPS Kota Surabaya', NULL, NULL, 'arriefchandra@gmail.com', 'kepala_bps', NULL, '$2y$12$rGnoAX8ysFQNubkRQo52ceetBDECbX8X6HIxYggPQiifN4GFmYXxK', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
+(2, 'Retno Larasati, S.M.', NULL, NULL, 'Bendahara Koperasi Amanah BPS Kota Surabaya', NULL, NULL, 'retnolarasati@gmail.com', 'bendahara_koperasi', NULL, '$2y$12$LIlxqz0a8aRwB9okBPYJ/e1eCnXu/hbnzEsTFylWBewLuQmzBn/8G', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
+(3, 'Nurcholis, S.Si.', NULL, NULL, 'Ketua Koperasi Amanah BPS Kota Surabaya', NULL, NULL, 'nurcholis@gmail.com', 'ketua_koperasi', NULL, '$2y$12$.7Ol.DXCJXUwAJs9jWqHf.YZcV/A3lFiQD/6zddYD3.cKhRxF5LJG', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
+(4, 'Bilal Ali Maghshar Sri Muljono, SST', '00000000', '2', 'Administrator Website Koperasi Amanah BPS Kota Surabaya', '000000000000', NULL, 'bilalali@gmail.com', 'administrator', NULL, '$2y$12$PIpqdqMnO.iONxovCOeQ8u0DGA9RY.qmn5qNvfDio0Q1s2LztbnJ2', NULL, '2025-10-21 00:10:09', '2025-10-26 18:51:35'),
+(9, 'MOHAMMED FIRAZ RAJIEF BISMAKA', '23051204330', 'Mahasiswa', 'Magang', '085748867167', NULL, 'mohammed.23330@mhs.unesa.ac.id', 'peminjam', NULL, '$2y$12$X9RyUBn8c6QEb4y4CYs/Fep0gauUkEKl93M/cUJeMECWKwQkN4YOe', NULL, '2025-10-22 20:50:12', '2025-10-22 20:50:12');
 
 --
 -- Indexes for dumped tables
@@ -312,7 +312,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `pengurus_koperasis`
@@ -324,7 +324,7 @@ ALTER TABLE `pengurus_koperasis`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
