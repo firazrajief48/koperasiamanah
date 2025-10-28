@@ -23,6 +23,7 @@
             --gray-200: #e2e8f0;
             --success-green: #10b981;
             --purple: #8b5cf6;
+            --pink: #ec4899;
         }
 
         body {
@@ -31,19 +32,19 @@
             min-height: 100vh;
         }
 
-        /* Header Banner */
-        .page-header-banner {
+        /* Welcome Banner - Compact (sama dengan dashboard) */
+        .welcome-banner {
             background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #6366f1 100%);
             border-radius: 20px;
             padding: 1.5rem 2rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             position: relative;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(30, 64, 175, 0.2);
             animation: slideDown 0.6s ease-out;
         }
 
-        .page-header-banner::before {
+        .welcome-banner::before {
             content: '';
             position: absolute;
             top: -50%;
@@ -72,15 +73,15 @@
             }
         }
 
-        .header-content {
+        .welcome-content {
             position: relative;
             z-index: 2;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.25rem;
         }
 
-        .header-icon {
+        .welcome-icon {
             width: 56px;
             height: 56px;
             background: rgba(255, 255, 255, 0.2);
@@ -92,29 +93,27 @@
             flex-shrink: 0;
         }
 
-        .page-header-banner h2 {
+        .welcome-banner h2 {
             color: white;
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 0.25rem;
         }
 
-        .page-header-banner p {
+        .welcome-banner p {
             color: rgba(255, 255, 255, 0.9);
             font-size: 0.875rem;
             margin-bottom: 0;
         }
 
-        /* Modern Form Card */
+        /* Modern Form Card (sama dengan dashboard) */
         .form-card {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(30px);
-            border: 2px solid rgba(255, 255, 255, 0.6);
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(30, 64, 175, 0.1);
             overflow: hidden;
-            max-width: 1200px;
-            margin: 0 auto;
+            box-shadow: 0 10px 40px rgba(30, 64, 175, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.6);
             animation: fadeInUp 0.6s ease-out 0.2s both;
         }
 
@@ -130,36 +129,49 @@
         }
 
         .form-card .card-body {
-            padding: 2rem;
+            padding: 0;
         }
 
-        /* Form Section */
+        /* Form Section Header (mirip table header di dashboard) */
         .form-section {
-            background: rgba(248, 250, 252, 0.6);
+            margin: 0 2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             border-radius: 16px;
-            padding: 1.75rem;
-            margin-bottom: 1.5rem;
-            border: 2px solid rgba(226, 232, 240, 0.8);
-            transition: all 0.3s ease;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(30, 64, 175, 0.06);
+            border: 1px solid rgba(30, 64, 175, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .form-section:hover {
-            background: rgba(255, 255, 255, 0.8);
-            border-color: rgba(59, 130, 246, 0.3);
-            box-shadow: 0 4px 16px rgba(30, 64, 175, 0.08);
+            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.12);
+            transform: translateY(-2px);
+            background: white;
+        }
+
+        .form-section:first-child {
+            margin-top: 2rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid rgba(30, 64, 175, 0.1);
         }
 
         .section-title {
             color: var(--dark-navy);
             font-size: 1.125rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.25rem;
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid rgba(59, 130, 246, 0.2);
         }
 
         .section-title i {
@@ -172,6 +184,17 @@
             justify-content: center;
             color: white;
             font-size: 1.125rem;
+        }
+
+        .section-subtitle {
+            color: #64748b;
+            margin-bottom: 0;
+            font-size: 0.813rem;
+            margin-left: 48px;
+        }
+
+        .section-content {
+            padding: 2rem;
         }
 
         /* Form Controls */
@@ -188,7 +211,7 @@
         .form-control, .form-select {
             border-radius: 12px;
             padding: 0.75rem 1rem;
-            border: 2px solid #e2e8f0;
+            border: 2px solid rgba(30, 64, 175, 0.1);
             font-size: 0.875rem;
             transition: all 0.3s ease;
             background: white;
@@ -196,7 +219,7 @@
 
         .form-control:focus, .form-select:focus {
             border-color: var(--primary-blue);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
             background: white;
             transform: translateY(-1px);
         }
@@ -238,12 +261,54 @@
             flex-shrink: 0;
         }
 
+        /* Success Info Alert (mirip cicilan info) */
+        .alert-success-custom {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(52, 211, 153, 0.1) 100%);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .alert-success-custom .alert-icon {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .alert-success-custom .alert-icon i {
+            color: #047857;
+            font-size: 1.25rem;
+        }
+
+        .alert-success-custom .alert-icon strong {
+            color: #047857;
+        }
+
+        .alert-success-custom .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .alert-success-custom .info-item small {
+            color: #64748b;
+            display: block;
+            font-size: 0.75rem;
+        }
+
+        .alert-success-custom .info-item strong {
+            color: #047857;
+            font-size: 1.125rem;
+        }
+
         /* Buttons */
         .form-actions {
             display: flex;
             gap: 1rem;
-            padding-top: 1rem;
+            padding: 1.5rem 2rem;
             border-top: 2px solid rgba(226, 232, 240, 0.5);
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.5) 0%, rgba(241, 245, 249, 0.5) 100%);
         }
 
         .btn {
@@ -340,29 +405,32 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .page-header-banner {
+            .welcome-banner {
                 padding: 1.25rem 1.5rem;
             }
 
-            .header-content {
+            .welcome-content {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.75rem;
             }
 
-            .form-card .card-body {
-                padding: 1.5rem;
+            .welcome-banner h2 {
+                font-size: 1.25rem;
             }
 
             .form-section {
-                padding: 1.25rem;
+                margin-left: 1.5rem;
+                margin-right: 1.5rem;
             }
 
-            .section-title {
-                font-size: 1rem;
+            .section-header,
+            .section-content {
+                padding: 1.25rem 1.5rem;
             }
 
             .form-actions {
+                padding: 1.25rem 1.5rem;
                 flex-direction: column;
             }
 
@@ -374,19 +442,32 @@
             .amount-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .section-subtitle {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+
+            .section-title {
+                flex-wrap: wrap;
+            }
         }
 
         @media (max-width: 480px) {
             .amount-grid {
                 grid-template-columns: 1fr;
             }
+
+            .alert-success-custom .info-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 
-    <!-- Page Header -->
-    <div class="page-header-banner">
-        <div class="header-content">
-            <div class="header-icon">
+    <!-- Page Header Banner -->
+    <div class="welcome-banner">
+        <div class="welcome-content">
+            <div class="welcome-icon">
                 <i class="bi bi-file-earmark-plus text-white" style="font-size: 1.75rem;"></i>
             </div>
             <div>
@@ -402,170 +483,179 @@
             <form id="formAjukanPinjaman">
                 <!-- Data Peminjam Section -->
                 <div class="form-section">
-                    <h5 class="section-title">
-                        <i class="bi bi-person-vcard"></i>
-                        <span>Data Peminjam</span>
-                    </h5>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Nama Lengkap</label>
-                            <input type="text" class="form-control" value="{{ $peminjam['nama'] }}" readonly>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">NIP</label>
-                            <input type="text" class="form-control" value="{{ $peminjam['nip'] }}" readonly>
-                        </div>
+                    <div class="section-header">
+                        <h5 class="section-title">
+                            <i class="bi bi-person-vcard"></i>
+                            <span>Data Peminjam</span>
+                        </h5>
+                        <p class="section-subtitle">Informasi pribadi Anda yang terdaftar</p>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Jabatan</label>
-                            <input type="text" class="form-control" value="{{ $peminjam['jabatan'] }}" readonly>
+                    <div class="section-content">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nama Lengkap</label>
+                                <input type="text" class="form-control" value="{{ $peminjam['nama'] }}" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">NIP</label>
+                                <input type="text" class="form-control" value="{{ $peminjam['nip'] }}" readonly>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Golongan</label>
-                            <input type="text" class="form-control" value="{{ $peminjam['golongan'] }}" readonly>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Jabatan</label>
+                                <input type="text" class="form-control" value="{{ $peminjam['jabatan'] }}" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Golongan</label>
+                                <input type="text" class="form-control" value="{{ $peminjam['golongan'] }}" readonly>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">No HP</label>
-                            <input type="text" class="form-control" value="{{ $peminjam['no_hp'] }}" readonly>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" value="{{ $peminjam['email'] }}" readonly>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">No HP</label>
+                                <input type="text" class="form-control" value="{{ $peminjam['no_hp'] }}" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" value="{{ $peminjam['email'] }}" readonly>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Detail Pinjaman Section -->
                 <div class="form-section">
-                    <h5 class="section-title">
-                        <i class="bi bi-cash-coin"></i>
-                        <span>Detail Pinjaman</span>
-                    </h5>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">
-                                Tanggal Pengajuan
-                                <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" class="form-control" id="tanggalPengajuan" readonly>
+                    <div class="section-header">
+                        <h5 class="section-title">
+                            <i class="bi bi-cash-coin"></i>
+                            <span>Detail Pinjaman</span>
+                        </h5>
+                        <p class="section-subtitle">Tentukan jumlah dan tenor pinjaman Anda</p>
+                    </div>
+                    <div class="section-content">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    Tanggal Pengajuan
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="tanggalPengajuan" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    Metode Pembayaran
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="metodePembayaran" required>
+                                    <option value="">Pilih Metode Pembayaran</option>
+                                    <option value="potong_gaji">Potong Gaji</option>
+                                    <option value="potong_tukin">Potong Tunjangan Kinerja</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+
+                        <div class="mb-3">
                             <label class="form-label">
-                                Metode Pembayaran
+                                Jumlah Pinjaman
                                 <span class="text-danger">*</span>
                             </label>
-                            <select class="form-select" id="metodePembayaran" required>
-                                <option value="">Pilih Metode Pembayaran</option>
-                                <option value="potong_gaji">Potong Gaji</option>
-                                <option value="potong_tukin">Potong Tunjangan Kinerja</option>
+                            <div class="amount-grid">
+                                <div class="amount-option">
+                                    <input type="radio" name="jumlahPinjaman" id="amount1" value="3000000">
+                                    <label for="amount1">Rp 3.000.000</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" name="jumlahPinjaman" id="amount2" value="3500000">
+                                    <label for="amount2">Rp 3.500.000</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" name="jumlahPinjaman" id="amount3" value="4000000">
+                                    <label for="amount3">Rp 4.000.000</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" name="jumlahPinjaman" id="amount4" value="4500000">
+                                    <label for="amount4">Rp 4.500.000</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" name="jumlahPinjaman" id="amount5" value="5000000">
+                                    <label for="amount5">Rp 5.000.000</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" name="jumlahPinjaman" id="amount6" value="5500000">
+                                    <label for="amount6">Rp 5.500.000</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" name="jumlahPinjaman" id="amount7" value="6000000">
+                                    <label for="amount7">Rp 6.000.000</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" name="jumlahPinjaman" id="amount8" value="7000000">
+                                    <label for="amount8">Rp 7.000.000</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" name="jumlahPinjaman" id="amount9" value="8000000">
+                                    <label for="amount9">Rp 8.000.000</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" name="jumlahPinjaman" id="amount10" value="9000000">
+                                    <label for="amount10">Rp 9.000.000</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" name="jumlahPinjaman" id="amount11" value="10000000">
+                                    <label for="amount11">Rp 10.000.000</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Tenor/Cicilan
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="tenorCicilan" required disabled>
+                                <option value="">Pilih jumlah pinjaman terlebih dahulu</option>
                             </select>
+                            <small class="text-muted mt-1 d-block">
+                                <i class="bi bi-info-circle"></i> Pilih jumlah pinjaman untuk melihat opsi tenor yang tersedia
+                            </small>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Jumlah Pinjaman
-                            <span class="text-danger">*</span>
-                        </label>
-                        <div class="amount-grid">
-                            <div class="amount-option">
-                                <input type="radio" name="jumlahPinjaman" id="amount1" value="3000000">
-                                <label for="amount1">Rp 3.000.000</label>
-                            </div>
-                            <div class="amount-option">
-                                <input type="radio" name="jumlahPinjaman" id="amount2" value="3500000">
-                                <label for="amount2">Rp 3.500.000</label>
-                            </div>
-                            <div class="amount-option">
-                                <input type="radio" name="jumlahPinjaman" id="amount3" value="4000000">
-                                <label for="amount3">Rp 4.000.000</label>
-                            </div>
-                            <div class="amount-option">
-                                <input type="radio" name="jumlahPinjaman" id="amount4" value="4500000">
-                                <label for="amount4">Rp 4.500.000</label>
-                            </div>
-                            <div class="amount-option">
-                                <input type="radio" name="jumlahPinjaman" id="amount5" value="5000000">
-                                <label for="amount5">Rp 5.000.000</label>
-                            </div>
-                            <div class="amount-option">
-                                <input type="radio" name="jumlahPinjaman" id="amount6" value="5500000">
-                                <label for="amount6">Rp 5.500.000</label>
-                            </div>
-                            <div class="amount-option">
-                                <input type="radio" name="jumlahPinjaman" id="amount7" value="6000000">
-                                <label for="amount7">Rp 6.000.000</label>
-                            </div>
-                            <div class="amount-option">
-                                <input type="radio" name="jumlahPinjaman" id="amount8" value="7000000">
-                                <label for="amount8">Rp 7.000.000</label>
-                            </div>
-                            <div class="amount-option">
-                                <input type="radio" name="jumlahPinjaman" id="amount9" value="8000000">
-                                <label for="amount9">Rp 8.000.000</label>
-                            </div>
-                            <div class="amount-option">
-                                <input type="radio" name="jumlahPinjaman" id="amount10" value="9000000">
-                                <label for="amount10">Rp 9.000.000</label>
-                            </div>
-                            <div class="amount-option">
-                                <input type="radio" name="jumlahPinjaman" id="amount11" value="10000000">
-                                <label for="amount11">Rp 10.000.000</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Tenor/Cicilan
-                            <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-select" id="tenorCicilan" required disabled>
-                            <option value="">Pilih jumlah pinjaman terlebih dahulu</option>
-                        </select>
-                        <small class="text-muted mt-1 d-block">
-                            <i class="bi bi-info-circle"></i> Pilih jumlah pinjaman untuk melihat opsi tenor yang tersedia
-                        </small>
-                    </div>
-
-                    <div class="mb-3" id="cicilanInfo" style="display: none;">
-                        <div class="alert" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(52, 211, 153, 0.1) 100%); border: 2px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1rem;">
-                            <div class="d-flex align-items-center gap-2 mb-2">
-                                <i class="bi bi-calculator text-success" style="font-size: 1.25rem;"></i>
-                                <strong style="color: #047857;">Rincian Cicilan:</strong>
-                            </div>
-                            <div class="row g-2">
-                                <div class="col-md-4">
-                                    <small class="text-muted d-block">Cicilan per Bulan:</small>
-                                    <strong id="cicilanPerBulan" style="color: #047857; font-size: 1.125rem;">-</strong>
+                        <div class="mb-3" id="cicilanInfo" style="display: none;">
+                            <div class="alert-success-custom">
+                                <div class="alert-icon">
+                                    <i class="bi bi-calculator"></i>
+                                    <strong>Rincian Cicilan:</strong>
                                 </div>
-                                <div class="col-md-4">
-                                    <small class="text-muted d-block">Total Dibayar:</small>
-                                    <strong id="totalDibayar" style="color: #047857; font-size: 1.125rem;">-</strong>
-                                </div>
-                                <div class="col-md-4">
-                                    <small class="text-muted d-block">Biaya Admin (5%):</small>
-                                    <strong id="biayaAdmin" style="color: #047857; font-size: 1.125rem;">-</strong>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <small>Cicilan per Bulan:</small>
+                                        <strong id="cicilanPerBulan">-</strong>
+                                    </div>
+                                    <div class="info-item">
+                                        <small>Total Dibayar:</small>
+                                        <strong id="totalDibayar">-</strong>
+                                    </div>
+                                    <div class="info-item">
+                                        <small>Biaya Admin (5%):</small>
+                                        <strong id="biayaAdmin">-</strong>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Keperluan
-                            <span class="text-danger">*</span>
-                        </label>
-                        <textarea class="form-control" id="keperluan" rows="4" placeholder="Jelaskan keperluan pinjaman Anda secara detail..." required></textarea>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Keperluan
+                                <span class="text-danger">*</span>
+                            </label>
+                            <textarea class="form-control" id="keperluan" rows="4" placeholder="Jelaskan keperluan pinjaman Anda secara detail..." required></textarea>
+                        </div>
 
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i>
-                        <span>Semua field bertanda <span class="text-danger">*</span> wajib diisi sebelum mengajukan pinjaman.</span>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <span>Semua field bertanda <span class="text-danger">*</span> wajib diisi sebelum mengajukan pinjaman.</span>
+                        </div>
                     </div>
                 </div>
 

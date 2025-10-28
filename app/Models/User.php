@@ -99,4 +99,55 @@ class User extends Authenticatable
     {
         return $this->hasRole('administrator');
     }
+
+    /**
+     * Get the iurans for the user
+     */
+    public function iurans()
+    {
+        return $this->hasMany(Iuran::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get the pinjamans for the user
+     */
+    public function pinjamans()
+    {
+        return $this->hasMany(Pinjaman::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get total iuran (contributions) for the user
+     */
+    public function getTotalIuranAttribute()
+    {
+        $total = $this->iurans()->where('status', 'lunas')->sum('jumlah');
+        return $total ?? 0;
+    }
+
+    /**
+     * Get total approved loans for the user
+     */
+    public function getTotalPinjamanAttribute()
+    {
+        $total = $this->pinjamans()->where('status', 'disetujui')->sum('jumlah_pinjaman');
+        return $total ?? 0;
+    }
+
+    /**
+     * Get remaining loan amount for the user
+     */
+    public function getSisaPinjamanAttribute()
+    {
+        $pinjamanAktif = $this->pinjamans()
+            ->where('status', 'disetujui')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$pinjamanAktif) {
+            return 0;
+        }
+
+        return $pinjamanAktif->sisa_pinjaman ?? 0;
+    }
 }

@@ -10,11 +10,11 @@
     $showAjukan = true;
     $showRiwayat = true;
 
-    // Data untuk simulasi
-    $totalPinjaman = 3000000;
-    $cicilanPerBulan = 600000;
-    $totalTenor = 5;
-    $bulanTerbayar = 2; // Contoh: sudah bayar 2 bulan
+    // Data untuk simulasi dari data yang dikirim controller
+    $totalPinjaman = $data['jumlah_pinjaman'] ?? 0;
+    $cicilanPerBulan = !empty($data['simulasi']) ? ($data['simulasi'][0]['angsuran'] ?? 0) : 0;
+    $totalTenor = !empty($data['simulasi']) ? count($data['simulasi']) : 0;
+    $bulanTerbayar = 0; // Default, akan diupdate jika ada data
 @endphp
 
 @section('main-content')
@@ -580,10 +580,10 @@
                     <i class="bi bi-wallet2 text-white" style="font-size: 1.5rem;"></i>
                 </div>
                 <div class="stats-label">Iuran Pribadi</div>
-                <div class="stats-value">Rp 5.000.000</div>
+                <div class="stats-value">Rp {{ number_format($data['kas_pribadi'] ?? 0, 0, ',', '.') }}</div>
                 <div class="stats-badge badge-blue">
                     <i class="bi bi-arrow-up-circle"></i>
-                    <span>Saldo Aktif</span>
+                    <span>{{ ($data['kas_pribadi'] ?? 0) > 0 ? 'Saldo Aktif' : 'Belum Ada Iuran' }}</span>
                 </div>
             </div>
         </div>
@@ -594,10 +594,10 @@
                     <i class="bi bi-cash-stack text-white" style="font-size: 1.5rem;"></i>
                 </div>
                 <div class="stats-label">Jumlah Pinjaman</div>
-                <div class="stats-value">Rp 3.000.000</div>
+                <div class="stats-value">Rp {{ number_format($data['jumlah_pinjaman'] ?? 0, 0, ',', '.') }}</div>
                 <div class="stats-badge badge-green">
                     <i class="bi bi-check-circle"></i>
-                    <span>Disetujui</span>
+                    <span>{{ ($data['jumlah_pinjaman'] ?? 0) > 0 ? 'Disetujui' : 'Belum Ada Pinjaman' }}</span>
                 </div>
             </div>
         </div>
@@ -608,10 +608,10 @@
                     <i class="bi bi-hourglass-split text-white" style="font-size: 1.5rem;"></i>
                 </div>
                 <div class="stats-label">Sisa Pinjaman</div>
-                <div class="stats-value">Rp 1.500.000</div>
+                <div class="stats-value">Rp {{ number_format($data['sisa_pinjaman'] ?? 0, 0, ',', '.') }}</div>
                 <div class="stats-badge badge-orange">
                     <i class="bi bi-clock-history"></i>
-                    <span>Dalam Pembayaran</span>
+                    <span>{{ ($data['sisa_pinjaman'] ?? 0) > 0 ? 'Dalam Pembayaran' : 'Tidak Ada Pinjaman' }}</span>
                 </div>
             </div>
         </div>
@@ -643,53 +643,47 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for ($i = 1; $i <= $totalTenor; $i++)
-                        @php
-                            $isPaid = $i <= $bulanTerbayar;
-                            $sisaPinjaman = $totalPinjaman - ($i * $cicilanPerBulan);
-                        @endphp
-                        <tr>
-                            <td>
-                                <div class="month-cell">
-                                    <div class="month-number">{{ $i }}</div>
-                                    <div class="month-label">Bulan ke-{{ $i }}</div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="amount-cell amount-debit">
-                                    <div class="amount-icon icon-debit">
-                                        <i class="bi bi-arrow-down-circle"></i>
+                    @if(!empty($data['simulasi']) && count($data['simulasi']) > 0)
+                        @foreach($data['simulasi'] as $idx => $item)
+                            <tr>
+                                <td>
+                                    <div class="month-cell">
+                                        <div class="month-number">{{ $item['bulan'] }}</div>
+                                        <div class="month-label">Bulan ke-{{ $item['bulan'] }}</div>
                                     </div>
-                                    <span>Rp {{ number_format($cicilanPerBulan, 0, ',', '.') }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                @if($isPaid)
+                                </td>
+                                <td>
+                                    <div class="amount-cell amount-debit">
+                                        <div class="amount-icon icon-debit">
+                                            <i class="bi bi-arrow-down-circle"></i>
+                                        </div>
+                                        <span>Rp {{ number_format($item['angsuran'], 0, ',', '.') }}</span>
+                                    </div>
+                                </td>
+                                <td>
                                     <div class="amount-cell amount-credit">
                                         <div class="amount-icon icon-credit">
                                             <i class="bi bi-wallet2"></i>
                                         </div>
-                                        <span>Rp {{ number_format($sisaPinjaman, 0, ',', '.') }}</span>
+                                        <span>Rp {{ number_format($item['sisa'], 0, ',', '.') }}</span>
                                     </div>
-                                @else
-                                    <div class="amount-cell amount-muted">-</div>
-                                @endif
-                            </td>
-                            <td>
-                                @if($isPaid)
-                                    <span class="status-badge status-paid">
-                                        <i class="bi bi-check-circle-fill"></i>
-                                        <span>Terbayar</span>
-                                    </span>
-                                @else
+                                </td>
+                                <td>
                                     <span class="status-badge status-unpaid">
                                         <i class="bi bi-clock"></i>
                                         <span>Belum Bayar</span>
                                     </span>
-                                @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Belum ada data simulasi pinjaman
                             </td>
                         </tr>
-                    @endfor
+                    @endif
                 </tbody>
             </table>
         </div>
