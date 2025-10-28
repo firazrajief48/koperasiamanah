@@ -159,6 +159,57 @@
             padding: 0;
         }
 
+        footer .container {
+            text-align: center;
+        }
+
+        footer .row {
+            justify-content: center;
+        }
+
+        footer .col-lg-4,
+        footer .col-lg-3,
+        footer .col-lg-2 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        footer h5,
+        footer h6 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        footer .d-flex {
+            justify-content: center;
+        }
+
+        footer .list-unstyled {
+            display: inline-block;
+            text-align: left;
+        }
+
+        footer .btn {
+            margin: 0 0.25rem;
+        }
+
+        @media (min-width: 992px) {
+            footer .col-lg-4,
+            footer .col-lg-3,
+            footer .col-lg-2 {
+                text-align: left;
+            }
+
+            footer h5,
+            footer h6 {
+                text-align: left;
+            }
+
+            footer .d-flex {
+                justify-content: flex-start;
+            }
+        }
+
         footer::before {
             display: none;
         }
@@ -253,7 +304,7 @@
                     <p class="opacity-75 mb-0">Membangun kesejahteraan anggota melalui layanan koperasi yang amanah dan profesional dengan teknologi
                         terkini.</p>
                 </div>
-                <div class="col-lg-3 offset-lg-1">
+                <div class="col-lg-3">
                     <h6 class="fw-bold mb-3">Kontak Kami</h6>
                     <div class="d-flex align-items-center mb-2 opacity-75">
                         <i class="bi bi-telephone-fill me-2"></i>

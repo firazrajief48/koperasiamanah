@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 27, 2025 at 03:44 AM
+-- Generation Time: Oct 28, 2025 at 05:01 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -64,6 +64,24 @@ CREATE TABLE `failed_jobs` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `iurans`
+--
+
+CREATE TABLE `iurans` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `jumlah` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `bulan` varchar(20) DEFAULT NULL,
+  `tanggal_bayar` date DEFAULT NULL,
+  `status` enum('lunas','belum') NOT NULL DEFAULT 'belum',
+  `keterangan` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `jobs`
 --
 
@@ -119,7 +137,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (4, '2025_10_21_015616_add_role_to_users_table', 1),
 (5, '2025_10_21_020852_add_additional_fields_to_users_table', 1),
 (6, '2025_10_22_020253_create_pengurus_koperasis_table', 2),
-(7, '2025_10_24_031223_add_photo_to_users_table', 3);
+(7, '2025_10_24_031223_add_photo_to_users_table', 3),
+(8, '2025_10_28_010517_create_iurans_table', 4),
+(9, '2025_10_28_010523_create_pinjamans_table', 4);
 
 -- --------------------------------------------------------
 
@@ -170,6 +190,27 @@ INSERT INTO `pengurus_koperasis` (`id`, `nama`, `jabatan`, `deskripsi`, `foto`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pinjamans`
+--
+
+CREATE TABLE `pinjamans` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `jumlah_pinjaman` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `tenor_bulan` int(11) NOT NULL DEFAULT 0,
+  `cicilan_per_bulan` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `bulan_terbayar` int(11) NOT NULL DEFAULT 0,
+  `sisa_pinjaman` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `gaji_pokok` decimal(15,2) DEFAULT NULL,
+  `status` enum('menunggu','disetujui','ditolak','lunas') NOT NULL DEFAULT 'menunggu',
+  `keterangan` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `sessions`
 --
 
@@ -187,7 +228,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('KrhWFjOxuwpsQCFK42jT1gRXXMSjSTjgUvfUBDY0', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYmdneDNqdkhCR0RObzE2OW8zb0pFbEZDSjlvaFFuSTA1TVVjTzF1WiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbmlzdHJhdG9yL3Byb2ZpbGUiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTo0O30=', 1761532623);
+('UAjL1IsvPOB9uW0IjL3d4K6KJRbP1N0XV0X9UFHk', 9, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVVhodWlYT2F6OEwzMXUwaTY0RmlzS1NyemhpMGtQOEpORTJnOGJSNSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wZW1pbmphbS9kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTo5O30=', 1761624057),
+('XKG5oX8oleCgsaVhlCER0vgUNN2vNDj2z7bszc6i', 9, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiUDdxbGt5TW9wTGJBTWJFdHZReTZUb3RCaEZhQjM3MnNaUUJTdkg3MSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wZW1pbmphbS9wcm9maWxlIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6OTt9', 1761624009);
 
 -- --------------------------------------------------------
 
@@ -220,8 +262,8 @@ INSERT INTO `users` (`id`, `name`, `nip`, `golongan`, `jabatan`, `phone`, `photo
 (1, 'Dr. Arrief Chandra Setiawan, S.ST, M.Si.', NULL, NULL, 'Kepala BPS Kota Surabaya', NULL, NULL, 'arriefchandra@gmail.com', 'kepala_bps', NULL, '$2y$12$rGnoAX8ysFQNubkRQo52ceetBDECbX8X6HIxYggPQiifN4GFmYXxK', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
 (2, 'Retno Larasati, S.M.', NULL, NULL, 'Bendahara Koperasi Amanah BPS Kota Surabaya', NULL, NULL, 'retnolarasati@gmail.com', 'bendahara_koperasi', NULL, '$2y$12$LIlxqz0a8aRwB9okBPYJ/e1eCnXu/hbnzEsTFylWBewLuQmzBn/8G', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
 (3, 'Nurcholis, S.Si.', NULL, NULL, 'Ketua Koperasi Amanah BPS Kota Surabaya', NULL, NULL, 'nurcholis@gmail.com', 'ketua_koperasi', NULL, '$2y$12$.7Ol.DXCJXUwAJs9jWqHf.YZcV/A3lFiQD/6zddYD3.cKhRxF5LJG', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
-(4, 'Bilal Ali Maghshar Sri Muljono, SST', '00000000', '2', 'Administrator Website Koperasi Amanah BPS Kota Surabaya', '000000000000', NULL, 'bilalali@gmail.com', 'administrator', NULL, '$2y$12$PIpqdqMnO.iONxovCOeQ8u0DGA9RY.qmn5qNvfDio0Q1s2LztbnJ2', NULL, '2025-10-21 00:10:09', '2025-10-26 18:51:35'),
-(9, 'MOHAMMED FIRAZ RAJIEF BISMAKA', '23051204330', 'Mahasiswa', 'Magang', '085748867167', NULL, 'mohammed.23330@mhs.unesa.ac.id', 'peminjam', NULL, '$2y$12$X9RyUBn8c6QEb4y4CYs/Fep0gauUkEKl93M/cUJeMECWKwQkN4YOe', NULL, '2025-10-22 20:50:12', '2025-10-22 20:50:12');
+(4, 'Bilal Ali Maghshar Sri Muljono, SST', '', '', 'Administrator Website Koperasi Amanah BPS Kota Surabaya', '', NULL, 'bilalali@gmail.com', 'administrator', NULL, '$2y$12$PIpqdqMnO.iONxovCOeQ8u0DGA9RY.qmn5qNvfDio0Q1s2LztbnJ2', NULL, '2025-10-21 00:10:09', '2025-10-26 18:51:35'),
+(9, 'MOHAMMED FIRAZ RAJIEF BISMAKA', '23051204330', 'Magang', 'Mahasiswa', '085748867167', NULL, 'mohammed.23330@mhs.unesa.ac.id', 'peminjam', NULL, '$2y$12$X9RyUBn8c6QEb4y4CYs/Fep0gauUkEKl93M/cUJeMECWKwQkN4YOe', NULL, '2025-10-22 20:50:12', '2025-10-27 20:23:53');
 
 --
 -- Indexes for dumped tables
@@ -245,6 +287,14 @@ ALTER TABLE `cache_locks`
 ALTER TABLE `failed_jobs`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
+
+--
+-- Indexes for table `iurans`
+--
+ALTER TABLE `iurans`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `iurans_user_id_index` (`user_id`),
+  ADD KEY `iurans_bulan_index` (`bulan`);
 
 --
 -- Indexes for table `jobs`
@@ -278,6 +328,14 @@ ALTER TABLE `pengurus_koperasis`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `pinjamans`
+--
+ALTER TABLE `pinjamans`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `pinjamans_user_id_index` (`user_id`),
+  ADD KEY `pinjamans_status_index` (`status`);
+
+--
 -- Indexes for table `sessions`
 --
 ALTER TABLE `sessions`
@@ -303,6 +361,12 @@ ALTER TABLE `failed_jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `iurans`
+--
+ALTER TABLE `iurans`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `jobs`
 --
 ALTER TABLE `jobs`
@@ -312,7 +376,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `pengurus_koperasis`
@@ -321,10 +385,32 @@ ALTER TABLE `pengurus_koperasis`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
+-- AUTO_INCREMENT for table `pinjamans`
+--
+ALTER TABLE `pinjamans`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `iurans`
+--
+ALTER TABLE `iurans`
+  ADD CONSTRAINT `iurans_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `pinjamans`
+--
+ALTER TABLE `pinjamans`
+  ADD CONSTRAINT `pinjamans_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

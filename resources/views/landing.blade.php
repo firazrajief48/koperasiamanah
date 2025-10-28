@@ -1552,6 +1552,9 @@
                         <td>750.000</td>
                         <td>833.333</td>
                         <td>916.667</td>
+                        <td>1.000.000</td>
+                        <td>1.166.667</td>
+                        <td>1.333.333</td>
                         <td>1.500.000</td>
                         <td>1.666.667</td>
                     </tr>
@@ -2539,6 +2542,43 @@
 
                     // Store original form action for potential retry
                     this.setAttribute('data-original-action', this.action);
+                });
+            }
+        });
+
+        // Fungsi untuk membulatkan angka angsuran
+        function roundToNearest(value, nearest) {
+            return Math.round(value / nearest) * nearest;
+        }
+
+        function roundInstallment(value) {
+            if (value < 10000) {
+                return roundToNearest(value, 10);
+            } else if (value < 100000) {
+                return roundToNearest(value, 50);
+            } else {
+                return roundToNearest(value, 100);
+            }
+        }
+
+        // Bulatkan semua nilai angsuran di tabel
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.querySelector('.compact-loan-table tbody');
+            if (table) {
+                const rows = table.querySelectorAll('tr');
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    cells.forEach((cell, index) => {
+                        if (index > 0 && cell.textContent && !cell.textContent.includes('-')) {
+                            const text = cell.textContent.trim();
+                            const number = parseInt(text.replace(/\./g, ''));
+                            if (!isNaN(number)) {
+                                const rounded = roundInstallment(number);
+                                const formatted = rounded.toLocaleString('id-ID');
+                                cell.textContent = formatted;
+                            }
+                        }
+                    });
                 });
             }
         });

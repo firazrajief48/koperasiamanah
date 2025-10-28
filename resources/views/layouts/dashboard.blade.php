@@ -78,13 +78,6 @@
                             </a>
                         </li>
                     </ul>
-
-                    <hr class="opacity-15 mx-3 my-4">
-                    <div class="px-3 pb-3">
-                        <button class="btn btn-logout w-100" data-bs-toggle="modal" data-bs-target="#logoutModal" style="cursor: pointer;">
-                            <i class="bi bi-box-arrow-right me-2"></i>Logout
-                        </button>
-                    </div>
                 </div>
             </nav>
 
@@ -106,8 +99,6 @@
             </main>
         </div>
     </div>
-
-    <!-- Logout Confirmation Modal -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);">

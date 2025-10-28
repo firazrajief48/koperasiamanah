@@ -311,7 +311,7 @@
             background: linear-gradient(135deg, rgba(248, 250, 252, 0.5) 0%, rgba(241, 245, 249, 0.5) 100%);
         }
 
-        .btn {
+        .form-actions .btn {
             padding: 0.75rem 1.75rem;
             border-radius: 12px;
             font-weight: 600;
@@ -323,30 +323,30 @@
             border: none;
         }
 
-        .btn-primary {
+        .form-actions .btn-primary {
             background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
             color: white;
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
-        .btn-primary:hover {
+        .form-actions .btn-primary:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
             background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
         }
 
-        .btn-primary:active {
+        .form-actions .btn-primary:active {
             transform: translateY(-1px);
         }
 
-        .btn-secondary {
+        .form-actions .btn-secondary {
             background: white;
             border: 2px solid #e2e8f0;
             color: #475569;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
-        .btn-secondary:hover {
+        .form-actions .btn-secondary:hover {
             background: #f8fafc;
             border-color: #cbd5e1;
             transform: translateY(-2px);
@@ -707,7 +707,7 @@
                     terima: 3800000,
                     cicilan: {
                         2: 2000000,
-                        3: 1333333,
+                        3: 1333334,
                         4: 1000000,
                         5: 800000,
                         6: 666667,
@@ -873,6 +873,22 @@
                 return 'Rp ' + angka.toLocaleString('id-ID');
             }
 
+            // Fungsi untuk membulatkan ke kelipatan tertentu
+            function roundToNearest(value, nearest) {
+                return Math.round(value / nearest) * nearest;
+            }
+
+            // Fungsi untuk membulatkan angsuran (ke kelipatan 10 untuk nominal kecil, 100 untuk nominal besar)
+            function roundCicilan(cicilan) {
+                if (cicilan < 10000) {
+                    return roundToNearest(cicilan, 10); // Bulatkan ke kelipatan 10 untuk nilai kecil
+                } else if (cicilan < 100000) {
+                    return roundToNearest(cicilan, 50); // Bulatkan ke kelipatan 50 untuk nilai sedang
+                } else {
+                    return roundToNearest(cicilan, 100); // Bulatkan ke kelipatan 100 untuk nilai besar
+                }
+            }
+
             // Handle perubahan jumlah pinjaman
             document.querySelectorAll('input[name="jumlahPinjaman"]').forEach(radio => {
                 radio.addEventListener('change', function() {
@@ -889,7 +905,8 @@
                     tenorOptions.forEach(tenor => {
                         const option = document.createElement('option');
                         option.value = tenor;
-                        option.textContent = `${tenor} Bulan - ${formatRupiah(data.cicilan[tenor])}/bulan`;
+                        const cicilanBulat = roundCicilan(data.cicilan[tenor]);
+                        option.textContent = `${tenor} Bulan - ${formatRupiah(cicilanBulat)}/bulan`;
                         tenorSelect.appendChild(option);
                     });
 
@@ -906,7 +923,7 @@
                     const jumlah = parseInt(jumlahPinjaman.value);
                     const tenor = parseInt(this.value);
                     const data = tabelPinjaman[jumlah];
-                    const cicilanPerBulan = data.cicilan[tenor];
+                    const cicilanPerBulan = roundCicilan(data.cicilan[tenor]);
                     const totalDibayar = cicilanPerBulan * tenor;
 
                     // Update info cicilan
