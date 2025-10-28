@@ -78,6 +78,13 @@
                             </a>
                         </li>
                     </ul>
+
+                    <div class="px-3 pb-3 mt-auto">
+                        <button class="btn-logout w-100" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                            <i class="bi bi-box-arrow-right me-2"></i>
+                            Logout
+                        </button>
+                    </div>
                 </div>
             </nav>
 
@@ -154,10 +161,19 @@
                         // Add loading animation
                         this.style.opacity = '0.7';
 
-                        // Redirect to logout
-                        setTimeout(() => {
-                            window.location.href = '/';
-                        }, 500);
+                        // Create form and submit to logout route
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route("logout") }}';
+
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = '{{ csrf_token() }}';
+
+                        form.appendChild(csrfToken);
+                        document.body.appendChild(form);
+                        form.submit();
                     });
                 }
 
