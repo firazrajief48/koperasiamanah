@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 29, 2025 at 04:31 AM
+-- Generation Time: Oct 29, 2025 at 09:26 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -142,7 +142,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (9, '2025_10_28_010523_create_pinjamans_table', 4),
 (12, '2025_10_29_020730_add_workflow_fields_to_pinjamans_table', 5),
 (14, '2025_10_29_021617_add_status_tracking_to_pinjamans_table', 6),
-(15, '2025_10_29_031448_update_user_role_enum_to_anggota', 6);
+(15, '2025_10_29_031448_update_user_role_enum_to_anggota', 6),
+(16, '2025_10_29_063414_add_metode_pembayaran_to_pinjamans_table', 7);
 
 -- --------------------------------------------------------
 
@@ -224,6 +225,7 @@ CREATE TABLE `pinjamans` (
   `bulan_terbayar` int(11) NOT NULL DEFAULT 0,
   `sisa_pinjaman` decimal(15,2) NOT NULL DEFAULT 0.00,
   `gaji_pokok` decimal(15,2) DEFAULT NULL,
+  `metode_pembayaran` enum('potong_gaji','potong_tukin') DEFAULT NULL,
   `status` enum('menunggu','disetujui','ditolak','lunas') NOT NULL DEFAULT 'menunggu',
   `status_detail` varchar(255) NOT NULL DEFAULT 'menunggu_persetujuan_bendahara',
   `alasan_penolakan` text DEFAULT NULL,
@@ -238,8 +240,8 @@ CREATE TABLE `pinjamans` (
 -- Dumping data for table `pinjamans`
 --
 
-INSERT INTO `pinjamans` (`id`, `user_id`, `jumlah_pinjaman`, `tenor_bulan`, `cicilan_per_bulan`, `bulan_terbayar`, `sisa_pinjaman`, `gaji_pokok`, `status`, `status_detail`, `alasan_penolakan`, `disetujui_oleh`, `tanggal_persetujuan`, `keterangan`, `created_at`, `updated_at`) VALUES
-(2, 9, 5000000.00, 2, 2500000.00, 0, 5000000.00, 0.00, 'menunggu', 'menunggu_persetujuan_bendahara', NULL, NULL, NULL, 'Biaya Keperluan', '2025-10-28 20:27:01', '2025-10-28 20:27:01');
+INSERT INTO `pinjamans` (`id`, `user_id`, `jumlah_pinjaman`, `tenor_bulan`, `cicilan_per_bulan`, `bulan_terbayar`, `sisa_pinjaman`, `gaji_pokok`, `metode_pembayaran`, `status`, `status_detail`, `alasan_penolakan`, `disetujui_oleh`, `tanggal_persetujuan`, `keterangan`, `created_at`, `updated_at`) VALUES
+(2, 9, 5000000.00, 2, 2500000.00, 0, 5000000.00, 0.00, NULL, 'menunggu', 'menunggu_persetujuan_bendahara', NULL, NULL, NULL, 'Biaya Keperluan', '2025-10-28 20:27:01', '2025-10-28 20:27:01');
 
 -- --------------------------------------------------------
 
@@ -261,7 +263,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('H3m1bfuFtoyz4qNsgT9Z3Zql7LhQD4Yi9zYFk7me', 9, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiTGJLT244MkZxNUhPUnhsSWtLN0JWU0VvNmFLbnhheG5WNHM2bmRWaSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hbmdnb3RhL2FqdWthbi1waW5qYW1hbiI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjk7fQ==', 1761708645);
+('7DaiCqQIoExCpyuQtnYXQEzgbQ8LZLYsloweURYI', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibm1XZDMyU0FINVJtZmlCSmVGN0JXVDRBV1Fkb3UyV0lQNllxejVLYiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvZGFzaGJvYXJkIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1761726234);
 
 -- --------------------------------------------------------
 
@@ -414,7 +416,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `pembayarans`
