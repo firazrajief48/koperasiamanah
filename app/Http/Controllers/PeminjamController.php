@@ -117,10 +117,18 @@ class PeminjamController extends Controller
             'bulan_terbayar' => 0,
             'sisa_pinjaman' => $jumlahPinjaman,
             'gaji_pokok' => 0, // Bisa diisi nanti jika diperlukan
+            'metode_pembayaran' => $request->metode_pembayaran,
             'status' => 'menunggu',
             'status_detail' => 'menunggu_persetujuan_bendahara',
             'keterangan' => $request->keperluan,
         ]);
+
+        // Generate jadwal pembayaran bulanan berdasarkan tenor
+        try {
+            $this->generatePembayaranBulanan($pinjaman->id);
+        } catch (\Throwable $e) {
+            // Abaikan jika tabel pembayaran belum ada; proses pengajuan tetap lanjut
+        }
 
         return redirect()->route('anggota.riwayat')->with('success', 'Pengajuan pinjaman berhasil disimpan! Pinjaman Anda akan segera diproses oleh tim koperasi.');
     }

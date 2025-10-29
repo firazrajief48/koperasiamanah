@@ -605,7 +605,7 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('anggota.profile.update') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route($routePrefix . '.profile.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="update_type" value="photo">
@@ -656,7 +656,7 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('anggota.profile.update') }}" method="POST">
+                <form action="{{ route($routePrefix . '.profile.update') }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
@@ -737,7 +737,7 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('anggota.profile.update') }}" method="POST">
+                <form action="{{ route($routePrefix . '.profile.update') }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
