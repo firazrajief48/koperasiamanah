@@ -4,9 +4,9 @@
 @section('page-title', 'Ajukan Pinjaman')
 
 @php
-    $role = 'Peminjam';
+    $role = 'Anggota';
     $nama = auth()->user()->name;
-    $routePrefix = 'peminjam';
+    $routePrefix = 'anggota';
     $showAjukan = true;
     $showRiwayat = true;
 @endphp
@@ -464,6 +464,20 @@
         }
     </style>
 
+    <!-- Error Alert -->
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="border-radius: 12px; border: none; background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(248, 113, 113, 0.1) 100%); border-left: 4px solid #ef4444; color: #dc2626; font-weight: 500; margin-bottom: 1.5rem;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Terjadi kesalahan:</strong>
+            <ul class="mb-0 mt-2">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <!-- Page Header Banner -->
     <div class="welcome-banner">
         <div class="welcome-content">
@@ -472,7 +486,7 @@
             </div>
             <div>
                 <h2>Ajukan Pinjaman Baru 📝</h2>
-                <p>Lengkapi formulir di bawah ini untuk mengajukan pinjaman Anda</p>
+                <p>Lengkapi formulir di bawah ini untuk mengajukan pinjaman sebagai anggota koperasi</p>
             </div>
         </div>
     </div>
@@ -480,13 +494,14 @@
     <!-- Form Card -->
     <div class="card form-card">
         <div class="card-body">
-            <form id="formAjukanPinjaman">
-                <!-- Data Peminjam Section -->
+            <form id="formAjukanPinjaman" action="{{ route('anggota.ajukan.store') }}" method="POST">
+                @csrf
+                <!-- Data Anggota Section -->
                 <div class="form-section">
                     <div class="section-header">
                         <h5 class="section-title">
                             <i class="bi bi-person-vcard"></i>
-                            <span>Data Peminjam</span>
+                            <span>Data Anggota</span>
                         </h5>
                         <p class="section-subtitle">Informasi pribadi Anda yang terdaftar</p>
                     </div>
@@ -494,31 +509,31 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Nama Lengkap</label>
-                                <input type="text" class="form-control" value="{{ $peminjam['nama'] }}" readonly>
+                                <input type="text" class="form-control" value="{{ $anggota['nama'] }}" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">NIP</label>
-                                <input type="text" class="form-control" value="{{ $peminjam['nip'] }}" readonly>
+                                <input type="text" class="form-control" value="{{ $anggota['nip'] }}" readonly>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Jabatan</label>
-                                <input type="text" class="form-control" value="{{ $peminjam['jabatan'] }}" readonly>
+                                <input type="text" class="form-control" value="{{ $anggota['jabatan'] }}" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Golongan</label>
-                                <input type="text" class="form-control" value="{{ $peminjam['golongan'] }}" readonly>
+                                <input type="text" class="form-control" value="{{ $anggota['golongan'] }}" readonly>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">No HP</label>
-                                <input type="text" class="form-control" value="{{ $peminjam['no_hp'] }}" readonly>
+                                <input type="text" class="form-control" value="{{ $anggota['no_hp'] }}" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Email</label>
-                                <input type="email" class="form-control" value="{{ $peminjam['email'] }}" readonly>
+                                <input type="email" class="form-control" value="{{ $anggota['email'] }}" readonly>
                             </div>
                         </div>
                     </div>
@@ -547,10 +562,10 @@
                                     Metode Pembayaran
                                     <span class="text-danger">*</span>
                                 </label>
-                                <select class="form-select" id="metodePembayaran" required>
+                                <select class="form-select" id="metodePembayaran" name="metode_pembayaran" required>
                                     <option value="">Pilih Metode Pembayaran</option>
-                                    <option value="potong_gaji">Potong Gaji</option>
-                                    <option value="potong_tukin">Potong Tunjangan Kinerja</option>
+                                    <option value="potong_gaji" {{ old('metode_pembayaran') == 'potong_gaji' ? 'selected' : '' }}>Potong Gaji Pokok</option>
+                                    <option value="potong_tukin" {{ old('metode_pembayaran') == 'potong_tukin' ? 'selected' : '' }}>Potong Tunjangan Kinerja</option>
                                 </select>
                             </div>
                         </div>
@@ -562,47 +577,47 @@
                             </label>
                             <div class="amount-grid">
                                 <div class="amount-option">
-                                    <input type="radio" name="jumlahPinjaman" id="amount1" value="3000000">
+                                    <input type="radio" name="jumlah_pinjaman" id="amount1" value="3000000" {{ old('jumlah_pinjaman') == '3000000' ? 'checked' : '' }}>
                                     <label for="amount1">Rp 3.000.000</label>
                                 </div>
                                 <div class="amount-option">
-                                    <input type="radio" name="jumlahPinjaman" id="amount2" value="3500000">
+                                    <input type="radio" name="jumlah_pinjaman" id="amount2" value="3500000" {{ old('jumlah_pinjaman') == '3500000' ? 'checked' : '' }}>
                                     <label for="amount2">Rp 3.500.000</label>
                                 </div>
                                 <div class="amount-option">
-                                    <input type="radio" name="jumlahPinjaman" id="amount3" value="4000000">
+                                    <input type="radio" name="jumlah_pinjaman" id="amount3" value="4000000" {{ old('jumlah_pinjaman') == '4000000' ? 'checked' : '' }}>
                                     <label for="amount3">Rp 4.000.000</label>
                                 </div>
                                 <div class="amount-option">
-                                    <input type="radio" name="jumlahPinjaman" id="amount4" value="4500000">
+                                    <input type="radio" name="jumlah_pinjaman" id="amount4" value="4500000" {{ old('jumlah_pinjaman') == '4500000' ? 'checked' : '' }}>
                                     <label for="amount4">Rp 4.500.000</label>
                                 </div>
                                 <div class="amount-option">
-                                    <input type="radio" name="jumlahPinjaman" id="amount5" value="5000000">
+                                    <input type="radio" name="jumlah_pinjaman" id="amount5" value="5000000" {{ old('jumlah_pinjaman') == '5000000' ? 'checked' : '' }}>
                                     <label for="amount5">Rp 5.000.000</label>
                                 </div>
                                 <div class="amount-option">
-                                    <input type="radio" name="jumlahPinjaman" id="amount6" value="5500000">
+                                    <input type="radio" name="jumlah_pinjaman" id="amount6" value="5500000" {{ old('jumlah_pinjaman') == '5500000' ? 'checked' : '' }}>
                                     <label for="amount6">Rp 5.500.000</label>
                                 </div>
                                 <div class="amount-option">
-                                    <input type="radio" name="jumlahPinjaman" id="amount7" value="6000000">
+                                    <input type="radio" name="jumlah_pinjaman" id="amount7" value="6000000" {{ old('jumlah_pinjaman') == '6000000' ? 'checked' : '' }}>
                                     <label for="amount7">Rp 6.000.000</label>
                                 </div>
                                 <div class="amount-option">
-                                    <input type="radio" name="jumlahPinjaman" id="amount8" value="7000000">
+                                    <input type="radio" name="jumlah_pinjaman" id="amount8" value="7000000" {{ old('jumlah_pinjaman') == '7000000' ? 'checked' : '' }}>
                                     <label for="amount8">Rp 7.000.000</label>
                                 </div>
                                 <div class="amount-option">
-                                    <input type="radio" name="jumlahPinjaman" id="amount9" value="8000000">
+                                    <input type="radio" name="jumlah_pinjaman" id="amount9" value="8000000" {{ old('jumlah_pinjaman') == '8000000' ? 'checked' : '' }}>
                                     <label for="amount9">Rp 8.000.000</label>
                                 </div>
                                 <div class="amount-option">
-                                    <input type="radio" name="jumlahPinjaman" id="amount10" value="9000000">
+                                    <input type="radio" name="jumlah_pinjaman" id="amount10" value="9000000" {{ old('jumlah_pinjaman') == '9000000' ? 'checked' : '' }}>
                                     <label for="amount10">Rp 9.000.000</label>
                                 </div>
                                 <div class="amount-option">
-                                    <input type="radio" name="jumlahPinjaman" id="amount11" value="10000000">
+                                    <input type="radio" name="jumlah_pinjaman" id="amount11" value="10000000" {{ old('jumlah_pinjaman') == '10000000' ? 'checked' : '' }}>
                                     <label for="amount11">Rp 10.000.000</label>
                                 </div>
                             </div>
@@ -613,7 +628,7 @@
                                 Tenor/Cicilan
                                 <span class="text-danger">*</span>
                             </label>
-                            <select class="form-select" id="tenorCicilan" required disabled>
+                            <select class="form-select" id="tenorCicilan" name="tenor_cicilan" required disabled>
                                 <option value="">Pilih jumlah pinjaman terlebih dahulu</option>
                             </select>
                             <small class="text-muted mt-1 d-block">
@@ -649,7 +664,7 @@
                                 Keperluan
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea class="form-control" id="keperluan" rows="4" placeholder="Jelaskan keperluan pinjaman Anda secara detail..." required></textarea>
+                            <textarea class="form-control" id="keperluan" name="keperluan" rows="4" placeholder="Jelaskan keperluan pinjaman Anda secara detail..." required>{{ old('keperluan') }}</textarea>
                         </div>
 
                         <div class="alert alert-info">
@@ -665,7 +680,7 @@
                         <i class="bi bi-send-fill"></i>
                         Ajukan Pinjaman
                     </button>
-                    <a href="{{ route('peminjam.dashboard') }}" class="btn btn-secondary">
+                    <a href="{{ route('anggota.dashboard') }}" class="btn btn-secondary">
                         <i class="bi bi-x-circle"></i>
                         Batal
                     </a>
@@ -674,48 +689,202 @@
         </div>
     </div>
 
+    <!-- Modal Konfirmasi Custom -->
+    <div class="modal fade" id="konfirmasiModal" tabindex="-1" aria-labelledby="konfirmasiModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 680px;">
+            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
+                <div class="modal-header" style="background: white; border: none; padding: 1.5rem; border-radius: 16px 16px 0 0;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 52px; height: 52px; background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="bi bi-cash-coin text-white" style="font-size: 1.375rem;"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="konfirmasiModalLabel" style="color: #1f2937; font-size: 1.125rem;">Konfirmasi Pengajuan Pinjaman</h5>
+                            <small style="color: #9ca3af; font-size: 0.813rem;">Pastikan data sudah benar</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 1.5rem 2rem; background: white;">
+                    <!-- Alert Info -->
+                    <div class="alert alert-warning d-flex align-items-center p-3 mb-4" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 1px solid #f59e0b; border-radius: 8px;">
+                        <i class="bi bi-exclamation-triangle-fill me-2" style="color: #f59e0b; font-size: 1.25rem;"></i>
+                        <div>
+                            <small class="fw-bold" style="color: #92400e;">Pengajuan tidak dapat dibatalkan setelah disubmit!</small>
+                        </div>
+                    </div>
+                    <!-- Data Pinjaman -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <div class="p-3" style="background: #f8fafc; border-radius: 8px; border: 1px solid #e5e7eb;">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span style="color: #6b7280; font-size: 0.875rem;">Jumlah Pinjaman:</span>
+                                            <strong id="konfirm-jumlah" style="color: #1f2937;">-</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span style="color: #6b7280; font-size: 0.875rem;">Tenor:</span>
+                                            <strong id="konfirm-tenor" style="color: #1f2937;">-</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span style="color: #6b7280; font-size: 0.875rem;">Cicilan per Bulan:</span>
+                                            <strong id="konfirm-cicilan" style="color: #dc2626;">-</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span style="color: #6b7280; font-size: 0.875rem;">Total Dibayar:</span>
+                                            <strong id="konfirm-total" style="color: #dc2626;">-</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span style="color: #6b7280; font-size: 0.875rem;">Biaya Admin:</span>
+                                            <strong id="konfirm-admin" style="color: #f59e0b;">-</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span style="color: #6b7280; font-size: 0.875rem;">Jumlah Diterima:</span>
+                                            <strong id="konfirm-diterima" style="color: #059669;">-</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detail Lainnya -->
+                    <div class="mb-4">
+                        <div class="p-3" style="background: #f8fafc; border-radius: 8px; border: 1px solid #e5e7eb;">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span style="color: #6b7280; font-size: 0.875rem;">Metode Pembayaran:</span>
+                                        <strong id="konfirm-metode" style="color: #1f2937;">-</strong>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div>
+                                        <span style="color: #6b7280; font-size: 0.875rem;">Keperluan:</span>
+                                        <div class="mt-1">
+                                            <em id="konfirm-keperluan" style="color: #1f2937; font-size: 0.875rem;">-</em>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pertanyaan Konfirmasi -->
+                    <div class="text-center py-4" style="border-top: 1px solid #e5e7eb; margin-top: 1rem;">
+                        <div style="width: 72px; height: 72px; border: 5px solid #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+                            <span style="font-size: 2.75rem; color: #3b82f6; font-weight: 700; line-height: 1;">?</span>
+                        </div>
+                        <h6 style="color: #1f2937; font-weight: 600; margin-bottom: 0.5rem; font-size: 1.063rem;">Apakah Anda yakin ingin mengajukan pinjaman ini?</h6>
+                        <p class="mb-0" style="color: #6b7280; font-size: 0.875rem; line-height: 1.5;">Pengajuan akan segera diproses oleh tim admin koperasi.</p>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border: none; padding: 0 1.5rem 1.5rem; gap: 0.75rem; background: white; border-radius: 0 0 16px 16px; display: flex; justify-content: stretch;">
+                    <button type="button" class="btn" data-bs-dismiss="modal" style="flex: 1; background: white; border: 1.5px solid #d1d5db; color: #6b7280; border-radius: 8px; padding: 0.75rem 1rem; font-weight: 500; font-size: 0.938rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s;">
+                        <i class="bi bi-x-circle" style="font-size: 1.125rem;"></i>
+                        <span>Batal</span>
+                    </button>
+                    <button type="button" class="btn" id="konfirmSubmit" style="flex: 1; background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border: none; color: white; border-radius: 8px; padding: 0.75rem 1rem; font-weight: 500; font-size: 0.938rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s;">
+                        <i class="bi bi-check-circle" style="font-size: 1.125rem;"></i>
+                        <span>Ya, Ajukan</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Success -->
+    <div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; border: none;">
+                <div class="modal-body text-center p-5">
+                    <i class="bi bi-x-circle-fill text-danger" style="font-size: 4rem;"></i>
+                    <h4 class="mt-3 fw-bold text-danger">Pengajuan Dibatalkan</h4>
+                    <p class="text-muted">Anda dapat mengubah data dan mencoba lagi.</p>
+                    <button type="button" class="btn btn-primary mt-3" data-bs-dismiss="modal" style="border-radius: 50px;">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        Kembali ke Form
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
+                <div class="modal-header" style="background: white; border: none; padding: 1.5rem; border-radius: 16px 16px 0 0;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 52px; height: 52px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="bi bi-exclamation-triangle text-white" style="font-size: 1.375rem;"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="errorModalTitle" style="color: #1f2937; font-size: 1.125rem;">Error</h5>
+                            <small style="color: #9ca3af; font-size: 0.813rem;">Mohon perhatikan</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 2rem; background: white;">
+                    <p id="errorModalMessage" class="mb-0" style="color: #6b7280; line-height: 1.6;"></p>
+                </div>
+                <div class="modal-footer" style="border: none; padding: 0 1.5rem 1.5rem; background: white; border-radius: 0 0 16px 16px;">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border: none; border-radius: 8px; padding: 0.75rem 1.5rem; font-weight: 500;">
+                        <i class="bi bi-check-circle me-2"></i>Mengerti
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
         <script>
             // Data tabel pinjaman sesuai gambar
             const tabelPinjaman = {
                 3000000: {
-                    maxTenor: 5,
+                    maxTenor: 3,
                     admin: 150000,
                     terima: 2850000,
                     cicilan: {
                         2: 1500000,
-                        3: 1000000,
-                        4: 750000,
-                        5: 600000
+                        3: 1000000
                     }
                 },
                 3500000: {
-                    maxTenor: 6,
+                    maxTenor: 4,
                     admin: 175000,
                     terima: 3325000,
                     cicilan: {
                         2: 1750000,
                         3: 1166667,
-                        4: 875000,
-                        5: 700000,
-                        6: 583333
+                        4: 875000
                     }
                 },
                 4000000: {
-                    maxTenor: 7,
+                    maxTenor: 5,
                     admin: 200000,
                     terima: 3800000,
                     cicilan: {
                         2: 2000000,
                         3: 1333334,
                         4: 1000000,
-                        5: 800000,
-                        6: 666667,
-                        7: 571429
+                        5: 800000
                     }
                 },
                 4500000: {
-                    maxTenor: 8,
+                    maxTenor: 6,
                     admin: 225000,
                     terima: 4275000,
                     cicilan: {
@@ -723,13 +892,11 @@
                         3: 1500000,
                         4: 1125000,
                         5: 900000,
-                        6: 750000,
-                        7: 642857,
-                        8: 562500
+                        6: 750000
                     }
                 },
                 5000000: {
-                    maxTenor: 9,
+                    maxTenor: 16,
                     admin: 250000,
                     terima: 4750000,
                     cicilan: {
@@ -737,30 +904,33 @@
                         3: 1666667,
                         4: 1250000,
                         5: 1000000,
-                        6: 833333,
-                        7: 714286,
-                        8: 625000,
-                        9: 555556
+                        6: 916667,
+                        7: 785714,
+                        8: 687500,
+                        9: 666667,
+                        10: 600000,
+                        11: 636364,
+                        12: 666667,
+                        15: 600000,
+                        16: 625000
                     }
                 },
                 5500000: {
-                    maxTenor: 10,
+                    maxTenor: 8,
                     admin: 275000,
                     terima: 5225000,
                     cicilan: {
                         2: 2750000,
-                        3: 1833333,
+                        3: 1833334,
                         4: 1375000,
                         5: 1100000,
                         6: 916667,
                         7: 785714,
-                        8: 687500,
-                        9: 611111,
-                        10: 550000
+                        8: 687500
                     }
                 },
                 6000000: {
-                    maxTenor: 11,
+                    maxTenor: 9,
                     admin: 300000,
                     terima: 5700000,
                     cicilan: {
@@ -771,31 +941,27 @@
                         6: 1000000,
                         7: 857143,
                         8: 750000,
-                        9: 666667,
-                        10: 600000,
-                        11: 545455
+                        9: 666667
                     }
                 },
                 7000000: {
-                    maxTenor: 12,
+                    maxTenor: 10,
                     admin: 350000,
                     terima: 6650000,
                     cicilan: {
                         2: 3500000,
-                        3: 2333333,
+                        3: 2333334,
                         4: 1750000,
                         5: 1400000,
                         6: 1166667,
                         7: 1000000,
                         8: 875000,
                         9: 777778,
-                        10: 700000,
-                        11: 636364,
-                        12: 583333
+                        10: 700000
                     }
                 },
                 8000000: {
-                    maxTenor: 15,
+                    maxTenor: 12,
                     admin: 400000,
                     terima: 7600000,
                     cicilan: {
@@ -803,18 +969,17 @@
                         3: 2666667,
                         4: 2000000,
                         5: 1600000,
-                        6: 1333333,
+                        6: 1333334,
                         7: 1142857,
                         8: 1000000,
                         9: 888889,
                         10: 800000,
                         11: 727273,
-                        12: 666667,
-                        15: 533333
+                        12: 666667
                     }
                 },
                 9000000: {
-                    maxTenor: 16,
+                    maxTenor: 15,
                     admin: 450000,
                     terima: 8550000,
                     cicilan: {
@@ -829,8 +994,9 @@
                         10: 900000,
                         11: 818182,
                         12: 750000,
-                        15: 600000,
-                        16: 562500
+                        13: 692308,
+                        14: 642857,
+                        15: 600000
                     }
                 },
                 10000000: {
@@ -839,7 +1005,7 @@
                     terima: 9500000,
                     cicilan: {
                         2: 5000000,
-                        3: 3333333,
+                        3: 3333334,
                         4: 2500000,
                         5: 2000000,
                         6: 1666667,
@@ -849,6 +1015,8 @@
                         10: 1000000,
                         11: 909091,
                         12: 833333,
+                        13: 769231,
+                        14: 714286,
                         15: 666667,
                         16: 625000,
                         17: 588235,
@@ -890,7 +1058,7 @@
             }
 
             // Handle perubahan jumlah pinjaman
-            document.querySelectorAll('input[name="jumlahPinjaman"]').forEach(radio => {
+            document.querySelectorAll('input[name="jumlah_pinjaman"]').forEach(radio => {
                 radio.addEventListener('change', function() {
                     const jumlah = parseInt(this.value);
                     const data = tabelPinjaman[jumlah];
@@ -917,7 +1085,7 @@
 
             // Handle perubahan tenor
             document.getElementById('tenorCicilan').addEventListener('change', function() {
-                const jumlahPinjaman = document.querySelector('input[name="jumlahPinjaman"]:checked');
+                const jumlahPinjaman = document.querySelector('input[name="jumlah_pinjaman"]:checked');
 
                 if (jumlahPinjaman && this.value) {
                     const jumlah = parseInt(jumlahPinjaman.value);
@@ -936,26 +1104,109 @@
 
             // Form submission handler
             document.getElementById('formAjukanPinjaman').addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const jumlahPinjaman = document.querySelector('input[name="jumlahPinjaman"]:checked');
+                const jumlahPinjaman = document.querySelector('input[name="jumlah_pinjaman"]:checked');
                 const tenorCicilan = document.getElementById('tenorCicilan').value;
                 const metodePembayaran = document.getElementById('metodePembayaran').value;
                 const keperluan = document.getElementById('keperluan').value;
 
                 if (!jumlahPinjaman || !tenorCicilan || !metodePembayaran || !keperluan) {
-                    alert('Mohon lengkapi semua field yang wajib diisi!');
+                    e.preventDefault();
+                    showErrorModal('Form Tidak Lengkap', 'Mohon lengkapi semua field yang wajib diisi!');
                     return;
                 }
 
-                // Simulasi sukses
-                const data = tabelPinjaman[parseInt(jumlahPinjaman.value)];
-                const tenor = parseInt(tenorCicilan);
-                const cicilan = data.cicilan[tenor];
+                // Prevent default untuk menampilkan konfirmasi
+                e.preventDefault();
 
-                alert(`✅ Pengajuan pinjaman berhasil disimpan!\n\nDetail:\n- Jumlah: ${formatRupiah(parseInt(jumlahPinjaman.value))}\n- Tenor: ${tenor} bulan\n- Cicilan: ${formatRupiah(cicilan)}/bulan\n- Diterima: ${formatRupiah(data.terima)}\n\nPinjaman Anda akan segera diproses oleh admin.`);
-                window.location.href = '{{ route('peminjam.riwayat') }}';
+                // Ambil data untuk konfirmasi
+                const jumlah = parseInt(jumlahPinjaman.value);
+                const tenor = parseInt(tenorCicilan.value);
+                const data = tabelPinjaman[jumlah];
+
+                // Debug log untuk melihat apa yang terjadi
+                console.log('Jumlah:', jumlah);
+                console.log('Tenor:', tenor);
+                console.log('Data:', data);
+                console.log('Available cicilan:', data ? Object.keys(data.cicilan) : 'No data');
+
+                // Skip JavaScript validation, let backend handle it
+                // Backend sudah menggunakan AngsuranHelper yang lebih akurat
+                if (!data || !data.cicilan) {
+                    console.warn('Menggunakan default calculation karena data JavaScript tidak lengkap');
+                    // Gunakan perhitungan sederhana untuk display modal
+                    var defaultCicilan = Math.ceil(jumlah / tenor);
+                    var defaultAdmin = jumlah * 0.05;
+                    var defaultTerima = jumlah - defaultAdmin;
+
+                    data = {
+                        cicilan: {},
+                        admin: defaultAdmin,
+                        terima: defaultTerima
+                    };
+                    data.cicilan[tenor] = defaultCicilan;
+                }
+
+                const cicilanPerBulan = roundCicilan(data.cicilan[tenor]);
+                const totalDibayar = cicilanPerBulan * tenor;
+                const biayaAdmin = data.admin; // Gunakan data admin dari tabel
+                const jumlahDiterima = data.terima; // Gunakan data terima dari tabel
+
+                // Format angka untuk display
+                const formatRupiah = (angka) => {
+                    return 'Rp ' + angka.toLocaleString('id-ID');
+                };
+
+                // Update modal dengan data
+                document.getElementById('konfirm-jumlah').textContent = formatRupiah(jumlah);
+                document.getElementById('konfirm-tenor').textContent = tenor + ' bulan';
+                document.getElementById('konfirm-cicilan').textContent = formatRupiah(cicilanPerBulan);
+                document.getElementById('konfirm-total').textContent = formatRupiah(totalDibayar);
+                document.getElementById('konfirm-admin').textContent = formatRupiah(biayaAdmin);
+                document.getElementById('konfirm-diterima').textContent = formatRupiah(jumlahDiterima);
+                document.getElementById('konfirm-metode').textContent = metodePembayaran === 'potong_gaji' ? 'Potong Gaji Pokok' : 'Potong Tunjangan Kinerja';
+                document.getElementById('konfirm-keperluan').textContent = keperluan;
+
+                // Store form reference for later submission
+                window.currentForm = this;
+
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('konfirmasiModal'));
+                modal.show();
             });
+
+            // Handle konfirmasi submit
+            document.getElementById('konfirmSubmit').addEventListener('click', function() {
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('konfirmasiModal'));
+                modal.hide();
+
+                // Submit form setelah modal ditutup
+                setTimeout(function() {
+                    if (window.currentForm) {
+                        window.currentForm.submit();
+                    }
+                }, 300);
+            });
+
+            // Handle cancel (optional - bisa menampilkan modal cancel)
+            document.getElementById('konfirmasiModal').addEventListener('hidden.bs.modal', function() {
+                // Optional: Clear stored form reference
+                window.currentForm = null;
+            });
+
+            // Function to show error modal
+            function showErrorModal(title, message) {
+                document.getElementById('errorModalTitle').textContent = title;
+                document.getElementById('errorModalMessage').textContent = message;
+                const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                errorModal.show();
+            }
+
+            // Function to show success notification
+            function showSuccessNotification(message) {
+                // You can implement a toast or success modal here
+                console.log('Success:', message);
+            }
         </script>
     @endpush
 @endsection

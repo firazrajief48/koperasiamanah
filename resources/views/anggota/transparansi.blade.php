@@ -4,9 +4,9 @@
 @section('page-title', 'Transparansi Keuangan')
 
 @php
-    $role = 'Peminjam';
+    $role = 'Anggota';
     $nama = auth()->user()->name;
-    $routePrefix = 'peminjam';
+    $routePrefix = 'anggota';
     $showAjukan = true;
     $showRiwayat = true;
 @endphp
@@ -478,12 +478,12 @@
                 </div>
                 <div>
                     <h2>Transparansi Keuangan 👁️</h2>
-                    <p>Lihat riwayat pinjaman semua anggota koperasi secara transparan</p>
+                    <p>Lihat data kumulatif keuangan koperasi secara transparan</p>
                 </div>
             </div>
             <div class="header-badge">
                 <i class="bi bi-people"></i>
-                <span>{{ count($pinjaman) }} Pinjaman Aktif</span>
+                <span>{{ $dataKumulatif['pinjaman_aktif'] }} Pinjaman Aktif</span>
             </div>
         </div>
     </div>
@@ -491,99 +491,162 @@
     <!-- Table Card -->
     <div class="table-modern-card">
         <div class="table-header">
-            <h5>Daftar Pinjaman Anggota</h5>
-            <p>Berikut adalah semua pinjaman yang sedang berjalan dan telah lunas di koperasi</p>
-        </div>
-
-        <div class="search-container">
-            <div class="search-wrapper">
-                <i class="bi bi-search"></i>
-                <input type="text" class="search-input" placeholder="Cari berdasarkan nama..." id="searchInput">
-            </div>
-            <div class="total-badge">
-                <i class="bi bi-list-check"></i>
-                <span>Total: {{ count($pinjaman) }} Pinjaman</span>
-            </div>
+            <h5>Transparansi Keuangan Koperasi</h5>
+            <p>Data kumulatif keuangan koperasi untuk semua anggota</p>
         </div>
 
         <div class="table-responsive">
-            @if(count($pinjaman) > 0)
-                <table class="modern-table" id="dataTable">
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>NIP</th>
-                            <th>Jumlah Pinjaman</th>
-                            <th>Sisa Pinjaman</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($pinjaman as $p)
-                            <tr data-nama="{{ strtolower($p['nama']) }}">
-                                <td>
-                                    <div class="name-cell">
-                                        <div class="name-icon">
-                                            {{ strtoupper(substr($p['nama'], 0, 2)) }}
-                                        </div>
-                                        <span>{{ $p['nama'] }}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="nip-badge">
-                                        <i class="bi bi-card-text"></i>
-                                        {{ $p['nip'] }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="amount-cell">
-                                        Rp {{ number_format($p['jumlah'], 0, ',', '.') }}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="amount-cell">
-                                        Rp {{ number_format($p['sisa'], 0, ',', '.') }}
-                                    </div>
-                                </td>
-                                <td>
-                                    @if ($p['status'] == 'Lunas')
-                                        <span class="status-badge status-lunas">
-                                            <i class="bi bi-check-circle-fill"></i>
-                                            {{ $p['status'] }}
-                                        </span>
-                                    @else
-                                        <span class="status-badge status-berjalan">
-                                            <i class="bi bi-clock-fill"></i>
-                                            {{ $p['status'] }}
-                                        </span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @else
-                <div class="empty-state">
-                    <div class="empty-icon">
-                        <i class="bi bi-inbox"></i>
+            <!-- Financial Overview Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <i class="bi bi-cash-stack text-white fs-4"></i>
+                                </div>
+                                <div>
+                                    <h3 class="fw-bold mb-0" style="color: var(--dark-navy);">Rp {{ number_format($dataKumulatif['total_pinjaman_disalurkan'], 0, ',', '.') }}</h3>
+                                    <p class="text-muted mb-0">Total Pinjaman Disalurkan</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h5>Belum Ada Data Pinjaman</h5>
-                    <p>Belum ada pinjaman yang disetujui atau telah lunas</p>
                 </div>
-            @endif
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                                    <i class="bi bi-check-circle text-white fs-4"></i>
+                                </div>
+                                <div>
+                                    <h3 class="fw-bold mb-0" style="color: var(--dark-navy);">Rp {{ number_format($dataKumulatif['total_pinjaman_dilunasi'], 0, ',', '.') }}</h3>
+                                    <p class="text-muted mb-0">Total Pinjaman Dilunasi</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                    <i class="bi bi-clock-history text-white fs-4"></i>
+                                </div>
+                                <div>
+                                    <h3 class="fw-bold mb-0" style="color: var(--dark-navy);">Rp {{ number_format($dataKumulatif['saldo_pinjaman_berjalan'], 0, ',', '.') }}</h3>
+                                    <p class="text-muted mb-0">Saldo Pinjaman Berjalan</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                    <i class="bi bi-people-fill text-white fs-4"></i>
+                                </div>
+                                <div>
+                                    <h3 class="fw-bold mb-0" style="color: var(--dark-navy);">{{ $dataKumulatif['total_anggota'] }}</h3>
+                                    <p class="text-muted mb-0">Total Anggota</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);">
+                                    <i class="bi bi-hourglass-split text-white fs-4"></i>
+                                </div>
+                                <div>
+                                    <h3 class="fw-bold mb-0" style="color: var(--dark-navy);">{{ $dataKumulatif['pinjaman_aktif'] }}</h3>
+                                    <p class="text-muted mb-0">Pinjaman Aktif</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                                    <i class="bi bi-check2-circle text-white fs-4"></i>
+                                </div>
+                                <div>
+                                    <h3 class="fw-bold mb-0" style="color: var(--dark-navy);">{{ $dataKumulatif['pinjaman_lunas'] }}</h3>
+                                    <p class="text-muted mb-0">Pinjaman Lunas</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Information Card -->
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-header bg-transparent border-0 p-4">
+                    <h5 class="fw-bold mb-0" style="color: var(--dark-navy);">
+                        <i class="bi bi-info-circle me-2"></i>Informasi Transparansi Keuangan
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <p class="text-muted mb-3">Halaman ini menampilkan data kumulatif keuangan koperasi secara transparan untuk semua anggota.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-cash-stack text-primary me-2"></i>
+                                <span class="fw-semibold">Total Pinjaman Disalurkan:</span>
+                            </div>
+                            <p class="text-muted small ms-4">Jumlah total pinjaman yang telah disalurkan kepada anggota</p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                <span class="fw-semibold">Total Pinjaman Dilunasi:</span>
+                            </div>
+                            <p class="text-muted small ms-4">Jumlah total pinjaman yang telah dilunasi oleh anggota</p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-clock-history text-warning me-2"></i>
+                                <span class="fw-semibold">Saldo Pinjaman Berjalan:</span>
+                            </div>
+                            <p class="text-muted small ms-4">Jumlah sisa pinjaman yang masih berjalan</p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-people-fill text-info me-2"></i>
+                                <span class="fw-semibold">Total Anggota:</span>
+                            </div>
+                            <p class="text-muted small ms-4">Jumlah total anggota koperasi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     @push('scripts')
         <script>
-            document.getElementById('searchInput').addEventListener('keyup', function() {
-                const value = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#dataTable tbody tr');
-                rows.forEach(row => {
-                    const nama = row.getAttribute('data-nama');
-                    row.style.display = nama.includes(value) ? '' : 'none';
-                });
-            });
+            // No search functionality needed for cumulative data
         </script>
     @endpush
 @endsection

@@ -983,7 +983,7 @@
                 email: "{{ strtolower(str_replace(' ', '.', $l['nama'])) }}@example.com",
                 jumlah_pinjaman: {{ $l['jumlah'] }},
                 tenor: "{{ rand(12, 36) }} Bulan",
-                metode_pembayaran: "{{ ['Potong Gaji', 'Transfer Bank'][$index % 2] }}",
+                metode_pembayaran: "{{ ['Potong Gaji Pokok', 'Potong Tunjangan Kinerja'][$index % 2] }}",
                 tanggal_pengajuan: "{{ $l['tanggal_verifikasi'] ?? $l['tanggal'] ?? date('Y-m-d') }}",
                 tujuan: "{{ ['Renovasi rumah dan kebutuhan mendesak', 'Pendidikan anak', 'Biaya pengobatan', 'Investasi usaha'][$index % 4] }}",
                 status: "{{ $l['status'] }}",

@@ -1,12 +1,12 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Dashboard Peminjam')
-@section('page-title', 'Dashboard Peminjam')
+@section('title', 'Dashboard Anggota')
+@section('page-title', 'Dashboard Anggota')
 
 @php
-    $role = 'Peminjam';
+    $role = 'Anggota';
     $nama = auth()->user()->name;
-    $routePrefix = 'peminjam';
+    $routePrefix = 'anggota';
     $showAjukan = true;
     $showRiwayat = true;
 
@@ -617,17 +617,18 @@
         </div>
     </div>
 
-    <!-- Simulation Table -->
-    <div class="table-modern-card">
+    <!-- Pembayaran Mendatang -->
+    @if($pembayaranMendatang && $pembayaranMendatang->count() > 0)
+    <div class="table-modern-card mb-4">
         <div class="table-header">
             <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
                 <div>
-                    <h5>Simulasi Pinjaman & Angsuran</h5>
-                    <p>Rencana pembayaran cicilan bulanan Anda</p>
+                    <h5>Pembayaran Mendatang</h5>
+                    <p>Tagihan yang akan jatuh tempo dalam 7 hari ke depan</p>
                 </div>
-                <div class="table-header-badge">
-                    <i class="bi bi-calendar-range"></i>
-                    <span>{{ $totalTenor }} Bulan Periode</span>
+                <div class="table-header-badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>{{ $pembayaranMendatang->count() }} Tagihan</span>
                 </div>
             </div>
         </div>
@@ -636,20 +637,93 @@
             <table class="modern-table">
                 <thead>
                     <tr>
-                        <th>Periode</th>
-                        <th>Angsuran</th>
-                        <th>Sisa Pinjaman</th>
+                        <th>Bulan</th>
+                        <th>Nominal</th>
+                        <th>Jatuh Tempo</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if(!empty($data['simulasi']) && count($data['simulasi']) > 0)
-                        @foreach($data['simulasi'] as $idx => $item)
+                    @foreach($pembayaranMendatang as $pembayaran)
+                        <tr>
+                            <td>
+                                <div class="month-cell">
+                                    <div class="month-number">{{ $pembayaran->bulan_ke }}</div>
+                                    <div class="month-label">Bulan ke-{{ $pembayaran->bulan_ke }}</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="amount-cell amount-debit">
+                                    <div class="amount-icon icon-debit">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </div>
+                                    <div class="amount-details">
+                                        <div class="amount-value">Rp {{ number_format($pembayaran->nominal_pembayaran, 0, ',', '.') }}</div>
+                                        <div class="amount-label">Cicilan</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="date-cell">
+                                    <div class="date-value">{{ \Carbon\Carbon::parse($pembayaran->tanggal_jatuh_tempo)->format('d M Y') }}</div>
+                                    <div class="date-label">{{ \Carbon\Carbon::parse($pembayaran->tanggal_jatuh_tempo)->diffForHumans() }}</div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-pending">
+                                    <i class="bi bi-clock-fill"></i>
+                                    Belum Bayar
+                                </span>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+
+    <!-- Pengingat Pembayaran Table -->
+    <div class="table-modern-card">
+        <div class="table-header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div>
+                    <h5>Pengingat Pembayaran Bulanan</h5>
+                    <p>Status pembayaran cicilan pinjaman Anda</p>
+                </div>
+                @if($activeLoan)
+                <div class="table-header-badge">
+                    <i class="bi bi-calendar-range"></i>
+                    <span>{{ $activeLoan->tenor_bulan }} Bulan Periode</span>
+                </div>
+                @endif
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Periode</th>
+                        <th>Jatuh Tempo</th>
+                        <th>Nominal</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if($activeLoan && $activeLoan->pembayarans->count() > 0)
+                        @foreach($activeLoan->pembayarans->sortBy('bulan_ke') as $pembayaran)
                             <tr>
                                 <td>
                                     <div class="month-cell">
-                                        <div class="month-number">{{ $item['bulan'] }}</div>
-                                        <div class="month-label">Bulan ke-{{ $item['bulan'] }}</div>
+                                        <div class="month-number">{{ $pembayaran->bulan_ke }}</div>
+                                        <div class="month-label">Bulan ke-{{ $pembayaran->bulan_ke }}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="date-cell">
+                                        <i class="bi bi-calendar-event"></i>
+                                        <span>{{ $pembayaran->tanggal_jatuh_tempo->format('d/m/Y') }}</span>
                                     </div>
                                 </td>
                                 <td>
@@ -657,22 +731,26 @@
                                         <div class="amount-icon icon-debit">
                                             <i class="bi bi-arrow-down-circle"></i>
                                         </div>
-                                        <span>Rp {{ number_format($item['angsuran'], 0, ',', '.') }}</span>
+                                        <span>Rp {{ number_format($pembayaran->nominal_pembayaran, 0, ',', '.') }}</span>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="amount-cell amount-credit">
-                                        <div class="amount-icon icon-credit">
-                                            <i class="bi bi-wallet2"></i>
-                                        </div>
-                                        <span>Rp {{ number_format($item['sisa'], 0, ',', '.') }}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="status-badge status-unpaid">
-                                        <i class="bi bi-clock"></i>
-                                        <span>Belum Bayar</span>
-                                    </span>
+                                    @if($pembayaran->status == 'sudah_bayar')
+                                        <span class="status-badge status-paid">
+                                            <i class="bi bi-check-circle"></i>
+                                            <span>Sudah Terbayar</span>
+                                        </span>
+                                    @elseif($pembayaran->tanggal_jatuh_tempo->isPast())
+                                        <span class="status-badge status-overdue">
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                            <span>Belum Terbayar</span>
+                                        </span>
+                                    @else
+                                        <span class="status-badge status-upcoming">
+                                            <i class="bi bi-clock"></i>
+                                            <span>Belum Jatuh Tempo</span>
+                                        </span>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

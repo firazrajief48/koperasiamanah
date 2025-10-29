@@ -61,11 +61,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is peminjam
+     * Check if user is anggota
      */
-    public function isPeminjam(): bool
+    public function isAnggota(): bool
     {
-        return $this->hasRole('peminjam');
+        return $this->hasRole('anggota');
     }
 
     /**

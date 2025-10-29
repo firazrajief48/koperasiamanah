@@ -4,9 +4,9 @@
 @section('page-title', 'Profile Akun')
 
 @php
-    $role = 'Peminjam';
+    $role = 'Anggota';
     $nama = $user->name;
-    $routePrefix = 'peminjam';
+    $routePrefix = 'anggota';
     $showAjukan = true;
     $showRiwayat = true;
 @endphp
@@ -444,15 +444,6 @@
             font-weight: 500;
         }
 
-        .logout-icon {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -526,10 +517,6 @@
             <button class="btn-action" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
                 <i class="bi bi-shield-lock"></i>
                 Ubah Password
-            </button>
-            <button class="btn-action danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                <i class="bi bi-box-arrow-right"></i>
-                Logout
             </button>
         </div>
     </div>
@@ -618,7 +605,7 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('peminjam.profile.update') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('anggota.profile.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="update_type" value="photo">
@@ -669,7 +656,7 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('peminjam.profile.update') }}" method="POST">
+                <form action="{{ route('anggota.profile.update') }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
@@ -750,7 +737,7 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('peminjam.profile.update') }}" method="POST">
+                <form action="{{ route('anggota.profile.update') }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
@@ -787,42 +774,6 @@
         </div>
     </div>
 
-    <!-- Logout Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
-            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
-                <div class="modal-header" style="background: white; border: none; padding: 1.5rem; border-radius: 16px 16px 0 0;">
-                    <div class="d-flex align-items-center gap-2">
-                        <div style="width: 52px; height: 52px; background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                            <i class="bi bi-box-arrow-right text-white" style="font-size: 1.375rem;"></i>
-                        </div>
-                        <div>
-                            <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel" style="color: #1f2937; font-size: 1.125rem;">Konfirmasi Logout</h5>
-                            <small style="color: #9ca3af; font-size: 0.813rem;">Keluar dari sistem</small>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" style="padding: 2.5rem 2rem; text-align: center; background: white;">
-                    <div style="width: 72px; height: 72px; border: 5px solid #fbbf24; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
-                        <span style="font-size: 2.75rem; color: #fbbf24; font-weight: 700; line-height: 1;">?</span>
-                    </div>
-                    <h6 style="color: #1f2937; font-weight: 600; margin-bottom: 0.5rem; font-size: 1.063rem;">Apakah Anda yakin ingin keluar?</h6>
-                    <p class="mb-0" style="color: #6b7280; font-size: 0.875rem; line-height: 1.5;">Anda akan keluar dari sistem dan perlu login kembali untuk<br>mengakses dashboard.</p>
-                </div>
-                <div class="modal-footer" style="border: none; padding: 0 1.5rem 1.5rem; gap: 0.75rem; background: white; border-radius: 0 0 16px 16px; display: flex; justify-content: stretch;">
-                    <button type="button" class="btn" data-bs-dismiss="modal" style="flex: 1; background: white; border: 1.5px solid #d1d5db; color: #6b7280; border-radius: 8px; padding: 0.75rem 1rem; font-weight: 500; font-size: 0.938rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s;">
-                        <i class="bi bi-x-circle" style="font-size: 1.125rem;"></i>
-                        <span>Batal</span>
-                    </button>
-                    <button type="button" class="btn" id="confirmLogoutBtn" style="flex: 1; background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); border: none; color: white; border-radius: 8px; padding: 0.75rem 1rem; font-weight: 500; font-size: 0.938rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s;">
-                        <i class="bi bi-box-arrow-right" style="font-size: 1.125rem;"></i>
-                        <span>Ya, Logout</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Success Toast -->
     <div class="toast-container">
@@ -883,37 +834,5 @@
             });
         @endif
 
-        // Handle logout confirmation
-        document.addEventListener('DOMContentLoaded', function() {
-            const logoutModal = document.getElementById('logoutModal');
-            if (logoutModal) {
-                logoutModal.addEventListener('shown.bs.modal', function() {
-                    const confirmLogoutBtn = this.querySelector('#confirmLogoutBtn');
-                    if (confirmLogoutBtn && !confirmLogoutBtn.dataset.listenerAttached) {
-                        confirmLogoutBtn.dataset.listenerAttached = 'true';
-                        confirmLogoutBtn.addEventListener('click', function() {
-                            const originalText = this.innerHTML;
-                            this.innerHTML = '<i class="bi bi-hourglass-split"></i>Logging out...';
-                            this.disabled = true;
-                            this.style.opacity = '0.7';
-
-                            // Create form and submit to logout route
-                            const form = document.createElement('form');
-                            form.method = 'POST';
-                            form.action = '{{ route("logout") }}';
-
-                            const csrfToken = document.createElement('input');
-                            csrfToken.type = 'hidden';
-                            csrfToken.name = '_token';
-                            csrfToken.value = '{{ csrf_token() }}';
-
-                            form.appendChild(csrfToken);
-                            document.body.appendChild(form);
-                            form.submit();
-                        });
-                    }
-                });
-            }
-        });
     </script>
 @endsection

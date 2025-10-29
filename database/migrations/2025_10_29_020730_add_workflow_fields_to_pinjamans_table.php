@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['anggota', 'kepala_bps', 'bendahara_koperasi', 'ketua_koperasi', 'administrator'])->default('anggota')->after('email');
+        Schema::table('pinjamans', function (Blueprint $table) {
+            //
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
+        Schema::table('pinjamans', function (Blueprint $table) {
+            //
         });
     }
 };

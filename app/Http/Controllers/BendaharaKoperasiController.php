@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Pinjaman;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -30,7 +31,7 @@ class BendaharaKoperasiController extends Controller
             'no_hp' => '081234567890',
             'email' => 'andi.wijaya@example.com',
             'jumlah_pinjaman' => 10000000,
-            'metode_pembayaran' => 'Potong Gaji',
+            'metode_pembayaran' => 'Potong Gaji Pokok',
             'tanggal_pengajuan' => '2024-09-15',
             'gaji_pokok' => 8000000,
             'sisa_gaji' => 5500000,
@@ -57,7 +58,7 @@ class BendaharaKoperasiController extends Controller
                 'no_hp' => '081234567890',
                 'email' => 'andi.wijaya@example.com',
                 'tenor' => 24,
-                'metode_pembayaran' => 'Potong Gaji',
+                'metode_pembayaran' => 'Potong Gaji Pokok',
                 'tujuan' => 'Renovasi rumah dan kebutuhan mendesak',
                 'angsuran' => $this->generateAngsuran(10000000, 24),
                 'riwayat' => []
@@ -99,7 +100,7 @@ class BendaharaKoperasiController extends Controller
                 'no_hp' => '081234567892',
                 'email' => 'citra.dewi@example.com',
                 'tenor' => 18,
-                'metode_pembayaran' => 'Potong Gaji',
+                'metode_pembayaran' => 'Potong Gaji Pokok',
                 'tujuan' => 'Biaya pengobatan',
                 'angsuran' => $this->generateAngsuran(15000000, 18),
                 'riwayat' => [
@@ -141,7 +142,7 @@ class BendaharaKoperasiController extends Controller
                 'no_hp' => '081234567894',
                 'email' => 'eka.putri@example.com',
                 'tenor' => 12,
-                'metode_pembayaran' => 'Potong Gaji',
+                'metode_pembayaran' => 'Potong Gaji Pokok',
                 'tujuan' => 'Keperluan pribadi',
                 'angsuran' => $this->generateAngsuran(12000000, 12),
                 'riwayat' => [
@@ -166,7 +167,7 @@ class BendaharaKoperasiController extends Controller
                 'no_hp' => '081234567895',
                 'email' => 'fajar.ramadhan@example.com',
                 'tenor' => 36,
-                'metode_pembayaran' => 'Potong Gaji',
+                'metode_pembayaran' => 'Potong Gaji Pokok',
                 'tujuan' => 'Pembelian kendaraan',
                 'angsuran' => $this->generateAngsuran(20000000, 36),
                 'riwayat' => []
@@ -205,7 +206,7 @@ class BendaharaKoperasiController extends Controller
                 'email' => 'andi.wijaya@example.com',
                 'jumlah_pinjaman' => 10000000,
                 'tenor' => '24 Bulan',
-                'metode_pembayaran' => 'Potong Gaji',
+                'metode_pembayaran' => 'Potong Gaji Pokok',
                 'tanggal_pengajuan' => '2024-09-15',
                 'tujuan' => 'Renovasi rumah dan kebutuhan mendesak',
                 'status' => 'Sedang Diverifikasi Ketua Koperasi',
@@ -247,7 +248,7 @@ class BendaharaKoperasiController extends Controller
                 'email' => 'citra.dewi@example.com',
                 'jumlah_pinjaman' => 15000000,
                 'tenor' => '18 Bulan',
-                'metode_pembayaran' => 'Potong Gaji',
+                'metode_pembayaran' => 'Potong Gaji Pokok',
                 'tanggal_pengajuan' => '2024-09-20',
                 'tujuan' => 'Biaya pengobatan',
                 'status' => 'Diverifikasi',
@@ -289,7 +290,7 @@ class BendaharaKoperasiController extends Controller
                 'email' => 'eka.putri@example.com',
                 'jumlah_pinjaman' => 12000000,
                 'tenor' => '12 Bulan',
-                'metode_pembayaran' => 'Potong Gaji',
+                'metode_pembayaran' => 'Potong Gaji Pokok',
                 'tanggal_pengajuan' => '2024-05-20',
                 'tujuan' => 'Keperluan pribadi',
                 'status' => 'Ditolak',
@@ -314,7 +315,7 @@ class BendaharaKoperasiController extends Controller
                 'email' => 'fajar.ramadhan@example.com',
                 'jumlah_pinjaman' => 20000000,
                 'tenor' => '36 Bulan',
-                'metode_pembayaran' => 'Potong Gaji',
+                'metode_pembayaran' => 'Potong Gaji Pokok',
                 'tanggal_pengajuan' => '2024-08-10',
                 'tujuan' => 'Pembelian kendaraan',
                 'status' => 'Sedang Diverifikasi Ketua Koperasi',
@@ -368,13 +369,26 @@ class BendaharaKoperasiController extends Controller
 
     public function transparansi()
     {
-        $pinjaman = [
-            ['id' => 1, 'nama' => 'Andi Wijaya', 'nip' => '199001012020', 'jumlah' => 20000000, 'total_bayar' => 5000000, 'jumlah_bayar' => 3000000, 'sisa' => 12000000, 'status' => 'Belum Lunas'],
-            ['id' => 2, 'nama' => 'Budi Santoso', 'nip' => '199002022021', 'jumlah' => 15000000, 'total_bayar' => 10000000, 'jumlah_bayar' => 5000000, 'sisa' => 0, 'status' => 'Lunas'],
-            ['id' => 3, 'nama' => 'Citra Dewi', 'nip' => '199003032022', 'jumlah' => 25000000, 'total_bayar' => 4000000, 'jumlah_bayar' => 3000000, 'sisa' => 18000000, 'status' => 'Belum Lunas'],
-            ['id' => 4, 'nama' => 'Dedi Kurniawan', 'nip' => '199004042023', 'jumlah' => 18000000, 'total_bayar' => 8000000, 'jumlah_bayar' => 5000000, 'sisa' => 5000000, 'status' => 'Belum Lunas'],
-            ['id' => 5, 'nama' => 'Eka Putri', 'nip' => '199005052024', 'jumlah' => 12000000, 'total_bayar' => 7000000, 'jumlah_bayar' => 5000000, 'sisa' => 0, 'status' => 'Lunas'],
-        ];
+        // Get all approved loans with user data
+        $pinjamans = Pinjaman::with('user')
+            ->whereIn('status', ['disetujui', 'lunas'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $pinjaman = [];
+        foreach ($pinjamans as $p) {
+            $statusLabel = $p->sisa_pinjaman > 0 ? 'Berjalan' : 'Lunas';
+
+            $pinjaman[] = [
+                'id' => $p->id,
+                'nama' => $p->user->name,
+                'nip' => $p->user->nip ?? 'N/A',
+                'jumlah' => $p->jumlah_pinjaman,
+                'total_bayar' => $p->jumlah_pinjaman - $p->sisa_pinjaman,
+                'sisa' => $p->sisa_pinjaman,
+                'status' => $statusLabel
+            ];
+        }
 
         return view('bendahara_koperasi.transparansi', compact('pinjaman'));
     }

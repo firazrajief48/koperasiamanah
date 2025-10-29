@@ -4,20 +4,11 @@
 @section('page-title', 'Riwayat Pinjaman')
 
 @php
-    $role = 'Peminjam';
+    $role = 'Anggota';
     $nama = auth()->user()->name;
-    $routePrefix = 'peminjam';
+    $routePrefix = 'anggota';
     $showAjukan = true;
     $showRiwayat = true;
-
-    // Logika pengurutan riwayat pinjaman
-    // Urutkan berdasarkan tanggal DESC (terbaru di atas, terlama di bawah)
-    $riwayatSorted = collect($riwayat)
-        ->sortByDesc(function($item) {
-            return strtotime($item['tanggal']);
-        })
-        ->values()
-        ->all();
 @endphp
 
 @section('main-content')
@@ -532,6 +523,15 @@
         }
     </style>
 
+    <!-- Success Alert -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 12px; border: none; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(52, 211, 153, 0.1) 100%); border-left: 4px solid #10b981; color: #047857; font-weight: 500; margin-bottom: 1.5rem;">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <!-- Page Header -->
     <div class="page-header-banner">
         <div class="header-content">
@@ -546,7 +546,7 @@
             </div>
             <div class="header-badge">
                 <i class="bi bi-list-check"></i>
-                <span>{{ count($riwayat) }} Pengajuan</span>
+                <span>{{ count($pinjamans) }} Pengajuan</span>
             </div>
         </div>
     </div>
@@ -559,7 +559,7 @@
         </div>
 
         <div class="table-responsive">
-            @if(count($riwayat) > 0)
+            @if(count($pinjamans) > 0)
                 <table class="modern-table">
                     <thead>
                         <tr>
@@ -572,73 +572,49 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($riwayatSorted as $index => $r)
+                        @forelse ($pinjamans as $pinjaman)
                             <tr>
                                 <td>
-                                    <div class="id-badge">{{ $index + 1 }}</div>
+                                    <div class="id-badge">{{ $pinjaman->id }}</div>
                                 </td>
                                 <td>
                                     <div class="date-cell">
                                         <div class="date-icon">
                                             <i class="bi bi-calendar-event"></i>
                                         </div>
-                                        <span>{{ date('d/m/Y', strtotime($r['tanggal'])) }}</span>
+                                        <span>{{ $pinjaman->created_at->format('d/m/Y') }}</span>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="amount-cell">
-                                        Rp {{ number_format($r['jumlah'], 0, ',', '.') }}
+                                        Rp {{ number_format($pinjaman->jumlah_pinjaman, 0, ',', '.') }}
                                     </div>
                                 </td>
                                 <td>
                                     <span class="tenor-badge">
                                         <i class="bi bi-hourglass-split"></i>
-                                        {{ $r['tenor'] }}
+                                        {{ $pinjaman->tenor_bulan }} Bulan
                                     </span>
                                 </td>
                                 <td>
                                     <div class="status-container">
-                                        @if ($r['status'] == 'Disetujui')
+                                        @if ($pinjaman->status == 'disetujui')
                                             <span class="status-badge status-disetujui">
                                                 <i class="bi bi-check-circle-fill"></i>
                                                 Disetujui
                                             </span>
-                                        @elseif($r['status'] == 'Lunas')
+                                        @elseif($pinjaman->status == 'lunas')
                                             <span class="status-badge status-lunas">
                                                 <i class="bi bi-patch-check-fill"></i>
                                                 Lunas
                                             </span>
-                                        @elseif($r['status'] == 'Ditolak')
-                                            <span class="status-badge status-ditolak">
+                                        @elseif($pinjaman->status_detail == 'ditolak')
+                                            <span class="status-badge status-ditolak" style="cursor: pointer;"
+                                                  onclick="showRejectReason('{{ addslashes($pinjaman->alasan_penolakan ?? 'Tidak ada alasan yang diberikan') }}', '{{ $pinjaman->disetujui_oleh ?? 'Admin' }}')">
                                                 <i class="bi bi-x-circle-fill"></i>
-                                                Ditolak
+                                                Ditolak (Klik untuk lihat alasan)
                                             </span>
-                                        @elseif($r['status'] == 'Menunggu Verifikasi')
-                                            @php
-                                                // Cek tahap verifikasi berdasarkan data tambahan
-                                                $tahapVerifikasi = $r['tahap_verifikasi'] ?? 'validator1';
-
-                                                if ($tahapVerifikasi == 'validator1' || !isset($r['tahap_verifikasi'])) {
-                                                    $textVerifikasi = 'Bendahara Koperasi';
-                                                } elseif ($tahapVerifikasi == 'validator2') {
-                                                    $textVerifikasi = 'Ketua Koperasi';
-                                                } elseif ($tahapVerifikasi == 'kepala_bps') {
-                                                    $textVerifikasi = 'Kepala BPS';
-                                                } else {
-                                                    $textVerifikasi = '';
-                                                }
-                                            @endphp
-                                            <span class="status-badge status-menunggu">
-                                                <i class="bi bi-clock-fill"></i>
-                                                Menunggu Verifikasi
-                                            </span>
-                                            @if($textVerifikasi)
-                                                <span class="status-detail">
-                                                    <i class="bi bi-arrow-right-circle-fill"></i>
-                                                    {{ $textVerifikasi }}
-                                                </span>
-                                            @endif
-                                        @elseif($r['status'] == 'Verifikasi Validator 1')
+                                        @elseif($pinjaman->status_detail == 'menunggu_persetujuan_bendahara')
                                             <span class="status-badge status-menunggu">
                                                 <i class="bi bi-clock-fill"></i>
                                                 Menunggu Verifikasi
@@ -647,7 +623,7 @@
                                                 <i class="bi bi-arrow-right-circle-fill"></i>
                                                 Bendahara Koperasi
                                             </span>
-                                        @elseif($r['status'] == 'Verifikasi Validator 2')
+                                        @elseif($pinjaman->status_detail == 'menunggu_persetujuan_ketua')
                                             <span class="status-badge status-menunggu">
                                                 <i class="bi bi-clock-fill"></i>
                                                 Menunggu Verifikasi
@@ -656,7 +632,7 @@
                                                 <i class="bi bi-arrow-right-circle-fill"></i>
                                                 Ketua Koperasi
                                             </span>
-                                        @elseif($r['status'] == 'Verifikasi Kepala BPS')
+                                        @elseif($pinjaman->status_detail == 'menunggu_persetujuan_kepala')
                                             <span class="status-badge status-menunggu">
                                                 <i class="bi bi-clock-fill"></i>
                                                 Menunggu Verifikasi
@@ -667,19 +643,26 @@
                                             </span>
                                         @else
                                             <span class="status-badge status-menunggu">
-                                                <i class="bi bi-clock-fill"></i>
-                                                {{ $r['status'] }}
+                                                <i class="bi bi-hourglass-split"></i>
+                                                {{ ucfirst($pinjaman->status) }}
                                             </span>
                                         @endif
                                     </div>
                                 </td>
                                 <td>
                                     <div class="sisa-amount">
-                                        Rp {{ number_format($r['sisa'], 0, ',', '.') }}
+                                        Rp {{ number_format($pinjaman->sisa_pinjaman, 0, ',', '.') }}
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox me-2"></i>
+                                    Belum ada riwayat pinjaman
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             @else
@@ -689,7 +672,7 @@
                     </div>
                     <h5>Belum Ada Riwayat Pinjaman</h5>
                     <p>Anda belum mengajukan pinjaman. Klik tombol di bawah untuk memulai pengajuan.</p>
-                    <a href="{{ route('peminjam.ajukan') }}" class="btn btn-primary">
+                    <a href="{{ route('anggota.ajukan') }}" class="btn btn-primary">
                         <i class="bi bi-plus-circle"></i>
                         Ajukan Pinjaman
                     </a>
@@ -697,4 +680,12 @@
             @endif
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+            function showRejectReason(reason, rejectedBy) {
+                alert('Alasan Penolakan:\n\n' + reason + '\n\nDitolak oleh: ' + rejectedBy);
+            }
+        </script>
+    @endpush
 @endsection

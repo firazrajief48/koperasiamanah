@@ -20,6 +20,10 @@ class Pinjaman extends Model
         'sisa_pinjaman',
         'gaji_pokok',
         'status',
+        'status_detail',
+        'alasan_penolakan',
+        'disetujui_oleh',
+        'tanggal_persetujuan',
         'keterangan',
     ];
 
@@ -36,5 +40,10 @@ class Pinjaman extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function pembayarans()
+    {
+        return $this->hasMany(Pembayaran::class);
     }
 }
