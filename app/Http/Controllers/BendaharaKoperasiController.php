@@ -11,168 +11,64 @@ class BendaharaKoperasiController extends Controller
 {
     public function dashboard()
     {
-        $pengajuan = [
-            ['id' => 1, 'nama' => 'Andi Wijaya', 'jumlah' => 10000000, 'tanggal' => '2024-09-15', 'status' => 'Diverifikasi Kantor'],
-            ['id' => 2, 'nama' => 'Citra Dewi', 'jumlah' => 15000000, 'tanggal' => '2024-09-20', 'status' => 'Menunggu'],
-            ['id' => 3, 'nama' => 'Eka Putri', 'jumlah' => 12000000, 'tanggal' => '2024-09-25', 'status' => 'Selesai'],
-        ];
+        // Tampilkan hanya pengajuan yang masih menunggu verifikasi bendahara
+        $pinjamans = Pinjaman::with('user')
+            ->where('status_detail', 'menunggu_persetujuan_bendahara')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        return view('bendahara_koperasi.dashboard', compact('pengajuan'));
+        return view('bendahara_koperasi.dashboard', compact('pinjamans'));
     }
 
     public function detailPengajuan($id)
     {
-        $pengajuan = [
-            'id' => $id,
-            'nama' => 'Andi Wijaya',
-            'nip' => '199001012020',
-            'jabatan' => 'Staff IT',
-            'golongan' => 'III/A',
-            'no_hp' => '081234567890',
-            'email' => 'andi.wijaya@example.com',
-            'jumlah_pinjaman' => 10000000,
-            'metode_pembayaran' => 'Potong Gaji Pokok',
-            'tanggal_pengajuan' => '2024-09-15',
-            'gaji_pokok' => 8000000,
-            'sisa_gaji' => 5500000,
-            'tujuan' => 'Renovasi rumah dan kebutuhan mendesak',
-            'angsuran_per_bulan' => 2000000,
-            'status' => 'Diverifikasi Kantor'
-        ];
-
-        return view('bendahara_koperasi.detail', compact('pengajuan'));
+        $pinjaman = Pinjaman::with('user')->findOrFail($id);
+        return view('bendahara_koperasi.detail', compact('pinjaman'));
     }
 
     public function laporanPinjaman()
     {
-        $laporan = [
-            [
-                'nama' => 'Andi Wijaya',
-                'jumlah' => 10000000,
-                'status' => 'Sedang Diverifikasi Ketua Koperasi',
-                'tanggal' => '2024-09-15',
-                'link_pdf' => route('download.pdf', 'laporan-pinjaman-andi-wijaya.pdf'),
-                'nip' => '199001012020',
-                'jabatan' => 'Staff IT',
-                'golongan' => 'III/A',
-                'no_hp' => '081234567890',
-                'email' => 'andi.wijaya@example.com',
-                'tenor' => 24,
-                'metode_pembayaran' => 'Potong Gaji Pokok',
-                'tujuan' => 'Renovasi rumah dan kebutuhan mendesak',
-                'angsuran' => $this->generateAngsuran(10000000, 24),
-                'riwayat' => []
-            ],
-            [
-                'nama' => 'Budi Santoso',
-                'jumlah' => 15000000,
-                'status' => 'Diverifikasi',
-                'tanggal' => '2024-01-10',
-                'link_pdf' => route('download.pdf', 'laporan-pinjaman-budi-santoso.pdf'),
-                'nip' => '199002022021',
-                'jabatan' => 'Kepala Bagian Keuangan',
-                'golongan' => 'III/C',
-                'no_hp' => '081234567891',
-                'email' => 'budi.santoso@example.com',
-                'tenor' => 36,
-                'metode_pembayaran' => 'Transfer Bank',
-                'tujuan' => 'Pendidikan anak',
-                'angsuran' => $this->generateAngsuran(15000000, 36),
-                'riwayat' => [
-                    [
-                        'verifier' => 'Siti Nurhaliza',
-                        'jabatan' => 'Bendahara Koperasi',
-                        'tanggal' => '12/01/2024 14:30',
-                        'status' => 'Diverifikasi',
-                        'catatan' => 'Dokumen lengkap dan memenuhi syarat'
-                    ]
-                ]
-            ],
-            [
-                'nama' => 'Citra Dewi',
-                'jumlah' => 15000000,
-                'status' => 'Diverifikasi',
-                'tanggal' => '2024-09-20',
-                'link_pdf' => route('download.pdf', 'laporan-pinjaman-citra-dewi.pdf'),
-                'nip' => '199003032022',
-                'jabatan' => 'Staff Administrasi',
-                'golongan' => 'III/B',
-                'no_hp' => '081234567892',
-                'email' => 'citra.dewi@example.com',
-                'tenor' => 18,
-                'metode_pembayaran' => 'Potong Gaji Pokok',
-                'tujuan' => 'Biaya pengobatan',
-                'angsuran' => $this->generateAngsuran(15000000, 18),
-                'riwayat' => [
-                    [
-                        'verifier' => 'Siti Nurhaliza',
-                        'jabatan' => 'Bendahara Koperasi',
-                        'tanggal' => '22/09/2024 10:15',
-                        'status' => 'Diverifikasi',
-                        'catatan' => 'Pengajuan untuk keperluan medis, disetujui dengan tenor 18 bulan'
-                    ]
-                ]
-            ],
-            [
-                'nama' => 'Dedi Kurniawan',
-                'jumlah' => 18000000,
-                'status' => 'Sedang Diverifikasi Kepala BPS Kota Surabaya',
-                'tanggal' => '2024-03-15',
-                'link_pdf' => route('download.pdf', 'laporan-pinjaman-dedi-kurniawan.pdf'),
-                'nip' => '199004042023',
-                'jabatan' => 'Supervisor Operasional',
-                'golongan' => 'IV/A',
-                'no_hp' => '081234567893',
-                'email' => 'dedi.kurniawan@example.com',
-                'tenor' => 30,
-                'metode_pembayaran' => 'Transfer Bank',
-                'tujuan' => 'Investasi usaha',
-                'angsuran' => $this->generateAngsuran(18000000, 30),
-                'riwayat' => []
-            ],
-            [
-                'nama' => 'Eka Putri',
-                'jumlah' => 12000000,
-                'status' => 'Ditolak',
-                'tanggal' => '2024-05-20',
-                'link_pdf' => route('download.pdf', 'laporan-pinjaman-eka-putri.pdf'),
-                'nip' => '199005052024',
-                'jabatan' => 'Staff IT',
-                'golongan' => 'III/A',
-                'no_hp' => '081234567894',
-                'email' => 'eka.putri@example.com',
-                'tenor' => 12,
-                'metode_pembayaran' => 'Potong Gaji Pokok',
-                'tujuan' => 'Keperluan pribadi',
-                'angsuran' => $this->generateAngsuran(12000000, 12),
-                'riwayat' => [
-                    [
-                        'verifier' => 'Siti Nurhaliza',
-                        'jabatan' => 'Bendahara Koperasi',
-                        'tanggal' => '23/05/2024 09:45',
-                        'status' => 'Ditolak',
-                        'catatan' => 'Sisa gaji tidak mencukupi untuk angsuran yang diajukan'
-                    ]
-                ]
-            ],
-            [
-                'nama' => 'Fajar Ramadhan',
-                'jumlah' => 20000000,
-                'status' => 'Sedang Diverifikasi Ketua Koperasi',
-                'tanggal' => '2024-08-10',
-                'link_pdf' => route('download.pdf', 'laporan-pinjaman-fajar-ramadhan.pdf'),
-                'nip' => '199006062025',
-                'jabatan' => 'Kepala Bagian IT',
-                'golongan' => 'IV/B',
-                'no_hp' => '081234567895',
-                'email' => 'fajar.ramadhan@example.com',
-                'tenor' => 36,
-                'metode_pembayaran' => 'Potong Gaji Pokok',
-                'tujuan' => 'Pembelian kendaraan',
-                'angsuran' => $this->generateAngsuran(20000000, 36),
-                'riwayat' => []
-            ]
-        ];
+        // Ambil semua pinjaman yang sudah keluar dari antrian bendahara
+        $pinjamans = Pinjaman::with('user')
+            ->where('status_detail', '!=', 'menunggu_persetujuan_bendahara')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $laporan = [];
+        foreach ($pinjamans as $p) {
+            // Mapping status untuk tampilan
+            $statusLabel = '';
+            switch ($p->status_detail) {
+                case 'menunggu_persetujuan_ketua':
+                    $statusLabel = 'Sedang Diverifikasi Ketua Koperasi';
+                    break;
+                case 'menunggu_persetujuan_kepala':
+                    $statusLabel = 'Sedang Diverifikasi Kepala BPS Kota Surabaya';
+                    break;
+                case 'ditolak':
+                    $statusLabel = 'Ditolak';
+                    break;
+                default:
+                    $statusLabel = ucfirst($p->status);
+            }
+
+            $laporan[] = [
+                'nama' => $p->user->name,
+                'jumlah' => (float) $p->jumlah_pinjaman,
+                'status' => $statusLabel,
+                'tanggal' => $p->created_at->toDateString(),
+                // Detail untuk modal (opsional)
+                'nip' => $p->user->nip ?? '-',
+                'jabatan' => $p->user->jabatan ?? '-',
+                'golongan' => $p->user->golongan ?? '-',
+                'no_hp' => $p->user->phone ?? '-',
+                'email' => $p->user->email,
+                'tenor' => $p->tenor_bulan,
+                'metode_pembayaran' => $p->metode_pembayaran === 'potong_gaji' ? 'Potong Gaji Pokok' : 'Potong Tunjangan Kinerja',
+                'tujuan' => $p->keterangan ?? '-',
+                'angsuran' => $this->generateAngsuran((float) $p->jumlah_pinjaman, (int) $p->tenor_bulan),
+            ];
+        }
 
         return view('bendahara_koperasi.laporan', compact('laporan'));
     }
@@ -334,37 +230,41 @@ class BendaharaKoperasiController extends Controller
     public function submitVerifikasi(Request $request)
     {
         $validated = $request->validate([
-            'id' => 'required|integer',
+            'id' => 'required|integer|exists:pinjamans,id',
             'gaji_pokok' => 'required|numeric|min:0',
             'sisa_gaji' => 'required|numeric|min:0',
-            'catatan' => 'nullable|string|max:500',
-            'status' => 'required|in:Diverifikasi,Ditolak'
+            'catatan' => 'nullable|string|max:1000',
+            'aksi' => 'required|in:setujui,tolak',
         ]);
 
-        $verifier = [
-            'nama' => 'Siti Nurhaliza',
-            'jabatan' => 'Bendahara Koperasi'
-        ];
+        $pinjaman = Pinjaman::findOrFail($validated['id']);
 
-        $response = [
+        $pinjaman->gaji_pokok = $validated['gaji_pokok'];
+        // sisa_gaji tidak disimpan sebagai kolom; gunakan pada validasi logika jika diperlukan
+
+        if ($validated['aksi'] === 'setujui') {
+            $pinjaman->status = 'menunggu';
+            $pinjaman->status_detail = 'menunggu_persetujuan_ketua';
+            $pinjaman->alasan_penolakan = null;
+            $pinjaman->disetujui_oleh = auth()->user()->name;
+            $pinjaman->tanggal_persetujuan = now();
+        } else {
+            $request->validate(['catatan' => 'required|string|max:1000']);
+            $pinjaman->status = 'menunggu';
+            $pinjaman->status_detail = 'ditolak';
+            $pinjaman->alasan_penolakan = $validated['catatan'];
+            $pinjaman->disetujui_oleh = auth()->user()->name;
+            $pinjaman->tanggal_persetujuan = now();
+        }
+
+        $pinjaman->save();
+
+        return response()->json([
             'success' => true,
-            'message' => $validated['status'] === 'Diverifikasi'
-                ? 'Pinjaman berhasil disetujui!'
-                : 'Pinjaman berhasil ditolak!',
-            'data' => [
-                'status' => $validated['status'],
-                'verifier' => $verifier['nama'],
-                'jabatan' => $verifier['jabatan'],
-                'tanggal' => now()->format('d/m/Y H:i'),
-                'gaji_pokok' => $validated['gaji_pokok'],
-                'sisa_gaji' => $validated['sisa_gaji'],
-                'catatan' => $validated['catatan'] ?: ($validated['status'] === 'Diverifikasi'
-                    ? 'Dokumen lengkap dan memenuhi syarat'
-                    : 'Tidak memenuhi syarat')
-            ]
-        ];
-
-        return response()->json($response);
+            'message' => $validated['aksi'] === 'setujui'
+                ? 'Pengajuan diteruskan ke Ketua Koperasi.'
+                : 'Pengajuan ditolak dengan alasan tersimpan.',
+        ]);
     }
 
     public function transparansi()

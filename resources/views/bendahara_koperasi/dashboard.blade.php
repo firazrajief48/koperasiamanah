@@ -564,7 +564,7 @@
                 </div>
                 <div class="table-header-badge">
                     <i class="bi bi-list-check"></i>
-                    <span>{{ count($pengajuan) }} Pengajuan</span>
+                    <span>{{ $pinjamans->count() }} Pengajuan</span>
                 </div>
             </div>
         </div>
@@ -582,18 +582,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($pengajuan as $p)
+                    @foreach ($pinjamans as $p)
                         <tr>
                             <td>
-                                <div class="id-badge">{{ $p['id'] }}</div>
+                                <div class="id-badge">{{ $p->id }}</div>
                             </td>
                             <td>
                                 <div class="name-cell">
                                     <div class="name-avatar">
-                                        {{ strtoupper(substr($p['nama'], 0, 1)) }}
+                                        {{ strtoupper(substr($p->user->name, 0, 1)) }}
                                     </div>
                                     <div class="name-info">
-                                        <div class="name-primary">{{ $p['nama'] }}</div>
+                                        <div class="name-primary">{{ $p->user->name }}</div>
                                         <div class="name-secondary">Anggota Koperasi</div>
                                     </div>
                                 </div>
@@ -603,23 +603,32 @@
                                     <div class="amount-icon">
                                         <i class="bi bi-cash"></i>
                                     </div>
-                                    <span>Rp {{ number_format($p['jumlah'], 0, ',', '.') }}</span>
+                                    <span>Rp {{ number_format($p->jumlah_pinjaman, 0, ',', '.') }}</span>
                                 </div>
                             </td>
                             <td>
                                 <div class="date-badge">
                                     <i class="bi bi-calendar-event"></i>
-                                    <span>{{ date('d/m/Y', strtotime($p['tanggal'])) }}</span>
+                                    <span>{{ $p->created_at->format('d/m/Y') }}</span>
                                 </div>
                             </td>
                             <td>
+                                @php
+                                    $pos = $p->status_detail;
+                                @endphp
                                 <span class="status-badge status-pending">
                                     <i class="bi bi-clock"></i>
-                                    <span>Menunggu</span>
+                                    @switch($pos)
+                                        @case('menunggu_persetujuan_bendahara') Menunggu (Bendahara) @break
+                                        @case('menunggu_persetujuan_ketua') Menunggu (Ketua) @break
+                                        @case('menunggu_persetujuan_kepala') Menunggu (Kepala) @break
+                                        @case('ditolak') Ditolak @break
+                                        @default {{ ucfirst($p->status) }}
+                                    @endswitch
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('bendahara_koperasi.detail', $p['id']) }}" class="btn-detail">
+                                <a href="{{ route('bendahara_koperasi.detail', $p->id) }}" class="btn-detail">
                                     <i class="bi bi-eye"></i>
                                     <span>Detail</span>
                                 </a>
