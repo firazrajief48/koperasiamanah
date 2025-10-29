@@ -717,43 +717,32 @@
                     <div class="row g-3 mb-4">
                         <div class="col-12">
                             <div class="p-3" style="background: #f8fafc; border-radius: 8px; border: 1px solid #e5e7eb;">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span style="color: #6b7280; font-size: 0.875rem;">Jumlah Pinjaman:</span>
-                                            <strong id="konfirm-jumlah" style="color: #1f2937;">-</strong>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span style="color: #6b7280; font-size: 0.875rem;">Tenor:</span>
-                                            <strong id="konfirm-tenor" style="color: #1f2937;">-</strong>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span style="color: #6b7280; font-size: 0.875rem;">Cicilan per Bulan:</span>
-                                            <strong id="konfirm-cicilan" style="color: #dc2626;">-</strong>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span style="color: #6b7280; font-size: 0.875rem;">Total Dibayar:</span>
-                                            <strong id="konfirm-total" style="color: #dc2626;">-</strong>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span style="color: #6b7280; font-size: 0.875rem;">Biaya Admin:</span>
-                                            <strong id="konfirm-admin" style="color: #f59e0b;">-</strong>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span style="color: #6b7280; font-size: 0.875rem;">Jumlah Diterima:</span>
-                                            <strong id="konfirm-diterima" style="color: #059669;">-</strong>
-                                        </div>
-                                    </div>
+                                <style>
+                                    .confirm-grid{display:grid;grid-template-columns:1fr auto;gap:10px 16px}
+                                    .confirm-label{color:#6b7280;font-size:.875rem}
+                                    .confirm-value{color:#1f2937;font-weight:700;text-align:right;min-width:140px}
+                                    .confirm-value.danger{color:#dc2626}
+                                    .confirm-value.warning{color:#f59e0b}
+                                    .confirm-value.success{color:#059669}
+                                </style>
+                                <div class="confirm-grid">
+                                    <span class="confirm-label">Jumlah Pinjaman:</span>
+                                    <strong id="konfirm-jumlah" class="confirm-value">-</strong>
+
+                                    <span class="confirm-label">Tenor:</span>
+                                    <strong id="konfirm-tenor" class="confirm-value">-</strong>
+
+                                    <span class="confirm-label">Cicilan per Bulan:</span>
+                                    <strong id="konfirm-cicilan" class="confirm-value danger">-</strong>
+
+                                    <span class="confirm-label">Total Dibayar:</span>
+                                    <strong id="konfirm-total" class="confirm-value danger">-</strong>
+
+                                    <span class="confirm-label">Biaya Admin:</span>
+                                    <strong id="konfirm-admin" class="confirm-value warning">-</strong>
+
+                                    <span class="confirm-label">Jumlah Diterima:</span>
+                                    <strong id="konfirm-diterima" class="confirm-value success">-</strong>
                                 </div>
                             </div>
                         </div>
@@ -762,21 +751,12 @@
                     <!-- Detail Lainnya -->
                     <div class="mb-4">
                         <div class="p-3" style="background: #f8fafc; border-radius: 8px; border: 1px solid #e5e7eb;">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span style="color: #6b7280; font-size: 0.875rem;">Metode Pembayaran:</span>
-                                        <strong id="konfirm-metode" style="color: #1f2937;">-</strong>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div>
-                                        <span style="color: #6b7280; font-size: 0.875rem;">Keperluan:</span>
-                                        <div class="mt-1">
-                                            <em id="konfirm-keperluan" style="color: #1f2937; font-size: 0.875rem;">-</em>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="confirm-grid">
+                                <span class="confirm-label">Metode Pembayaran:</span>
+                                <strong id="konfirm-metode" class="confirm-value" style="white-space: nowrap;">-</strong>
+
+                                <span class="confirm-label">Keperluan:</span>
+                                <em id="konfirm-keperluan" style="color:#1f2937;font-size:.875rem;text-align:right;white-space: normal; word-break: break-word; overflow-wrap: anywhere; display: block; max-height: 4.5rem; overflow-y: auto;">-</em>
                             </div>
                         </div>
                     </div>
@@ -1120,7 +1100,7 @@
 
                 // Ambil data untuk konfirmasi
                 const jumlah = parseInt(jumlahPinjaman.value);
-                const tenor = parseInt(tenorCicilan.value);
+                const tenor = parseInt(tenorCicilan);
                 const data = tabelPinjaman[jumlah];
 
                 // Debug log untuk melihat apa yang terjadi

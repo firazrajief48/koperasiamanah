@@ -253,6 +253,28 @@
             scrollbar-color: rgba(37, 99, 235, 0.3) transparent;
         }
 
+        /* Collapsed sidebar styles */
+        body.sidebar-collapsed .sidebar {
+            width: 80px;
+        }
+        body.sidebar-collapsed .sidebar .text-center h6,
+        body.sidebar-collapsed .sidebar .text-center small,
+        body.sidebar-collapsed .sidebar hr {
+            display: none !important;
+        }
+        body.sidebar-collapsed .sidebar .nav-link span {
+            display: none;
+        }
+        body.sidebar-collapsed .sidebar .nav-link {
+            justify-content: center;
+        }
+        body.sidebar-collapsed .sidebar .profile-avatar { width: 48px; height: 48px; }
+        body.sidebar-collapsed main { margin-left: 80px !important; }
+        /* Toggle button placement hint for fixed sidebar width changes */
+        @media (min-width: 769px) {
+            #sidebarToggleBtn { margin-left: 0.5rem; }
+        }
+
         .sidebar::-webkit-scrollbar {
             width: 6px;
         }
@@ -614,6 +636,8 @@
             main {
                 margin-left: 0 !important;
             }
+            /* On mobile, ignore collapsed class and use drawer behavior */
+            body.sidebar-collapsed .sidebar { width: 280px; }
         }
 
         @keyframes fadeInUp {

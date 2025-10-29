@@ -19,6 +19,7 @@ class Pinjaman extends Model
         'bulan_terbayar',
         'sisa_pinjaman',
         'gaji_pokok',
+        'metode_pembayaran',
         'status',
         'status_detail',
         'alasan_penolakan',
