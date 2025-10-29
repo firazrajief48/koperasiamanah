@@ -160,28 +160,28 @@
         }
 
         footer .container {
-            text-align: center;
+            text-align: left;
         }
 
         footer .row {
-            justify-content: center;
+            justify-content: flex-start;
         }
 
         footer .col-lg-4,
         footer .col-lg-3,
         footer .col-lg-2 {
-            text-align: center;
+            text-align: left;
             margin-bottom: 2rem;
         }
 
         footer h5,
         footer h6 {
-            text-align: center;
+            text-align: left;
             margin-bottom: 1rem;
         }
 
         footer .d-flex {
-            justify-content: center;
+            justify-content: flex-start;
         }
 
         footer .list-unstyled {
@@ -191,23 +191,6 @@
 
         footer .btn {
             margin: 0 0.25rem;
-        }
-
-        @media (min-width: 992px) {
-            footer .col-lg-4,
-            footer .col-lg-3,
-            footer .col-lg-2 {
-                text-align: left;
-            }
-
-            footer h5,
-            footer h6 {
-                text-align: left;
-            }
-
-            footer .d-flex {
-                justify-content: flex-start;
-            }
         }
 
         footer::before {

@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\PeminjamController;
+use App\Http\Controllers\PeminjamController as AnggotaController;
 use App\Http\Controllers\BendaharaKantorController;
 use App\Http\Controllers\BendaharaKoperasiController;
 use App\Http\Controllers\KepalaKoperasiController;
@@ -28,14 +28,15 @@ Route::get('/download-pdf/{filename}', function ($filename) {
     abort(404);
 })->name('download.pdf');
 
-// Peminjam Routes (protected)
-Route::prefix('peminjam')->name('peminjam.')->middleware(['auth', 'role:peminjam'])->group(function () {
-    Route::get('/dashboard', [PeminjamController::class, 'dashboard'])->name('dashboard');
-    Route::get('/profile', [PeminjamController::class, 'profile'])->name('profile');
-    Route::put('/profile', [PeminjamController::class, 'updateProfile'])->name('profile.update');
-    Route::get('/ajukan-pinjaman', [PeminjamController::class, 'ajukanPinjaman'])->name('ajukan');
-    Route::get('/riwayat-pinjaman', [PeminjamController::class, 'riwayatPinjaman'])->name('riwayat');
-    Route::get('/transparansi', [PeminjamController::class, 'transparansi'])->name('transparansi');
+// Anggota Routes (protected)
+Route::prefix('anggota')->name('anggota.')->middleware(['auth', 'role:anggota'])->group(function () {
+    Route::get('/dashboard', [AnggotaController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [AnggotaController::class, 'profile'])->name('profile');
+    Route::put('/profile', [AnggotaController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/ajukan-pinjaman', [AnggotaController::class, 'ajukanPinjaman'])->name('ajukan');
+    Route::post('/ajukan-pinjaman', [AnggotaController::class, 'storePinjaman'])->name('ajukan.store');
+    Route::get('/riwayat-pinjaman', [AnggotaController::class, 'riwayatPinjaman'])->name('riwayat');
+    Route::get('/transparansi', [AnggotaController::class, 'transparansi'])->name('transparansi');
 });
 
 // Kepala BPS Routes (protected)

@@ -51,8 +51,11 @@
                             <i class="bi bi-cash-stack text-white fs-4"></i>
                         </div>
                         <div>
-                            <h3 class="fw-bold mb-0" style="color: var(--dark-navy);">Rp 0</h3>
-                            <p class="text-muted mb-0">Total Simpanan</p>
+                            @php
+                                $totalPinjaman = collect($pinjaman)->sum('jumlah');
+                            @endphp
+                            <h3 class="fw-bold mb-0" style="color: var(--dark-navy);">Rp {{ number_format($totalPinjaman, 0, ',', '.') }}</h3>
+                            <p class="text-muted mb-0">Total Pinjaman</p>
                         </div>
                     </div>
                 </div>
@@ -67,8 +70,11 @@
                             <i class="bi bi-credit-card text-white fs-4"></i>
                         </div>
                         <div>
-                            <h3 class="fw-bold mb-0" style="color: var(--dark-navy);">Rp 0</h3>
-                            <p class="text-muted mb-0">Total Pinjaman</p>
+                            @php
+                                $totalDibayar = collect($pinjaman)->sum('total_bayar');
+                            @endphp
+                            <h3 class="fw-bold mb-0" style="color: var(--dark-navy);">Rp {{ number_format($totalDibayar, 0, ',', '.') }}</h3>
+                            <p class="text-muted mb-0">Total Dibayar</p>
                         </div>
                     </div>
                 </div>
@@ -83,10 +89,79 @@
                             <i class="bi bi-graph-up text-white fs-4"></i>
                         </div>
                         <div>
-                            <h3 class="fw-bold mb-0" style="color: var(--dark-navy);">Rp 0</h3>
-                            <p class="text-muted mb-0">Keuntungan</p>
+                            @php
+                                $sisaPinjaman = collect($pinjaman)->sum('sisa');
+                            @endphp
+                            <h3 class="fw-bold mb-0" style="color: var(--dark-navy);">Rp {{ number_format($sisaPinjaman, 0, ',', '.') }}</h3>
+                            <p class="text-muted mb-0">Sisa Pinjaman</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabel Pinjaman -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-header bg-transparent border-0 p-4">
+                    <h5 class="fw-bold mb-0" style="color: var(--dark-navy);">
+                        <i class="bi bi-list-ul me-2"></i>Daftar Pinjaman Anggota
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    @if(count($pinjaman) > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th>NIP</th>
+                                        <th>Jumlah Pinjaman</th>
+                                        <th>Total Dibayar</th>
+                                        <th>Sisa Pinjaman</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($pinjaman as $p)
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                                        {{ strtoupper(substr($p['nama'], 0, 1)) }}
+                                                    </div>
+                                                    <span class="fw-semibold">{{ $p['nama'] }}</span>
+                                                </div>
+                                            </td>
+                                            <td>{{ $p['nip'] }}</td>
+                                            <td class="fw-bold text-primary">Rp {{ number_format($p['jumlah'], 0, ',', '.') }}</td>
+                                            <td class="fw-bold text-success">Rp {{ number_format($p['total_bayar'], 0, ',', '.') }}</td>
+                                            <td class="fw-bold text-warning">Rp {{ number_format($p['sisa'], 0, ',', '.') }}</td>
+                                            <td>
+                                                @if ($p['status'] == 'Lunas')
+                                                    <span class="badge bg-success px-3 py-2">
+                                                        <i class="bi bi-check-circle me-1"></i>Lunas
+                                                    </span>
+                                                @else
+                                                    <span class="badge bg-warning px-3 py-2">
+                                                        <i class="bi bi-clock me-1"></i>Berjalan
+                                                    </span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center py-5">
+                            <i class="bi bi-inbox display-1 text-muted"></i>
+                            <h5 class="mt-3 text-muted">Belum Ada Data Pinjaman</h5>
+                            <p class="text-muted">Belum ada pinjaman yang disetujui atau telah lunas</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pinjaman;
+use App\Models\Pembayaran;
+use App\Models\User;
+use App\Helpers\AngsuranHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -16,8 +19,18 @@ class PeminjamController extends Controller
         // Get active loan data if exists
         $activeLoan = $user->pinjamans()
             ->where('status', 'disetujui')
+            ->with('pembayarans')
             ->orderBy('created_at', 'desc')
             ->first();
+
+        // Get upcoming payments
+        $pembayaranMendatang = collect();
+        if ($activeLoan) {
+            $pembayaranMendatang = $activeLoan->pembayarans()
+                ->where('status', 'belum_bayar')
+                ->where('tanggal_jatuh_tempo', '<=', now()->addDays(7))
+                ->get();
+        }
 
         // Calculate data from user relationships
         $data = [
@@ -45,14 +58,14 @@ class PeminjamController extends Controller
             $data['simulasi'] = $simulasi;
         }
 
-        return view('peminjam.dashboard', compact('data'));
+        return view('anggota.dashboard', compact('data', 'activeLoan', 'pembayaranMendatang'));
     }
 
     public function ajukanPinjaman()
     {
         $user = auth()->user();
 
-        $peminjam = [
+        $anggota = [
             'nama' => $user->name,
             'nip' => $user->nip ?? '-',
             'jabatan' => $user->jabatan ?? '-',
@@ -61,7 +74,79 @@ class PeminjamController extends Controller
             'email' => $user->email
         ];
 
-        return view('peminjam.ajukan', compact('peminjam'));
+        return view('anggota.ajukan', compact('anggota'));
+    }
+
+    public function storePinjaman(Request $request)
+    {
+        $user = auth()->user();
+
+        $validator = Validator::make($request->all(), [
+            'jumlah_pinjaman' => 'required|numeric|min:3000000|max:10000000',
+            'tenor_cicilan' => 'required|integer|min:2|max:20',
+            'metode_pembayaran' => 'required|in:potong_gaji,potong_tukin',
+            'keperluan' => 'required|string|max:1000',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Hitung cicilan per bulan menggunakan AngsuranHelper
+        $jumlahPinjaman = $request->jumlah_pinjaman;
+        $tenorBulan = $request->tenor_cicilan;
+
+
+        // Validasi kombinasi pinjaman dan tenor
+        if (!AngsuranHelper::isValidKombinasi($jumlahPinjaman, $tenorBulan)) {
+            return back()->withErrors(['tenor_cicilan' => 'Kombinasi jumlah pinjaman dan tenor tidak valid'])->withInput();
+        }
+
+        $cicilanPerBulan = AngsuranHelper::getAngsuran($jumlahPinjaman, $tenorBulan);
+
+        // Hitung biaya admin (5%)
+        $biayaAdmin = AngsuranHelper::hitungAdministrasi($jumlahPinjaman);
+        $jumlahDiterima = AngsuranHelper::hitungTerima($jumlahPinjaman);
+
+        // Simpan data pinjaman
+        $pinjaman = Pinjaman::create([
+            'user_id' => $user->id,
+            'jumlah_pinjaman' => $jumlahPinjaman,
+            'tenor_bulan' => $tenorBulan,
+            'cicilan_per_bulan' => $cicilanPerBulan,
+            'bulan_terbayar' => 0,
+            'sisa_pinjaman' => $jumlahPinjaman,
+            'gaji_pokok' => 0, // Bisa diisi nanti jika diperlukan
+            'status' => 'menunggu',
+            'status_detail' => 'menunggu_persetujuan_bendahara',
+            'keterangan' => $request->keperluan,
+        ]);
+
+        return redirect()->route('anggota.riwayat')->with('success', 'Pengajuan pinjaman berhasil disimpan! Pinjaman Anda akan segera diproses oleh tim koperasi.');
+    }
+
+    /**
+     * Generate pembayaran bulanan untuk pinjaman
+     */
+    public function generatePembayaranBulanan($pinjamanId)
+    {
+        $pinjaman = Pinjaman::findOrFail($pinjamanId);
+
+        // Hapus pembayaran lama jika ada
+        Pembayaran::where('pinjaman_id', $pinjamanId)->delete();
+
+        // Generate pembayaran untuk setiap bulan
+        for ($bulan = 1; $bulan <= $pinjaman->tenor_bulan; $bulan++) {
+            $tanggalJatuhTempo = $pinjaman->created_at->addMonths($bulan);
+
+            Pembayaran::create([
+                'pinjaman_id' => $pinjamanId,
+                'bulan_ke' => $bulan,
+                'nominal_pembayaran' => $pinjaman->cicilan_per_bulan,
+                'tanggal_jatuh_tempo' => $tanggalJatuhTempo,
+                'status' => 'belum_bayar',
+            ]);
+        }
     }
 
     public function riwayatPinjaman()
@@ -73,48 +158,32 @@ class PeminjamController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $riwayat = [];
-        foreach ($pinjamans as $p) {
-            $riwayat[] = [
-                'id' => $p->id,
-                'tanggal' => $p->created_at->format('Y-m-d'),
-                'jumlah' => $p->jumlah_pinjaman,
-                'tenor' => $p->tenor_bulan . ' Bulan',
-                'status' => ucfirst($p->status),
-                'sisa' => $p->sisa_pinjaman
-            ];
-        }
-
-        return view('peminjam.riwayat', compact('riwayat'));
+        return view('anggota.riwayat', compact('pinjamans'));
     }
 
     public function transparansi()
     {
-        // Get all approved loans with user data
-        $pinjamans = Pinjaman::with('user')
-            ->whereIn('status', ['disetujui', 'lunas'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // Get cumulative financial data for peminjam (anggota)
+        $totalPinjamanDisalurkan = Pinjaman::whereIn('status', ['disetujui', 'lunas'])->sum('jumlah_pinjaman');
+        $totalPinjamanDilunasi = Pinjaman::where('status', 'lunas')->sum('jumlah_pinjaman');
+        $saldoPinjamanBerjalan = Pinjaman::where('status', 'disetujui')->sum('sisa_pinjaman');
 
-        $pinjaman = [];
-        foreach ($pinjamans as $p) {
-            $statusLabel = $p->sisa_pinjaman > 0 ? 'Berjalan' : 'Lunas';
-            $pinjaman[] = [
-                'nama' => $p->user->name,
-                'nip' => $p->user->nip ?? '-',
-                'jumlah' => $p->jumlah_pinjaman,
-                'sisa' => $p->sisa_pinjaman,
-                'status' => $statusLabel
-            ];
-        }
+        $dataKumulatif = [
+            'total_pinjaman_disalurkan' => $totalPinjamanDisalurkan,
+            'total_pinjaman_dilunasi' => $totalPinjamanDilunasi,
+            'saldo_pinjaman_berjalan' => $saldoPinjamanBerjalan,
+            'total_anggota' => User::where('role', 'anggota')->count(),
+            'pinjaman_aktif' => Pinjaman::where('status', 'disetujui')->count(),
+            'pinjaman_lunas' => Pinjaman::where('status', 'lunas')->count()
+        ];
 
-        return view('peminjam.transparansi', compact('pinjaman'));
+        return view('anggota.transparansi', compact('dataKumulatif'));
     }
 
     public function profile()
     {
         $user = auth()->user();
-        return view('peminjam.profile', compact('user'));
+        return view('anggota.profile', compact('user'));
     }
 
     /**
@@ -163,7 +232,7 @@ class PeminjamController extends Controller
 
         $user->update($updateData);
 
-        return redirect()->route('peminjam.profile')->with('success', 'Profile berhasil diupdate!');
+        return redirect()->route('anggota.profile')->with('success', 'Profile berhasil diupdate!');
     }
 
     private function syncStorageToPublic()

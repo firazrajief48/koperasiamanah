@@ -79,7 +79,7 @@
                         </li>
                     </ul>
 
-                    <div class="px-3 pb-3 mt-auto">
+                    <div class="px-3 pb-3 mt-auto" style="margin-top: auto !important; margin-bottom: 1rem;">
                         <button class="btn-logout w-100" data-bs-toggle="modal" data-bs-target="#logoutModal">
                             <i class="bi bi-box-arrow-right me-2"></i>
                             Logout
@@ -106,41 +106,39 @@
             </main>
         </div>
     </div>
+
+
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);">
-                <div class="modal-header" style="border-bottom: 1px solid #e5e7eb; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px 16px 0 0;">
-                    <div class="d-flex align-items-center">
-                        <div class="logout-icon me-3" style="width: 48px; height: 48px; background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-box-arrow-right text-white fs-5"></i>
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
+                <div class="modal-header" style="background: white; border: none; padding: 1.5rem; border-radius: 16px 16px 0 0;">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 52px; height: 52px; background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="bi bi-box-arrow-right text-white" style="font-size: 1.375rem;"></i>
                         </div>
                         <div>
-                            <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel" style="color: #1f2937;">Konfirmasi Logout</h5>
-                            <small class="text-muted">Keluar dari sistem</small>
+                            <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel" style="color: #1f2937; font-size: 1.125rem;">Konfirmasi Logout</h5>
+                            <small style="color: #9ca3af; font-size: 0.813rem;">Keluar dari sistem</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; font-size: 1.5rem; color: #6b7280;"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body py-4">
-                    <div class="text-center">
-                        <div class="mb-3">
-                            <i class="bi bi-question-circle text-warning" style="font-size: 3rem;"></i>
-                        </div>
-                        <h6 class="fw-semibold mb-2" style="color: #374151;">Apakah Anda yakin ingin keluar?</h6>
-                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                            Anda akan keluar dari sistem dan perlu login kembali untuk mengakses dashboard.
-                        </p>
+                <div class="modal-body" style="padding: 2.5rem 2rem; text-align: center; background: white;">
+                    <div style="width: 72px; height: 72px; border: 5px solid #fbbf24; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+                        <span style="font-size: 2.75rem; color: #fbbf24; font-weight: 700; line-height: 1;">?</span>
                     </div>
+                    <h6 style="color: #1f2937; font-weight: 600; margin-bottom: 0.5rem; font-size: 1.063rem;">Apakah Anda yakin ingin keluar?</h6>
+                    <p class="mb-0" style="color: #6b7280; font-size: 0.875rem; line-height: 1.5;">Anda akan keluar dari sistem dan perlu login kembali untuk<br>mengakses dashboard.</p>
                 </div>
-                <div class="modal-footer" style="border-top: 1px solid #e5e7eb; background: #f8fafc; border-radius: 0 0 16px 16px; padding: 1rem 1.5rem;">
-                    <div class="d-flex gap-2 w-100">
-                        <button type="button" class="btn btn-outline-secondary flex-fill" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 500; padding: 0.75rem;">
-                            <i class="bi bi-x-circle me-2"></i>Batal
-                        </button>
-                        <button type="button" class="btn btn-danger flex-fill" id="confirmLogoutBtn" style="border-radius: 10px; font-weight: 500; padding: 0.75rem; background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); border: none;">
-                            <i class="bi bi-box-arrow-right me-2"></i>Ya, Logout
-                        </button>
-                    </div>
+                <div class="modal-footer" style="border: none; padding: 0 1.5rem 1.5rem; gap: 0.75rem; background: white; border-radius: 0 0 16px 16px; display: flex; justify-content: stretch;">
+                    <button type="button" class="btn" data-bs-dismiss="modal" style="flex: 1; background: white; border: 1.5px solid #d1d5db; color: #6b7280; border-radius: 8px; padding: 0.75rem 1rem; font-weight: 500; font-size: 0.938rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s;">
+                        <i class="bi bi-x-circle" style="font-size: 1.125rem;"></i>
+                        <span>Batal</span>
+                    </button>
+                    <button type="button" class="btn" id="confirmLogoutBtn" style="flex: 1; background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); border: none; color: white; border-radius: 8px; padding: 0.75rem 1rem; font-weight: 500; font-size: 0.938rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s;">
+                        <i class="bi bi-box-arrow-right" style="font-size: 1.125rem;"></i>
+                        <span>Ya, Logout</span>
+                    </button>
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Pinjaman;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -250,7 +251,28 @@ class AdminController extends Controller
      */
     public function transparansi()
     {
+        // Get all approved loans with user data
+        $pinjamans = Pinjaman::with('user')
+            ->whereIn('status', ['disetujui', 'lunas'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $pinjaman = [];
+        foreach ($pinjamans as $p) {
+            $statusLabel = $p->sisa_pinjaman > 0 ? 'Berjalan' : 'Lunas';
+
+            $pinjaman[] = [
+                'id' => $p->id,
+                'nama' => $p->user->name,
+                'nip' => $p->user->nip ?? 'N/A',
+                'jumlah' => $p->jumlah_pinjaman,
+                'total_bayar' => $p->jumlah_pinjaman - $p->sisa_pinjaman,
+                'sisa' => $p->sisa_pinjaman,
+                'status' => $statusLabel
+            ];
+        }
+
         $routePrefix = 'administrator';
-        return view('administrator.transparansi', compact('routePrefix'));
+        return view('administrator.transparansi', compact('routePrefix', 'pinjaman'));
     }
 }

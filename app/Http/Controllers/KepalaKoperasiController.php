@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Pinjaman;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,7 +32,7 @@ class KepalaKoperasiController extends Controller
             'email' => 'andi.wijaya@example.com',
             'jumlah_pinjaman' => 20000000,
             'berapa_kali' => '2 kali',
-            'metode_pembayaran' => 'Potong Gaji',
+            'metode_pembayaran' => 'Potong Gaji Pokok',
             'tanggal_pengajuan' => '2024-09-15',
             'gaji_pokok' => 8000000,
             'sisa_gaji' => 5500000,
@@ -57,15 +58,28 @@ class KepalaKoperasiController extends Controller
 
     public function transparansi()
     {
-        $pinjaman = [
-            ['nama' => 'Andi Wijaya', 'nip' => '199001012020', 'jumlah' => 20000000, 'sisa' => 12000000, 'status' => 'Berjalan'],
-            ['nama' => 'Budi Santoso', 'nip' => '199002022021', 'jumlah' => 15000000, 'sisa' => 0, 'status' => 'Lunas'],
-            ['nama' => 'Citra Dewi', 'nip' => '199003032022', 'jumlah' => 25000000, 'sisa' => 18000000, 'status' => 'Berjalan'],
-            ['nama' => 'Dedi Kurniawan', 'nip' => '199004042023', 'jumlah' => 18000000, 'sisa' => 5000000, 'status' => 'Berjalan'],
-            ['nama' => 'Eka Putri', 'nip' => '199005052024', 'jumlah' => 12000000, 'sisa' => 0, 'status' => 'Lunas'],
-        ];
+        // Get all approved loans with user data
+        $pinjamans = Pinjaman::with('user')
+            ->whereIn('status', ['disetujui', 'lunas'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    return view('ketua_koperasi.transparansi', compact('pinjaman'));
+        $pinjaman = [];
+        foreach ($pinjamans as $p) {
+            $statusLabel = $p->sisa_pinjaman > 0 ? 'Berjalan' : 'Lunas';
+
+            $pinjaman[] = [
+                'id' => $p->id,
+                'nama' => $p->user->name,
+                'nip' => $p->user->nip ?? 'N/A',
+                'jumlah' => $p->jumlah_pinjaman,
+                'total_bayar' => $p->jumlah_pinjaman - $p->sisa_pinjaman,
+                'sisa' => $p->sisa_pinjaman,
+                'status' => $statusLabel
+            ];
+        }
+
+        return view('ketua_koperasi.transparansi', compact('pinjaman'));
     }
 
     public function profile()

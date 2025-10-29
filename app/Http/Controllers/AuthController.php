@@ -76,13 +76,13 @@ class AuthController extends Controller
             'golongan' => 'required|string|max:50',
             'jabatan' => 'required|string|max:100',
             'phone' => 'required|string|max:15',
-            'role' => 'required|in:peminjam', // Only allow peminjam registration
+            'role' => 'required|in:anggota', // Only allow anggota registration
         ]);
 
-        // Check if role is peminjam (only allowed role for registration)
-        if ($request->role !== 'peminjam') {
+        // Check if role is anggota (only allowed role for registration)
+        if ($request->role !== 'anggota') {
             return back()->withErrors([
-                'role' => 'Hanya anggota (peminjam) yang dapat mendaftar melalui form ini.',
+                'role' => 'Hanya anggota yang dapat mendaftar melalui form ini.',
             ])->withInput()->with('showModal', true);
         }
 
@@ -90,7 +90,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'peminjam', // Force role to peminjam
+            'role' => 'anggota', // Force role to anggota
             'nip' => $request->nip,
             'golongan' => $request->golongan,
             'jabatan' => $request->jabatan,
@@ -117,8 +117,8 @@ class AuthController extends Controller
     private function redirectToRole(User $user)
     {
         switch ($user->role) {
-            case 'peminjam':
-                return redirect()->route('peminjam.dashboard');
+            case 'anggota':
+                return redirect()->route('anggota.dashboard');
             case 'kepala_bps':
                 return redirect()->route('kepala_bps.dashboard');
             case 'bendahara_koperasi':
