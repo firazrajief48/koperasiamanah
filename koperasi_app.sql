@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 29, 2025 at 09:26 AM
+-- Generation Time: Oct 29, 2025 at 10:22 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -241,7 +241,7 @@ CREATE TABLE `pinjamans` (
 --
 
 INSERT INTO `pinjamans` (`id`, `user_id`, `jumlah_pinjaman`, `tenor_bulan`, `cicilan_per_bulan`, `bulan_terbayar`, `sisa_pinjaman`, `gaji_pokok`, `metode_pembayaran`, `status`, `status_detail`, `alasan_penolakan`, `disetujui_oleh`, `tanggal_persetujuan`, `keterangan`, `created_at`, `updated_at`) VALUES
-(2, 9, 5000000.00, 2, 2500000.00, 0, 5000000.00, 0.00, NULL, 'menunggu', 'menunggu_persetujuan_bendahara', NULL, NULL, NULL, 'Biaya Keperluan', '2025-10-28 20:27:01', '2025-10-28 20:27:01');
+(2, 9, 5000000.00, 2, 2500000.00, 0, 5000000.00, 30000000.00, NULL, 'menunggu', 'menunggu_persetujuan_ketua', NULL, 'Retno Larasati, S.M.', '2025-10-29 01:50:44', 'Biaya Keperluan', '2025-10-28 20:27:01', '2025-10-29 01:50:44');
 
 -- --------------------------------------------------------
 
@@ -263,7 +263,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('7DaiCqQIoExCpyuQtnYXQEzgbQ8LZLYsloweURYI', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibm1XZDMyU0FINVJtZmlCSmVGN0JXVDRBV1Fkb3UyV0lQNllxejVLYiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvZGFzaGJvYXJkIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1761726234);
+('mU2laQx8YRgwrlvMsETJBalq2qBerXUSnMKdsFZw', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiN0hlR29pdUJMVkNYeGx1RDRCM002bzVQTnJ1a2VHaHFKWnNJYXd2ciI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvbGFwb3Jhbi1waW5qYW1hbiI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7fQ==', 1761728435);
 
 -- --------------------------------------------------------
 

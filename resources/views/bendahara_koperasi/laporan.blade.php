@@ -797,10 +797,10 @@
                 <span>Semua</span>
                 <span class="badge">{{ count($laporan) }}</span>
             </button>
-            <button class="filter-tab" data-filter="Diverifikasi">
+            <button class="filter-tab" data-filter="Disetujui">
                 <i class="bi bi-check-circle-fill"></i>
                 <span>Disetujui</span>
-                <span class="badge">{{ collect($laporan)->where('status', 'Diverifikasi')->count() }}</span>
+                <span class="badge">{{ collect($laporan)->where('status', 'Disetujui')->count() }}</span>
             </button>
             <button class="filter-tab" data-filter="Ditolak">
                 <i class="bi bi-x-circle-fill"></i>
@@ -845,7 +845,7 @@
                                 $verifier = 'Ketua Koperasi';
                             } elseif (strpos($l['status'], 'Kepala') !== false || strpos($l['status'], 'BPS') !== false) {
                                 $verifier = 'Kepala BPS Kota Surabaya';
-                            } elseif ($l['status'] == 'Diverifikasi' || $l['status'] == 'Ditolak') {
+                            } elseif ($l['status'] == 'Disetujui' || $l['status'] == 'Ditolak') {
                                 $verifier = 'Bendahara Koperasi';
                             }
                         @endphp
@@ -871,10 +871,10 @@
                             </td>
                             <td>
                                 <div class="status-column">
-                                @if ($l['status'] == 'Diverifikasi')
+                                @if ($l['status'] == 'Disetujui')
                                     <span class="status-badge status-verified">
                                         <i class="bi bi-check-circle-fill"></i>
-                                        <span>Diverifikasi</span>
+                                        <span>Disetujui</span>
                                     </span>
                                 @elseif ($l['status'] == 'Ditolak')
                                     <span class="status-badge status-rejected">
@@ -1037,37 +1037,37 @@
             @foreach ($laporan as $index => $l)
             {
                 nama: "{{ $l['nama'] }}",
-                nip: "199{{ sprintf('%02d', $index + 1) }}012020",
-                jabatan: "{{ ['Staff IT', 'Kepala Bagian Keuangan', 'Staff Administrasi', 'Supervisor Operasional'][$index % 4] }}",
-                golongan: "{{ ['III/A', 'III/C', 'III/B', 'IV/A'][$index % 4] }}",
-                no_hp: "0812345678{{ sprintf('%02d', 90 + $index) }}",
-                email: "{{ strtolower(str_replace(' ', '.', $l['nama'])) }}@example.com",
+                nip: "{{ $l['nip'] }}",
+                jabatan: "{{ $l['jabatan'] }}",
+                golongan: "{{ $l['golongan'] }}",
+                no_hp: "{{ $l['no_hp'] }}",
+                email: "{{ $l['email'] }}",
                 jumlah_pinjaman: {{ $l['jumlah'] }},
-                tenor: "{{ rand(12, 36) }} Bulan",
-                metode_pembayaran: "{{ ['Potong Gaji Pokok', 'Potong Tunjangan Kinerja'][$index % 2] }}",
+                tenor: "{{ $l['tenor'] }} Bulan",
+                metode_pembayaran: "{{ $l['metode_pembayaran'] }}",
                 tanggal_pengajuan: "{{ $l['tanggal'] }}",
-                tujuan: "{{ ['Renovasi rumah dan kebutuhan mendesak', 'Pendidikan anak', 'Biaya pengobatan', 'Investasi usaha'][$index % 4] }}",
+                tujuan: "{{ $l['tujuan'] }}",
                 status: "{{ $l['status'] }}",
                 verifier: "{{
                     strpos($l['status'], 'Ketua') !== false ? 'Ketua Koperasi' :
                     (strpos($l['status'], 'Kepala') !== false || strpos($l['status'], 'BPS') !== false ? 'Kepala BPS Kota Surabaya' :
-                    ($l['status'] == 'Diverifikasi' || $l['status'] == 'Ditolak' ? 'Bendahara Koperasi' : 'Proses Verifikasi'))
+                    ($l['status'] == 'Disetujui' || $l['status'] == 'Ditolak' ? 'Bendahara Koperasi' : 'Proses Verifikasi'))
                 }}",
-                gaji_pokok: {{ $l['status'] == 'Diverifikasi' || $l['status'] == 'Ditolak' ? rand(5000000, 15000000) : 'null' }},
-                sisa_gaji: {{ $l['status'] == 'Diverifikasi' || $l['status'] == 'Ditolak' ? rand(2000000, 8000000) : 'null' }},
-                catatan_verifikasi: "{{ $l['status'] == 'Diverifikasi' ? 'Memenuhi syarat dan ketentuan' : ($l['status'] == 'Ditolak' ? 'Sisa gaji tidak mencukupi untuk angsuran' : '') }}",
-                tanggal_verifikasi: "{{ $l['status'] == 'Diverifikasi' || $l['status'] == 'Ditolak' ? date('d/m/Y H:i', strtotime($l['tanggal'] . ' +2 days')) : '' }}",
+                gaji_pokok: null,
+                sisa_gaji: null,
+                catatan_verifikasi: "",
+                tanggal_verifikasi: "",
                 angsuran: [
                     @php
-                        $jumlah = $l['jumlah'];
-                        $tenor = rand(12, 36);
-                        $angsuranPerBulan = $jumlah / $tenor;
+                        $tenor = (int) $l['tenor'];
+                        $jumlah = (int) $l['jumlah'];
+                        $angsuranPerBulan = $tenor > 0 ? round($jumlah / $tenor) : 0;
                     @endphp
-                    @for ($i = 1; $i <= $tenor; $i++)
+                    @for ($i = 1; $i <= max(1,$tenor); $i++)
                     {
                         bulan: {{ $i }},
-                        nominal: {{ round($angsuranPerBulan) }},
-                        sisa: {{ round($jumlah - ($angsuranPerBulan * $i)) }}
+                        nominal: {{ $angsuranPerBulan }},
+                        sisa: {{ max(0, $jumlah - ($angsuranPerBulan * $i)) }}
                     }{{ $i < $tenor ? ',' : '' }}
                     @endfor
                 ]

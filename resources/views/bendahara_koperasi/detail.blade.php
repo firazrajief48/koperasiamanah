@@ -9,8 +9,8 @@
     $routePrefix = 'bendahara_koperasi';
     $showLaporan = true;
 
-    $jumlahPinjaman = $pengajuan['jumlah_pinjaman'] ?? $pengajuan['jumlah'] ?? 5000000;
-    $tenorBulan = $pengajuan['tenor_bulan'] ?? $pengajuan['tenor'] ?? $pengajuan['angsuran'] ?? 5;
+    $jumlahPinjaman = $pinjaman->jumlah_pinjaman;
+    $tenorBulan = $pinjaman->tenor_bulan;
 
     $tabelPinjaman = [
         3000000 => [
@@ -440,7 +440,7 @@
                             </div>
                             <div class="info-content">
                                 <div class="info-label">Nama Lengkap</div>
-                                <div class="info-value">{{ $pengajuan['nama'] }}</div>
+                                <div class="info-value">{{ $pinjaman->user->name }}</div>
                             </div>
                         </div>
                         <div class="info-item">
@@ -449,7 +449,7 @@
                             </div>
                             <div class="info-content">
                                 <div class="info-label">NIP</div>
-                                <div class="info-value">{{ $pengajuan['nip'] }}</div>
+                                <div class="info-value">{{ $pinjaman->user->nip ?? '-' }}</div>
                             </div>
                         </div>
                         <div class="info-item">
@@ -458,7 +458,7 @@
                             </div>
                             <div class="info-content">
                                 <div class="info-label">Jabatan</div>
-                                <div class="info-value">{{ $pengajuan['jabatan'] }}</div>
+                                <div class="info-value">{{ $pinjaman->user->jabatan ?? '-' }}</div>
                             </div>
                         </div>
                     </div>
@@ -471,7 +471,7 @@
                             </div>
                             <div class="info-content">
                                 <div class="info-label">Golongan</div>
-                                <div class="info-value">{{ $pengajuan['golongan'] }}</div>
+                                <div class="info-value">{{ $pinjaman->user->golongan ?? '-' }}</div>
                             </div>
                         </div>
                         <div class="info-item">
@@ -480,7 +480,7 @@
                             </div>
                             <div class="info-content">
                                 <div class="info-label">No. HP</div>
-                                <div class="info-value">{{ $pengajuan['no_hp'] }}</div>
+                                <div class="info-value">{{ $pinjaman->user->phone ?? '-' }}</div>
                             </div>
                         </div>
                         <div class="info-item">
@@ -489,7 +489,7 @@
                             </div>
                             <div class="info-content">
                                 <div class="info-label">Email</div>
-                                <div class="info-value">{{ $pengajuan['email'] }}</div>
+                                <div class="info-value">{{ $pinjaman->user->email }}</div>
                             </div>
                         </div>
                     </div>
@@ -538,7 +538,7 @@
                             </div>
                             <div class="info-content">
                                 <div class="info-label">Metode Pembayaran</div>
-                                <div class="info-value">{{ $pengajuan['metode_pembayaran'] }}</div>
+                                <div class="info-value">{{ $pinjaman->metode_pembayaran === 'potong_gaji' ? 'Potong Gaji Pokok' : 'Potong Tunjangan Kinerja' }}</div>
                             </div>
                         </div>
                         <div class="info-item">
@@ -547,7 +547,7 @@
                             </div>
                             <div class="info-content">
                                 <div class="info-label">Tanggal Pengajuan</div>
-                                <div class="info-value">{{ date('d F Y', strtotime($pengajuan['tanggal_pengajuan'])) }}</div>
+                                <div class="info-value">{{ $pinjaman->created_at->format('d F Y') }}</div>
                             </div>
                         </div>
                     </div>
@@ -556,7 +556,7 @@
 
             <div class="mt-4">
                 <label class="form-label">Tujuan Peminjaman</label>
-                <textarea class="form-control" rows="3" disabled>{{ $pengajuan['tujuan'] ?? 'Renovasi rumah dan kebutuhan mendesak' }}</textarea>
+                <textarea class="form-control" rows="3" disabled>{{ $pinjaman->keterangan ?? '-' }}</textarea>
             </div>
         </div>
     </div>
@@ -609,7 +609,7 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label class="form-label">Gaji Pokok <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="gajiPokok" placeholder="Masukkan gaji pokok" required>
+                        <input type="number" class="form-control" id="gajiPokok" placeholder="Masukkan gaji pokok" value="{{ $pinjaman->gaji_pokok ?? '' }}" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Sisa Gaji <span class="text-danger">*</span></label>
@@ -628,7 +628,7 @@
                 </div>
 
                 <div class="action-buttons">
-                    <button type="button" class="btn-modern btn-approve" onclick="setujuiPengajuan()">
+                    <button type="button" class="btn-modern btn-approve" id="approveBtn">
                         <i class="bi bi-check-circle-fill"></i>
                         <span>Setujui Pengajuan</span>
                     </button>
@@ -642,6 +642,40 @@
                     </a>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,.2);">
+                <div class="modal-header" style="background: white; border: none; padding: 1.25rem 1.5rem; border-radius: 16px 16px 0 0;">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 44px; height: 44px; background: linear-gradient(135deg,#3b82f6,#6366f1); border-radius: 10px; display:flex; align-items:center; justify-content:center;">
+                            <i class="bi bi-question-lg text-white"></i>
+                        </div>
+                        <h5 class="modal-title fw-bold mb-0" style="color:#1f2937;">Konfirmasi</h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 1rem 1.5rem; color:#475569;">
+                    <p id="confirmMessage" class="mb-0">Apakah Anda yakin?</p>
+                </div>
+                <div class="modal-footer" style="border: none; padding: 0 1.5rem 1.25rem; gap:.5rem;">
+                    <button type="button" class="btn" data-bs-dismiss="modal" style="background:white;border:1px solid #d1d5db;color:#475569;border-radius:10px;">Batal</button>
+                    <button type="button" class="btn" id="confirmOkBtn" style="background:linear-gradient(135deg,#10b981,#059669); color:white; border:none; border-radius:10px;">Ya, Lanjutkan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+        <div id="actionToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true" style="border-radius:12px;">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">Aksi berhasil.</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
         </div>
     </div>
 
@@ -662,40 +696,92 @@
                     const catatan = document.getElementById('catatan').value;
 
                     if (!gajiPokok || !sisaGaji) {
-                        alert('⚠️ Gaji Pokok dan Sisa Gaji wajib diisi!');
+                        openToast('Gaji Pokok dan Sisa Gaji wajib diisi!', false);
                         return;
                     }
 
                     if (!catatan) {
-                        alert('⚠️ Catatan penolakan wajib diisi!');
+                        openToast('Catatan penolakan wajib diisi!', false);
                         return;
                     }
 
-                    if (confirm('❌ Apakah Anda yakin ingin menolak pengajuan ini?')) {
-                        alert('❌ Pengajuan ditolak!');
-                        window.location.href = '{{ route('bendahara_koperasi.dashboard') }}';
-                    }
+                    openConfirm('Tolak pengajuan ini?', function () { kirimVerifikasi('tolak'); });
                 }
             }
 
-            function setujuiPengajuan() {
+            async function kirimVerifikasi(aksi) {
                 const gajiPokok = document.getElementById('gajiPokok').value;
                 const sisaGaji = document.getElementById('sisaGaji').value;
+                const catatan = document.getElementById('catatan')?.value || '';
 
                 if (!gajiPokok || !sisaGaji) {
                     alert('⚠️ Gaji Pokok dan Sisa Gaji wajib diisi!');
                     return;
                 }
 
-                if (parseFloat(gajiPokok) < 0 || parseFloat(sisaGaji) < 0) {
-                    alert('⚠️ Nilai gaji tidak boleh negatif!');
+                if (aksi === 'tolak' && !catatan) {
+                    alert('⚠️ Catatan penolakan wajib diisi!');
                     return;
                 }
 
-                if (confirm('✅ Apakah Anda yakin ingin menyetujui pengajuan ini?')) {
-                    alert('✅ Pengajuan berhasil disetujui!');
-                    window.location.href = '{{ route('bendahara_koperasi.dashboard') }}';
+                try {
+                    const res = await fetch('{{ route('bendahara_koperasi.verifikasi') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: {{ $pinjaman->id }},
+                            gaji_pokok: gajiPokok,
+                            sisa_gaji: sisaGaji,
+                            catatan: catatan,
+                            aksi: aksi
+                        })
+                    });
+                    const json = await res.json();
+                    if (json.success) {
+                        openToast(json.message, true);
+                        setTimeout(function(){ window.location.href = '{{ route('bendahara_koperasi.dashboard') }}'; }, 900);
+                    } else {
+                        openToast('Terjadi kesalahan.', false);
+                    }
+                } catch (e) {
+                    openToast('Gagal mengirim data.', false);
                 }
+            }
+
+            // Approve button handler uses modal confirm
+            document.querySelector('.btn-approve')?.addEventListener('click', function() {
+                const gajiPokok = document.getElementById('gajiPokok').value;
+                const sisaGaji = document.getElementById('sisaGaji').value;
+                if (!gajiPokok || !sisaGaji) {
+                    openToast('Gaji Pokok dan Sisa Gaji wajib diisi!', false);
+                    return;
+                }
+                openConfirm('Setujui pengajuan ini?', function () { kirimVerifikasi('setujui'); });
+            });
+
+            // Helpers: Modal confirm & toast
+            function openConfirm(message, onOk) {
+                const msgEl = document.getElementById('confirmMessage');
+                const okBtn = document.getElementById('confirmOkBtn');
+                msgEl.textContent = message;
+                const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+                okBtn.onclick = null; // pastikan tidak ada handler lama
+                okBtn.onclick = function () { modal.hide(); onOk && onOk(); };
+                modal.show();
+            }
+
+            function openToast(message, success = true) {
+                const toastEl = document.getElementById('actionToast');
+                const bodyEl = document.getElementById('toastMessage');
+                bodyEl.textContent = message;
+                toastEl.classList.remove('bg-danger','bg-success');
+                toastEl.classList.add(success ? 'bg-success' : 'bg-danger');
+                const t = new bootstrap.Toast(toastEl, { delay: 1500 });
+                t.show();
             }
         </script>
     @endpush
