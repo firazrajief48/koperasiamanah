@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 29, 2025 at 10:22 AM
+-- Generation Time: Oct 30, 2025 at 10:23 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -176,6 +176,14 @@ CREATE TABLE `pembayarans` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `pembayarans`
+--
+
+INSERT INTO `pembayarans` (`id`, `pinjaman_id`, `bulan_ke`, `nominal_pembayaran`, `tanggal_jatuh_tempo`, `tanggal_pembayaran`, `status`, `keterangan`, `created_at`, `updated_at`) VALUES
+(1, 3, 1, 2000000.00, '2025-11-30', NULL, 'belum_bayar', NULL, '2025-10-30 01:04:59', '2025-10-30 01:04:59'),
+(2, 3, 2, 2000000.00, '2025-12-30', NULL, 'belum_bayar', NULL, '2025-10-30 01:04:59', '2025-10-30 01:04:59');
+
 -- --------------------------------------------------------
 
 --
@@ -241,7 +249,8 @@ CREATE TABLE `pinjamans` (
 --
 
 INSERT INTO `pinjamans` (`id`, `user_id`, `jumlah_pinjaman`, `tenor_bulan`, `cicilan_per_bulan`, `bulan_terbayar`, `sisa_pinjaman`, `gaji_pokok`, `metode_pembayaran`, `status`, `status_detail`, `alasan_penolakan`, `disetujui_oleh`, `tanggal_persetujuan`, `keterangan`, `created_at`, `updated_at`) VALUES
-(2, 9, 5000000.00, 2, 2500000.00, 0, 5000000.00, 30000000.00, NULL, 'menunggu', 'menunggu_persetujuan_ketua', NULL, 'Retno Larasati, S.M.', '2025-10-29 01:50:44', 'Biaya Keperluan', '2025-10-28 20:27:01', '2025-10-29 01:50:44');
+(2, 9, 5000000.00, 2, 2500000.00, 0, 5000000.00, 30000000.00, NULL, 'menunggu', 'menunggu_persetujuan_ketua', NULL, 'Retno Larasati, S.M.', '2025-10-29 01:50:44', 'Biaya Keperluan', '2025-10-28 20:27:01', '2025-10-29 01:50:44'),
+(3, 9, 4000000.00, 2, 2000000.00, 0, 4000000.00, 10000000.00, 'potong_tukin', 'menunggu', 'ditolak', 'Hutang Kemarin Belum Lunas!', 'Retno Larasati, S.M.', '2025-10-30 01:06:07', 'WKWKWKWKWK', '2025-10-30 01:04:59', '2025-10-30 01:06:07');
 
 -- --------------------------------------------------------
 
@@ -263,7 +272,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('mU2laQx8YRgwrlvMsETJBalq2qBerXUSnMKdsFZw', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiN0hlR29pdUJMVkNYeGx1RDRCM002bzVQTnJ1a2VHaHFKWnNJYXd2ciI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvbGFwb3Jhbi1waW5qYW1hbiI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7fQ==', 1761728435);
+('A00TdSot8HprwoEzj6FfhxzPM9HIXzTQc7661S7E', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiakdCOHZGOTFjam43enVpUHRuc0VIZGd0RFFwZktUaFdYa1N2RkI4UiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvbGFwb3Jhbi1waW5qYW1hbiI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7fQ==', 1761813202);
 
 -- --------------------------------------------------------
 
@@ -422,7 +431,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `pembayarans`
 --
 ALTER TABLE `pembayarans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `pengurus_koperasis`
@@ -434,7 +443,7 @@ ALTER TABLE `pengurus_koperasis`
 -- AUTO_INCREMENT for table `pinjamans`
 --
 ALTER TABLE `pinjamans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
