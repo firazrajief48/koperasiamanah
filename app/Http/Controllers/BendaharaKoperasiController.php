@@ -67,6 +67,12 @@ class BendaharaKoperasiController extends Controller
                 'metode_pembayaran' => $p->metode_pembayaran === 'potong_gaji' ? 'Potong Gaji Pokok' : 'Potong Tunjangan Kinerja',
                 'tujuan' => $p->keterangan ?? '-',
                 'angsuran' => $this->generateAngsuran((float) $p->jumlah_pinjaman, (int) $p->tenor_bulan),
+                // Verifikasi detail
+                'verifier_name' => $p->disetujui_oleh,
+                'tanggal_verifikasi' => optional($p->tanggal_persetujuan)->format('d/m/Y H:i'),
+                'gaji_pokok' => $p->gaji_pokok,
+                'sisa_gaji' => null,
+                'catatan_verifikasi' => $p->alasan_penolakan,
             ];
         }
 
@@ -246,6 +252,7 @@ class BendaharaKoperasiController extends Controller
             $pinjaman->status = 'menunggu';
             $pinjaman->status_detail = 'menunggu_persetujuan_ketua';
             $pinjaman->alasan_penolakan = null;
+            // Simpan nama bendahara yang memverifikasi
             $pinjaman->disetujui_oleh = auth()->user()->name;
             $pinjaman->tanggal_persetujuan = now();
         } else {
@@ -253,6 +260,7 @@ class BendaharaKoperasiController extends Controller
             $pinjaman->status = 'menunggu';
             $pinjaman->status_detail = 'ditolak';
             $pinjaman->alasan_penolakan = $validated['catatan'];
+            // Simpan nama bendahara yang menolak
             $pinjaman->disetujui_oleh = auth()->user()->name;
             $pinjaman->tanggal_persetujuan = now();
         }

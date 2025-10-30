@@ -521,6 +521,27 @@
             background: rgba(226, 232, 240, 0.3);
             border-radius: 50px;
         }
+
+        /* Detail Button */
+        .btn-detail {
+            border: none;
+            padding: 0.5rem 1.25rem;
+            font-size: 0.813rem;
+            font-weight: 600;
+            border-radius: 10px;
+            color: white;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-detail:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+            color: white;
+        }
     </style>
 
     <!-- Success Alert -->
@@ -569,6 +590,7 @@
                             <th>Tenor</th>
                             <th>Status</th>
                             <th>Sisa Pinjaman</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -609,10 +631,13 @@
                                                 Lunas
                                             </span>
                                         @elseif($pinjaman->status_detail == 'ditolak')
-                                            <span class="status-badge status-ditolak" style="cursor: pointer;"
-                                                  onclick="showRejectReason('{{ addslashes($pinjaman->alasan_penolakan ?? 'Tidak ada alasan yang diberikan') }}', '{{ $pinjaman->disetujui_oleh ?? 'Admin' }}')">
+                                            <span class="status-badge status-ditolak">
                                                 <i class="bi bi-x-circle-fill"></i>
-                                                Ditolak (Klik untuk lihat alasan)
+                                                Ditolak
+                                            </span>
+                                            <span class="status-detail">
+                                                <i class="bi bi-arrow-right-circle-fill"></i>
+                                                Bendahara Koperasi
                                             </span>
                                         @elseif($pinjaman->status_detail == 'menunggu_persetujuan_bendahara')
                                             <span class="status-badge status-menunggu">
@@ -654,6 +679,23 @@
                                         Rp {{ number_format($pinjaman->sisa_pinjaman, 0, ',', '.') }}
                                     </div>
                                 </td>
+                                <td>
+                                    <button
+                                        class="btn-detail"
+                                        onclick="openDetailModal({
+                                            id: {{ $pinjaman->id }},
+                                            tanggal: '{{ $pinjaman->created_at->format('Y-m-d') }}',
+                                            jumlah: {{ (int) $pinjaman->jumlah_pinjaman }},
+                                            tenor: {{ (int) $pinjaman->tenor_bulan }},
+                                            status: '{{ $pinjaman->status }}',
+                                            status_detail: '{{ $pinjaman->status_detail }}',
+                                            alasan: `{{ addslashes($pinjaman->alasan_penolakan ?? '') }}`,
+                                            pejabat: `{{ $pinjaman->disetujui_oleh ?? '' }}`
+                                        })">
+                                        <i class="bi bi-eye"></i>
+                                        Detail
+                                    </button>
+                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -681,10 +723,91 @@
         </div>
     </div>
 
+    <!-- Modal Detail Pinjaman -->
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; overflow: hidden;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #6366f1 100%); color: white;">
+                    <h5 class="modal-title"><i class="bi bi-file-text me-2"></i>Detail Pengajuan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 1.25rem 1.25rem;">
+                    <div class="mb-2 d-flex justify-content-between">
+                        <span class="text-muted">Tanggal Pengajuan</span>
+                        <span id="d_tanggal" class="fw-semibold">-</span>
+                    </div>
+                    <div class="mb-2 d-flex justify-content-between">
+                        <span class="text-muted">Jumlah Pinjaman</span>
+                        <span id="d_jumlah" class="fw-semibold">-</span>
+                    </div>
+                    <div class="mb-2 d-flex justify-content-between">
+                        <span class="text-muted">Tenor</span>
+                        <span id="d_tenor" class="fw-semibold">-</span>
+                    </div>
+                    <div class="mb-3 d-flex justify-content-between">
+                        <span class="text-muted">Status</span>
+                        <span id="d_status" class="fw-semibold">-</span>
+                    </div>
+
+                    <div id="d_penolakan" style="display:none;">
+                        <div class="fw-semibold text-muted mb-1">Alasan Penolakan</div>
+                        <div id="d_alasan" class="p-3" style="background:#f8fafc;border-left:4px solid #ef4444;border-radius:8px;">-</div>
+                        <div class="mt-2 d-flex align-items-center gap-2 text-muted" style="font-size:0.9rem;">
+                            <i class="bi bi-person-badge"></i>
+                            <span>Ditolak oleh <span id="d_pejabat">-</span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
         <script>
-            function showRejectReason(reason, rejectedBy) {
-                alert('Alasan Penolakan:\n\n' + reason + '\n\nDitolak oleh: ' + rejectedBy);
+            function openDetailModal(data) {
+                const rupiah = (n) => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+                const statusMap = {
+                    'disetujui': 'Disetujui',
+                    'lunas': 'Lunas',
+                    'menunggu': 'Menunggu Verifikasi'
+                };
+                const statusDetailMap = {
+                    'menunggu_persetujuan_bendahara': 'Menunggu Verifikasi - Bendahara Koperasi',
+                    'menunggu_persetujuan_ketua': 'Menunggu Verifikasi - Ketua Koperasi',
+                    'menunggu_persetujuan_kepala': 'Menunggu Verifikasi - Kepala BPS',
+                    'ditolak': 'Ditolak'
+                };
+                const roleByStage = {
+                    'menunggu_persetujuan_bendahara': 'Bendahara Koperasi',
+                    'menunggu_persetujuan_ketua': 'Ketua Koperasi',
+                    'menunggu_persetujuan_kepala': 'Kepala BPS',
+                    'ditolak': 'Bendahara Koperasi'
+                };
+
+                document.getElementById('d_tanggal').textContent = new Date(data.tanggal).toLocaleDateString('id-ID');
+                document.getElementById('d_jumlah').textContent = rupiah(data.jumlah);
+                document.getElementById('d_tenor').textContent = (data.tenor || 0) + ' Bulan';
+                const statusText = statusDetailMap[data.status_detail] || statusMap[data.status] || '-';
+                document.getElementById('d_status').textContent = statusText;
+
+                const penolakan = document.getElementById('d_penolakan');
+                if (data.status_detail === 'ditolak') {
+                    penolakan.style.display = '';
+                    document.getElementById('d_alasan').textContent = data.alasan || '-';
+                    // Tampilkan nama bendahara dari database + jabatannya
+                    const approverName = (data.pejabat || '').trim();
+                    const approverRole = roleByStage[data.status_detail] || 'Bendahara Koperasi';
+                    document.getElementById('d_pejabat').textContent = (approverName ? approverName + ' - ' : '') + approverRole;
+                } else {
+                    penolakan.style.display = 'none';
+                }
+
+                const modalEl = document.getElementById('detailModal');
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
             }
         </script>
     @endpush

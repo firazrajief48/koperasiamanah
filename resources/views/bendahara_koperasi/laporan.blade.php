@@ -1048,15 +1048,16 @@
                 tanggal_pengajuan: "{{ $l['tanggal'] }}",
                 tujuan: "{{ $l['tujuan'] }}",
                 status: "{{ $l['status'] }}",
+                verifier_name: "{{ $l['verifier_name'] ?? '' }}",
                 verifier: "{{
                     strpos($l['status'], 'Ketua') !== false ? 'Ketua Koperasi' :
                     (strpos($l['status'], 'Kepala') !== false || strpos($l['status'], 'BPS') !== false ? 'Kepala BPS Kota Surabaya' :
                     ($l['status'] == 'Disetujui' || $l['status'] == 'Ditolak' ? 'Bendahara Koperasi' : 'Proses Verifikasi'))
                 }}",
-                gaji_pokok: null,
-                sisa_gaji: null,
-                catatan_verifikasi: "",
-                tanggal_verifikasi: "",
+                gaji_pokok: {{ $l['gaji_pokok'] ?? 'null' }},
+                sisa_gaji: {{ $l['sisa_gaji'] ?? 'null' }},
+                catatan_verifikasi: "{{ $l['catatan_verifikasi'] ?? '' }}",
+                tanggal_verifikasi: "{{ $l['tanggal_verifikasi'] ?? '' }}",
                 angsuran: [
                     @php
                         $tenor = (int) $l['tenor'];
@@ -1155,6 +1156,21 @@
             const verifikasiSection = document.getElementById('verifikasiSection');
 
             if (data.status === 'Diverifikasi' || data.status === 'Ditolak') {
+                const formatCurrency = (value) => {
+                    if (value === null || value === undefined || value === '') {
+                        return '-';
+                    }
+                    const num = Number(value);
+                    if (Number.isNaN(num)) {
+                        return '-';
+                    }
+                    return 'Rp ' + num.toLocaleString('id-ID');
+                };
+
+                const tanggalVerifikasi = (data.tanggal_verifikasi && data.tanggal_verifikasi !== '')
+                    ? data.tanggal_verifikasi
+                    : '-';
+
                 verifikasiSection.innerHTML = `
                     <div class="detail-section-title">
                         📋 Histori Verifikasi
@@ -1162,7 +1178,7 @@
                     <div class="histori-info">
                         <div class="histori-header">
                             <div class="histori-title">
-                                <i class="bi bi-person-check me-2"></i>Siti Nurhaliza - Bendahara Koperasi
+                                <i class="bi bi-person-check me-2"></i>${data.verifier_name ? data.verifier_name + ' - Bendahara Koperasi' : 'Bendahara Koperasi'}
                             </div>
                             <span class="histori-badge ${data.status === 'Diverifikasi' ? 'approved' : 'rejected'}">
                                 <i class="bi bi-${data.status === 'Diverifikasi' ? 'check' : 'x'}-circle"></i>
@@ -1173,18 +1189,18 @@
                         <div class="histori-meta">
                             <div class="histori-meta-item">
                                 <i class="bi bi-clock"></i>
-                                <span>${data.tanggal_verifikasi}</span>
+                                <span>${tanggalVerifikasi}</span>
                             </div>
                         </div>
 
                         <div class="histori-data">
                             <div class="histori-data-item">
                                 <div class="histori-data-label">Gaji Pokok</div>
-                                <div class="histori-data-value">Rp ${data.gaji_pokok.toLocaleString('id-ID')}</div>
+                                <div class="histori-data-value">${formatCurrency(data.gaji_pokok)}</div>
                             </div>
                             <div class="histori-data-item">
                                 <div class="histori-data-label">Sisa Gaji</div>
-                                <div class="histori-data-value">Rp ${data.sisa_gaji.toLocaleString('id-ID')}</div>
+                                <div class="histori-data-value">${formatCurrency(data.sisa_gaji)}</div>
                             </div>
                         </div>
 
