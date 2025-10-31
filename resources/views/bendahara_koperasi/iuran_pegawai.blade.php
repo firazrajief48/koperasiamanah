@@ -278,6 +278,9 @@
                         </select>
                     </div>
                     <div class="col-md-6 text-end">
+                        <button class="btn btn-outline-success me-2" onclick="openTambahManualModal()">
+                            <i class="bi bi-plus-circle me-2"></i>Tambah Iuran Manual
+                        </button>
                         <button class="btn btn-bayar-semua" onclick="bayarSemua()">
                             <i class="bi bi-cash-stack me-2"></i>Bayar Semua Pegawai
                         </button>
@@ -363,6 +366,71 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Iuran Manual -->
+    <div class="modal fade" id="tambahManualModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-plus-circle me-2"></i>Tambah Iuran Manual
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="formTambahManual">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-person me-1"></i>Pilih Pegawai <span class="text-danger">*</span>
+                            </label>
+                            <select id="manualPegawaiId" class="form-select" required>
+                                <option value="">-- Pilih Pegawai --</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-calendar-month me-1"></i>Bulan
+                                </label>
+                                <input type="text" id="manualBulan" class="form-control" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-calendar-year me-1"></i>Tahun
+                                </label>
+                                <input type="text" id="manualTahun" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-cash me-1"></i>Nominal (Rp) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" id="manualNominal" class="form-control" value="50000" min="0" required>
+                            <small class="text-muted">Iuran standar: Rp 50.000</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-calendar-event me-1"></i>Tanggal Bayar
+                            </label>
+                            <input type="date" id="manualTanggalBayar" class="form-control" value="{{ date('Y-m-d') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-file-text me-1"></i>Keterangan (Opsional)
+                            </label>
+                            <textarea id="manualKeterangan" class="form-control" rows="3" placeholder="Tambahkan keterangan jika diperlukan..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-2"></i>Simpan
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -606,6 +674,110 @@
                 showLoading(false);
             });
         }
+
+        /**
+         * ========================================
+         * MANUAL IURAN FUNCTIONS
+         * ========================================
+         */
+
+        // Load daftar pegawai untuk dropdown
+        function loadPegawaiList() {
+            fetch('/bendahara-koperasi/iuran-pegawai/data?bulan=' + currentMonth + '&tahun=' + currentYear + '&status=semua', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': CSRF_TOKEN
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    const select = document.getElementById('manualPegawaiId');
+                    select.innerHTML = '<option value="">-- Pilih Pegawai --</option>';
+
+                    result.data.forEach(pegawai => {
+                        const option = document.createElement('option');
+                        option.value = pegawai.id;
+                        option.textContent = `${pegawai.nama} - ${pegawai.nip}`;
+                        select.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading pegawai:', error);
+            });
+        }
+
+        // Open Tambah Manual Modal
+        function openTambahManualModal() {
+            loadPegawaiList();
+
+            // Set bulan dan tahun sesuai yang dipilih
+            document.getElementById('manualBulan').value = getBulanName(currentMonth);
+            document.getElementById('manualTahun').value = currentYear;
+            document.getElementById('manualNominal').value = NOMINAL_IURAN;
+            document.getElementById('manualTanggalBayar').value = new Date().toISOString().split('T')[0];
+            document.getElementById('manualKeterangan').value = '';
+            document.getElementById('manualPegawaiId').value = '';
+
+            new bootstrap.Modal(document.getElementById('tambahManualModal')).show();
+        }
+
+        // Handle form tambah manual
+        document.getElementById('formTambahManual')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const pegawaiId = document.getElementById('manualPegawaiId').value;
+            const nominal = parseFloat(document.getElementById('manualNominal').value);
+            const tanggalBayar = document.getElementById('manualTanggalBayar').value;
+            const keterangan = document.getElementById('manualKeterangan').value;
+
+            if (!pegawaiId || nominal <= 0) {
+                showError('Mohon lengkapi data yang diperlukan');
+                return;
+            }
+
+            // Cari nama pegawai
+            const pegawaiOption = document.getElementById('manualPegawaiId').selectedOptions[0];
+            const namaPegawai = pegawaiOption ? pegawaiOption.textContent.split(' - ')[0] : '';
+
+            showLoading(true);
+
+            fetch('/bendahara-koperasi/iuran-pegawai/tambah-manual', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': CSRF_TOKEN
+                },
+                body: JSON.stringify({
+                    pegawai_id: pegawaiId,
+                    bulan: currentMonth,
+                    tahun: currentYear,
+                    nominal: nominal,
+                    tanggal_bayar: tanggalBayar || null,
+                    keterangan: keterangan || null
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('tambahManualModal')).hide();
+                    loadData();
+                    showToast(`✅ Berhasil menambahkan iuran manual untuk ${namaPegawai}!\nNominal: Rp ${nominal.toLocaleString('id-ID')}`);
+                } else {
+                    showError(result.message || 'Gagal menambahkan iuran');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Terjadi kesalahan saat menambahkan iuran');
+            })
+            .finally(() => {
+                showLoading(false);
+            });
+        });
 
         /**
          * ========================================
