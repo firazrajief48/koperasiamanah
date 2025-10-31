@@ -17,7 +17,7 @@ class AdminController extends Controller
     {
         $stats = [
             'total_users' => User::count(),
-            'total_anggota' => User::where('role', 'peminjam')->count(),
+            'total_anggota' => User::where('role', 'anggota')->count(),
             'total_admin' => User::whereIn('role', ['kepala_bps', 'bendahara_koperasi', 'ketua_koperasi'])->count(),
             'new_users_this_month' => User::whereMonth('created_at', now()->month)->count(),
         ];
@@ -152,7 +152,7 @@ class AdminController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
-            'role' => 'required|in:peminjam,kepala_bps,bendahara_koperasi,ketua_koperasi,administrator',
+            'role' => 'required|in:anggota,kepala_bps,bendahara_koperasi,ketua_koperasi,administrator',
             'nip' => 'nullable|string|max:20',
             'golongan' => 'nullable|string|max:50',
             'jabatan' => 'nullable|string|max:100',
@@ -202,7 +202,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:peminjam,kepala_bps,bendahara_koperasi,ketua_koperasi,administrator',
+            'role' => 'required|in:anggota,kepala_bps,bendahara_koperasi,ketua_koperasi,administrator',
             'nip' => 'nullable|string|max:20',
             'golongan' => 'nullable|string|max:50',
             'jabatan' => 'nullable|string|max:100',

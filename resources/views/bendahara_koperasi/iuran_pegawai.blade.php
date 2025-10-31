@@ -70,28 +70,44 @@
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
-        .btn-bayar {
-            background-color: #10b981;
+        .btn-detail {
+            background-color: #3b82f6;
             border: none;
             color: white;
-            padding: 0.4rem 1rem;
+            padding: 0.45rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            justify-content: center;
+        }
+
+        .btn-detail:hover {
+            background-color: #2563eb;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            border: none;
+            color: white;
+            padding: 0.4rem 0.75rem;
             border-radius: 6px;
             font-weight: 500;
             transition: all 0.3s ease;
             font-size: 0.875rem;
         }
 
-        .btn-bayar:hover:not(:disabled) {
-            background-color: #059669;
+        .btn-danger:hover {
+            background-color: #dc2626;
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-bayar:disabled {
-            background-color: #6b7280;
-            cursor: not-allowed;
-            opacity: 0.6;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
         .btn-bayar-semua {
@@ -408,20 +424,14 @@
                             <label class="form-label fw-bold">
                                 <i class="bi bi-cash me-1"></i>Nominal (Rp) <span class="text-danger">*</span>
                             </label>
-                            <input type="number" id="manualNominal" class="form-control" value="50000" min="0" required>
-                            <small class="text-muted">Iuran standar: Rp 50.000</small>
+                            <input type="number" id="manualNominal" class="form-control" value="" min="0" step="1000" placeholder="Masukkan nominal iuran (contoh: 50000)" required>
+                            <small class="text-muted">Iuran standar: Rp 50.000 (dapat diubah sesuai kebutuhan)</small>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold">
                                 <i class="bi bi-calendar-event me-1"></i>Tanggal Bayar
                             </label>
                             <input type="date" id="manualTanggalBayar" class="form-control" value="{{ date('Y-m-d') }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="bi bi-file-text me-1"></i>Keterangan (Opsional)
-                            </label>
-                            <textarea id="manualKeterangan" class="form-control" rows="3" placeholder="Tambahkan keterangan jika diperlukan..."></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -431,6 +441,36 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Bayar Semua (Website Style) -->
+    <div class="modal fade" id="massConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:16px; border:none; overflow:hidden;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #2563eb, #3b82f6); color:white; border:none;">
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-cash-stack me-2"></i>Konfirmasi Pembayaran Massal
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><strong>Bulan:</strong> <span id="massBulanText"></span></div>
+                    <div class="mb-2"><strong>Nominal per pegawai:</strong> Rp <span id="massNominalText"></span></div>
+                    <div class="alert alert-warning d-flex align-items-start" style="border-radius:12px;">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>
+                            Hanya bulan yang dipilih yang akan ditandai sebagai <strong>Terbayar</strong>. Bulan lainnya tidak terpengaruh.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border:none;">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="massConfirmBtn">
+                        <i class="bi bi-check2-circle me-1"></i>Ya, Proses
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -472,6 +512,7 @@
 
             fetch(url, {
                 method: 'GET',
+                credentials: 'same-origin',
                 headers: {
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': CSRF_TOKEN
@@ -516,13 +557,14 @@
                     <tr>
                         <td class="text-center">${index + 1}</td>
                         <td>
-                            <a href="#" onclick="showRiwayat(${pegawai.id}, '${pegawai.nama.replace(/'/g, "\\'")}'); return false;"
-                               class="nama-pegawai-link">
-                                ${pegawai.nama}
-                            </a>
+                            <span class="fw-bold text-dark">${pegawai.nama}</span>
                         </td>
-                        <td><small class="text-muted">${pegawai.nip}</small></td>
-                        <td><span class="badge bg-light text-dark">${pegawai.jabatan}</span></td>
+                        <td>
+                            <span class="fw-bold text-dark">${pegawai.nip}</span>
+                        </td>
+                        <td>
+                            <span class="fw-bold text-dark">${pegawai.jabatan}</span>
+                        </td>
                         <td class="fw-bold ${sudahBayar ? 'text-success' : 'text-muted'}">
                             Rp ${nominal.toLocaleString('id-ID')}
                         </td>
@@ -532,10 +574,10 @@
                                 : '<span class="badge-belum">✗ Belum Lunas</span>'}
                         </td>
                         <td>
-                            <button class="btn btn-bayar btn-sm w-100"
-                                    onclick="bayarIuran(${pegawai.id}, '${pegawai.nama.replace(/'/g, "\\'")}')"
-                                    ${sudahBayar ? 'disabled' : ''}>
-                                ${sudahBayar ? '✓ Lunas' : '💰 Bayar'}
+                            <button class="btn btn-detail btn-sm w-100"
+                                    onclick="showRiwayat(${pegawai.id}, '${pegawai.nama.replace(/'/g, "\\'")}'); return false;"
+                                    title="Lihat Riwayat Iuran">
+                                <i class="bi bi-eye me-1"></i>Detail
                             </button>
                         </td>
                     </tr>
@@ -593,6 +635,7 @@
 
             fetch('/bendahara-koperasi/iuran-pegawai/bayar', {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
@@ -623,56 +666,53 @@
             });
         }
 
-        // Bayar Semua Pegawai
+        // Bayar Semua Pegawai - HANYA UNTUK BULAN YANG DIPILIH SAJA
         function bayarSemua() {
-            const belumBayar = currentData.filter(p => p.sudah_bayar == 0).length;
+            // Tampilkan modal konfirmasi website style
+            document.getElementById('massBulanText').textContent = `${getBulanName(currentMonth)} ${currentYear}`;
+            document.getElementById('massNominalText').textContent = NOMINAL_IURAN.toLocaleString('id-ID');
+            const modal = new bootstrap.Modal(document.getElementById('massConfirmModal'));
+            modal.show();
 
-            if (belumBayar === 0) {
-                showError('Semua pegawai sudah membayar untuk bulan ini');
-                return;
-            }
+            // Binding sekali lalu lepaskan agar tidak dobel
+            const btn = document.getElementById('massConfirmBtn');
+            const handler = () => {
+                btn.removeEventListener('click', handler);
+                modal.hide();
 
-            const totalBayar = belumBayar * NOMINAL_IURAN;
-
-            if (!confirm(`Konfirmasi pembayaran MASSAL:\n\n` +
-                        `Jumlah Pegawai: ${belumBayar} orang\n` +
-                        `Total Pembayaran: Rp ${totalBayar.toLocaleString('id-ID')}\n` +
-                        `Bulan: ${getBulanName(currentMonth)} ${currentYear}\n\n` +
-                        `Lanjutkan?`)) {
-                return;
-            }
-
-            showLoading(true);
-
-            fetch('/bendahara-koperasi/iuran-pegawai/bayar-semua', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': CSRF_TOKEN
-                },
-                body: JSON.stringify({
-                    bulan: currentMonth,
-                    tahun: currentYear,
-                    nominal: NOMINAL_IURAN
+                showLoading(true);
+                fetch('/bendahara-koperasi/iuran-pegawai/bayar-semua', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': CSRF_TOKEN
+                    },
+                    body: JSON.stringify({
+                        bulan: currentMonth,
+                        tahun: currentYear,
+                        nominal: NOMINAL_IURAN
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    loadData();
-                    showToast(`✅ Berhasil mencatat pembayaran untuk ${result.count} pegawai!\nTotal: Rp ${result.total.toLocaleString('id-ID')}`);
-                } else {
-                    showError(result.message || 'Pembayaran gagal');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showError('Terjadi kesalahan saat memproses pembayaran massal');
-            })
-            .finally(() => {
-                showLoading(false);
-            });
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        loadData();
+                        showToast(`✅ Berhasil mencatat pembayaran untuk ${result.count} pegawai!\nTotal: Rp ${result.total.toLocaleString('id-ID')}`);
+                    } else {
+                        showError(result.message || 'Pembayaran gagal');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('Terjadi kesalahan saat memproses pembayaran massal');
+                })
+                .finally(() => {
+                    showLoading(false);
+                });
+            };
+            btn.addEventListener('click', handler);
         }
 
         /**
@@ -685,6 +725,7 @@
         function loadPegawaiList() {
             fetch('/bendahara-koperasi/iuran-pegawai/data?bulan=' + currentMonth + '&tahun=' + currentYear + '&status=semua', {
                 method: 'GET',
+                credentials: 'same-origin',
                 headers: {
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': CSRF_TOKEN
@@ -716,9 +757,9 @@
             // Set bulan dan tahun sesuai yang dipilih
             document.getElementById('manualBulan').value = getBulanName(currentMonth);
             document.getElementById('manualTahun').value = currentYear;
-            document.getElementById('manualNominal').value = NOMINAL_IURAN;
+            // Nominal default kosong, user bebas mengisi berapapun
+            document.getElementById('manualNominal').value = '';
             document.getElementById('manualTanggalBayar').value = new Date().toISOString().split('T')[0];
-            document.getElementById('manualKeterangan').value = '';
             document.getElementById('manualPegawaiId').value = '';
 
             new bootstrap.Modal(document.getElementById('tambahManualModal')).show();
@@ -731,7 +772,6 @@
             const pegawaiId = document.getElementById('manualPegawaiId').value;
             const nominal = parseFloat(document.getElementById('manualNominal').value);
             const tanggalBayar = document.getElementById('manualTanggalBayar').value;
-            const keterangan = document.getElementById('manualKeterangan').value;
 
             if (!pegawaiId || nominal <= 0) {
                 showError('Mohon lengkapi data yang diperlukan');
@@ -746,6 +786,7 @@
 
             fetch('/bendahara-koperasi/iuran-pegawai/tambah-manual', {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
@@ -756,8 +797,7 @@
                     bulan: currentMonth,
                     tahun: currentYear,
                     nominal: nominal,
-                    tanggal_bayar: tanggalBayar || null,
-                    keterangan: keterangan || null
+                    tanggal_bayar: tanggalBayar || null
                 })
             })
             .then(response => response.json())
@@ -779,6 +819,46 @@
             });
         });
 
+        // Hapus Iuran
+        function hapusIuran(pegawaiId, namaPegawai) {
+            if (!confirm(`Hapus pembayaran iuran untuk:\n\n${namaPegawai}\n\nBulan: ${getBulanName(currentMonth)} ${currentYear}\n\nStatus akan kembali menjadi "Belum Lunas". Lanjutkan?`)) {
+                return;
+            }
+
+            showLoading(true);
+
+            fetch('/bendahara-koperasi/iuran-pegawai/hapus', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': CSRF_TOKEN
+                },
+                body: JSON.stringify({
+                    pegawai_id: pegawaiId,
+                    bulan: currentMonth,
+                    tahun: currentYear
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    loadData();
+                    showToast(`✅ Pembayaran iuran untuk ${namaPegawai} berhasil dihapus!\nStatus kembali menjadi "Belum Lunas".`);
+                } else {
+                    showError(result.message || 'Gagal menghapus pembayaran');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Terjadi kesalahan saat menghapus pembayaran');
+            })
+            .finally(() => {
+                showLoading(false);
+            });
+        }
+
         /**
          * ========================================
          * RIWAYAT FUNCTIONS
@@ -792,6 +872,7 @@
 
             fetch(`/bendahara-koperasi/iuran-pegawai/riwayat/${pegawaiId}?tahun=${currentYear}`, {
                 method: 'GET',
+                credentials: 'same-origin',
                 headers: {
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': CSRF_TOKEN
@@ -832,18 +913,22 @@
 
             for (let i = 1; i <= 12; i++) {
                 const item = riwayatMap[i];
-                const sudahBayar = item !== undefined;
 
-                if (sudahBayar) {
-                    totalBayar += parseFloat(item.nominal);
+                // Opsi A: Jika tidak ada data, default BELUM terbayar
+                const statusTerbayar = item && item.status !== 'belum';
+                const nominalDisplay = statusTerbayar ? (parseInt(item?.nominal) || 0) : 0;
+                const tanggalDisplay = statusTerbayar && item && item.tanggal_bayar ? formatTanggal(item.tanggal_bayar) : '-';
+
+                if (statusTerbayar) {
+                    totalBayar += nominalDisplay;
                     jumlahBulanLunas++;
                 }
 
-                html += `<tr class="${sudahBayar ? 'table-success' : ''}">
+                html += `<tr class="${statusTerbayar ? 'table-success' : ''}">
                     <td><strong>${bulanNames[i-1]}</strong></td>
-                    <td>${sudahBayar ? '<span class="badge-lunas">Lunas</span>' : '<span class="badge-belum">Belum</span>'}</td>
-                    <td class="fw-bold">${sudahBayar ? 'Rp ' + parseInt(item.nominal).toLocaleString('id-ID') : '-'}</td>
-                    <td>${sudahBayar ? formatTanggal(item.tanggal_bayar) : '-'}</td>
+                    <td>${statusTerbayar ? '<span class="badge-lunas">✓ Lunas</span>' : '<span class="badge-belum">✗ Belum</span>'}</td>
+                    <td class="fw-bold">${statusTerbayar ? 'Rp ' + nominalDisplay.toLocaleString('id-ID') : '-'}</td>
+                    <td>${tanggalDisplay}</td>
                 </tr>`;
             }
 

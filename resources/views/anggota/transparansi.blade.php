@@ -470,22 +470,19 @@
     </style>
 
     <!-- Page Header -->
-    <div class="page-header-banner">
-        <div class="header-content">
-            <div class="header-left">
-                <div class="header-icon">
-                    <i class="bi bi-eye text-white" style="font-size: 1.75rem;"></i>
-                </div>
-                <div>
-                    <h2>Transparansi Keuangan 👁️</h2>
-                    <p>Lihat data kumulatif keuangan koperasi secara transparan</p>
-                </div>
-            </div>
-            <div class="header-badge">
-                <i class="bi bi-people"></i>
-                <span>{{ $dataKumulatif['pinjaman_aktif'] }} Pinjaman Aktif</span>
+    <div class="page-header-modern">
+        <div class="d-flex align-items-center gap-3">
+            <div class="icon-box"><i class="bi bi-eye text-white"></i></div>
+            <div>
+                <h2>Transparansi Keuangan 👁️</h2>
+                <small>Lihat data kumulatif keuangan koperasi secara transparan</small>
             </div>
         </div>
+        @if(isset($dataKumulatif['pinjaman_aktif']))
+        <div class="badge bg-light text-dark px-3 py-2">
+            <i class="bi bi-people me-1"></i>{{ $dataKumulatif['pinjaman_aktif'] }} Pinjaman Aktif
+        </div>
+        @endif
     </div>
 
     <!-- Table Card -->

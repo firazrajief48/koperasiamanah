@@ -554,22 +554,19 @@
     @endif
 
     <!-- Page Header -->
-    <div class="page-header-banner">
-        <div class="header-content">
-            <div class="header-left">
-                <div class="header-icon">
-                    <i class="bi bi-clock-history text-white" style="font-size: 1.75rem;"></i>
-                </div>
-                <div>
-                    <h2>Riwayat Pinjaman 📋</h2>
-                    <p>Pantau status dan progress semua pengajuan pinjaman Anda</p>
-                </div>
-            </div>
-            <div class="header-badge">
-                <i class="bi bi-list-check"></i>
-                <span>{{ count($pinjamans) }} Pengajuan</span>
+    <div class="page-header-modern">
+        <div class="d-flex align-items-center gap-3">
+            <div class="icon-box"><i class="bi bi-clock-history text-white"></i></div>
+            <div>
+                <h2>Riwayat Pinjaman 📋</h2>
+                <small>Pantau status dan progress semua pengajuan pinjaman Anda</small>
             </div>
         </div>
+        @if(count($pinjamans) > 0)
+        <div class="badge bg-light text-dark px-3 py-2">
+            <i class="bi bi-list-check me-1"></i>{{ count($pinjamans) }} Pengajuan
+        </div>
+        @endif
     </div>
 
     <!-- Table Card -->

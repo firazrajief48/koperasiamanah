@@ -339,9 +339,14 @@
         }
     </style>
 
-    <div class="page-header">
-        <h4>💰 Transparansi Keuangan</h4>
-        <p>Koperasi Amanah BPS Kota Surabaya - Pantau status pembayaran pinjaman anggota</p>
+    <div class="page-header-modern">
+        <div class="d-flex align-items-center gap-3">
+            <div class="icon-box"><i class="bi bi-eye text-white"></i></div>
+            <div>
+                <h2>💰 Transparansi Keuangan</h2>
+                <small>Koperasi Amanah BPS Kota Surabaya - Pantau status pembayaran pinjaman anggota</small>
+            </div>
+        </div>
     </div>
 
     <div class="search-container">

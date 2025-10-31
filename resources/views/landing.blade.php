@@ -2011,7 +2011,7 @@
 
                                     <form method="POST" action="{{ route('register') }}">
                                         @csrf
-                                        <input type="hidden" name="role" value="peminjam">
+                                        <input type="hidden" name="role" value="anggota">
 
                                         <div class="row g-3">
                                             <div class="col-12">
