@@ -421,9 +421,14 @@
     </style>
 
     <!-- Page Header -->
-    <div class="page-header">
-        <h4>📋 Detail Pengajuan Pinjaman</h4>
-        <p>Review dan verifikasi pengajuan pinjaman dari anggota koperasi</p>
+    <div class="page-header-modern">
+        <div class="d-flex align-items-center gap-3">
+            <div class="icon-box"><i class="bi bi-file-earmark-text text-white"></i></div>
+            <div>
+                <h2>📋 Detail Pengajuan Pinjaman</h2>
+                <small>Review dan verifikasi pengajuan pinjaman dari anggota koperasi</small>
+            </div>
+        </div>
     </div>
 
     <!-- Data Peminjam -->

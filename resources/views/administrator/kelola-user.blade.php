@@ -62,6 +62,25 @@
         padding: 2rem;
     }
 
+    .search-box-admin {
+        max-width: 420px;
+    }
+
+    .search-input-pill {
+        border-radius: 999px !important;
+        border: 2px solid rgba(30, 64, 175, 0.12) !important;
+        padding: 0.75rem 1.25rem !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+        transition: all 0.3s ease !important;
+        background: white !important;
+    }
+
+    .search-input-pill:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
+        outline: none !important;
+    }
+
     .btn-primary-admin {
         background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
         border: none;
@@ -484,13 +503,15 @@
                     <a href="{{ route('administrator.tambah-user') }}" class="btn-primary-admin">
                         <i class="bi bi-person-plus"></i>Tambah User
                     </a>
-                    <a href="{{ route('administrator.laporan-user') }}" class="btn-info-admin">
-                        <i class="bi bi-graph-up"></i>Laporan
-                    </a>
                 </div>
             </div>
         </div>
         <div class="admin-card-body">
+            <div class="mb-3">
+                <div class="input-group search-box-admin">
+                    <input type="text" id="searchUser" class="form-control search-input-pill" placeholder="Cari nama, email, role, NIP" aria-label="Cari">
+                </div>
+            </div>
             @if(session('success'))
                 <div class="alert-success-admin">
                     <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
@@ -538,7 +559,7 @@
                                 <td>
                                     @php
                                         $roleColors = [
-                                            'peminjam' => 'bg-primary',
+                                            'anggota' => 'bg-primary',
                                             'kepala_bps' => 'bg-info',
                                             'bendahara_koperasi' => 'bg-success',
                                             'ketua_koperasi' => 'bg-warning',
@@ -564,12 +585,13 @@
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         @if($user->id !== auth()->id())
-                                        <form action="{{ route('administrator.delete-user', $user->id) }}"
-                                              method="POST" class="d-inline"
-                                              onsubmit="return confirm('Yakin hapus user {{ $user->name }}?')">
+                                        <form id="delete-form-{{ $user->id }}" action="{{ route('administrator.delete-user', $user->id) }}"
+                                              method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn-action btn-action-delete" title="Hapus">
+                                            <button type="button" class="btn-action btn-action-delete btn-open-delete"
+                                                    data-form="delete-form-{{ $user->id }}"
+                                                    data-name="{{ $user->name }}" title="Hapus">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
@@ -601,3 +623,73 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let targetFormId = null;
+    const modalEl = document.getElementById('confirmDeleteModal');
+    const nameEl = document.getElementById('confirmDeleteName');
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    const bsModal = new bootstrap.Modal(modalEl);
+
+    document.querySelectorAll('.btn-open-delete').forEach(btn => {
+        btn.addEventListener('click', function() {
+            targetFormId = this.getAttribute('data-form');
+            const name = this.getAttribute('data-name');
+            nameEl.textContent = name || 'user ini';
+            bsModal.show();
+        });
+    });
+
+    confirmBtn.addEventListener('click', function() {
+        if (targetFormId) {
+            const form = document.getElementById(targetFormId);
+            if (form) form.submit();
+        }
+    });
+
+    // Searching: filter baris berdasarkan nama, email, role, dan NIP
+    const searchInput = document.getElementById('searchUser');
+    if (searchInput) {
+        const tableBody = document.querySelector('.admin-table tbody');
+        const rows = tableBody ? Array.from(tableBody.querySelectorAll('tr')) : [];
+
+        searchInput.addEventListener('keyup', function() {
+            const term = this.value.toLowerCase();
+            rows.forEach(row => {
+                const nama = row.children[1]?.textContent?.toLowerCase() || '';
+                const email = row.children[2]?.textContent?.toLowerCase() || '';
+                const role = row.children[3]?.textContent?.toLowerCase() || '';
+                const nip = row.children[4]?.textContent?.toLowerCase() || '';
+
+                if (nama.includes(term) || email.includes(term) || role.includes(term) || nip.includes(term)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+</script>
+
+<!-- Modal Konfirmasi Hapus (Website Style) -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:16px; border:none; overflow:hidden;">
+      <div class="modal-header" style="background: linear-gradient(135deg, #ef4444, #dc2626); color:white; border:none;">
+        <h5 class="modal-title"><i class="bi bi-trash me-2"></i>Konfirmasi Penghapusan</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="padding:1.25rem 1.5rem;">
+        <p class="mb-0" style="color:#374151;">Anda yakin ingin menghapus <strong id="confirmDeleteName">user ini</strong>? Tindakan ini tidak dapat dibatalkan.</p>
+      </div>
+      <div class="modal-footer" style="border:none; padding:0 1.5rem 1.25rem;">
+        <button type="button" class="btn" data-bs-dismiss="modal" style="background:white;border:1px solid #d1d5db;color:#475569;border-radius:10px;">Batal</button>
+        <button type="button" class="btn" id="confirmDeleteBtn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:white; border:none; border-radius:10px;">Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+</div>
+@endpush

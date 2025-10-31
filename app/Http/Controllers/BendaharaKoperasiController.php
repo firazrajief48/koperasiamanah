@@ -409,8 +409,13 @@ class BendaharaKoperasiController extends Controller
                 ->where('bulan', $bulanFormat)
                 ->first();
 
-            $sudahBayar = $iuran && $iuran->status === 'lunas';
-            $nominal = 50000; // Iuran fix Rp 50.000
+            // Hanya tampilkan pegawai yang MEMILIKI record iuran pada bulan yang dipilih
+            if (!$iuran) {
+                continue;
+            }
+
+            $sudahBayar = $iuran->status !== 'belum';
+            $nominal = (float) $iuran->jumlah;
 
             // Filter berdasarkan status
             if ($statusFilter === 'lunas' && !$sudahBayar) {
@@ -490,10 +495,11 @@ class BendaharaKoperasiController extends Controller
             'nominal' => 'required|numeric|min:0',
         ]);
 
+        // Format bulan untuk query (YYYY-MM), contoh: "2025-10"
         $bulanFormat = sprintf('%04d-%02d', $validated['tahun'], $validated['bulan']);
         $nominal = $validated['nominal'];
 
-        // Ambil semua anggota yang belum bayar untuk bulan ini
+        // Ambil semua anggota (hanya untuk bulan yang dipilih)
         $users = User::where('role', 'anggota')->get();
 
         $count = 0;
@@ -502,9 +508,10 @@ class BendaharaKoperasiController extends Controller
         DB::beginTransaction();
         try {
             foreach ($users as $user) {
-                // Cek apakah sudah ada iuran untuk bulan ini
+                // Cek apakah sudah ada iuran untuk BULAN YANG DIPILIH SAJA
+                // Hanya menandai iuran untuk bulan yang dipilih (currentMonth, currentYear)
                 $iuran = Iuran::where('user_id', $user->id)
-                    ->where('bulan', $bulanFormat)
+                    ->where('bulan', $bulanFormat) // Hanya bulan tertentu, bukan semua bulan
                     ->first();
 
                 // Skip jika sudah lunas
@@ -512,7 +519,9 @@ class BendaharaKoperasiController extends Controller
                     continue;
                 }
 
-                // Update atau create iuran
+                // Update atau create iuran HANYA UNTUK BULAN YANG DIPILIH
+                // Bulan yang dipilih disimpan dalam format YYYY-MM (contoh: "2025-10")
+                // Setiap bulan memiliki record iuran terpisah di database
                 if ($iuran) {
                     $iuran->update([
                         'jumlah' => $nominal,
@@ -523,7 +532,7 @@ class BendaharaKoperasiController extends Controller
                     Iuran::create([
                         'user_id' => $user->id,
                         'jumlah' => $nominal,
-                        'bulan' => $bulanFormat,
+                        'bulan' => $bulanFormat, // Hanya bulan yang dipilih (format: YYYY-MM)
                         'tanggal_bayar' => now(),
                         'status' => 'lunas',
                     ]);
@@ -558,7 +567,6 @@ class BendaharaKoperasiController extends Controller
             'tahun' => 'required|integer|min:2020',
             'nominal' => 'required|numeric|min:0',
             'tanggal_bayar' => 'nullable|date',
-            'keterangan' => 'nullable|string|max:1000',
         ]);
 
         $bulanFormat = sprintf('%04d-%02d', $validated['tahun'], $validated['bulan']);
@@ -581,7 +589,6 @@ class BendaharaKoperasiController extends Controller
                 'jumlah' => $validated['nominal'],
                 'tanggal_bayar' => $validated['tanggal_bayar'] ?? now(),
                 'status' => 'lunas',
-                'keterangan' => $validated['keterangan'] ?? null,
             ]);
         } else {
             Iuran::create([
@@ -590,7 +597,6 @@ class BendaharaKoperasiController extends Controller
                 'bulan' => $bulanFormat,
                 'tanggal_bayar' => $validated['tanggal_bayar'] ?? now(),
                 'status' => 'lunas',
-                'keterangan' => $validated['keterangan'] ?? null,
             ]);
         }
 
@@ -600,12 +606,55 @@ class BendaharaKoperasiController extends Controller
         ]);
     }
 
+    public function hapusIuran(Request $request)
+    {
+        $validated = $request->validate([
+            'pegawai_id' => 'required|exists:users,id',
+            'bulan' => 'required|integer|min:1|max:12',
+            'tahun' => 'required|integer|min:2020',
+        ]);
+
+        $bulanFormat = sprintf('%04d-%02d', $validated['tahun'], $validated['bulan']);
+
+        // Cari iuran untuk bulan ini
+        $iuran = Iuran::where('user_id', $validated['pegawai_id'])
+            ->where('bulan', $bulanFormat)
+            ->first();
+
+        if (!$iuran) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Iuran tidak ditemukan'
+            ], 404);
+        }
+
+        if ($iuran->status !== 'lunas') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Iuran belum dibayar, tidak bisa dihapus'
+            ], 400);
+        }
+
+        // Ubah status menjadi belum lunas dan hapus tanggal bayar
+        $iuran->update([
+            'status' => 'belum',
+            'tanggal_bayar' => null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pembayaran iuran berhasil dihapus'
+        ]);
+    }
+
     public function getRiwayatIuran($id, Request $request)
     {
         $tahun = $request->input('tahun', date('Y'));
 
+        // Kolom 'bulan' disimpan sebagai string format YYYY-MM, bukan tipe date.
+        // Gunakan pencarian prefix tahun agar kompatibel di semua driver DB.
         $riwayat = Iuran::where('user_id', $id)
-            ->whereYear('bulan', $tahun)
+            ->where('bulan', 'like', $tahun . '-%')
             ->orderBy('bulan', 'asc')
             ->get()
             ->map(function ($iuran) {

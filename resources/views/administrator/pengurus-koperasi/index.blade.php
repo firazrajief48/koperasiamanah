@@ -177,6 +177,25 @@
         color: white;
     }
 
+    .search-box-admin {
+        max-width: 420px;
+    }
+
+    .search-input-pill {
+        border-radius: 999px !important;
+        border: 2px solid rgba(30, 64, 175, 0.12) !important;
+        padding: 0.75rem 1.25rem !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+        transition: all 0.3s ease !important;
+        background: white !important;
+    }
+
+    .search-input-pill:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
+        outline: none !important;
+    }
+
     .admin-table {
         border-collapse: separate;
         border-spacing: 0;
@@ -822,6 +841,11 @@
         </div>
     </div>
     <div class="admin-card-body">
+        <div class="mb-3">
+            <div class="input-group search-box-admin">
+                <input type="text" id="searchPengurus" class="form-control search-input-pill" placeholder="Cari nama, jabatan, email, telepon" aria-label="Cari">
+            </div>
+        </div>
         @if(session('success'))
             <div class="alert-success-admin">
                 <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
@@ -836,7 +860,7 @@
 
         @if($pengurus->count() > 0)
             <div class="table-responsive">
-                <table class="admin-table">
+                <table class="admin-table" id="tablePengurus">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -852,7 +876,7 @@
                     </thead>
                     <tbody>
                         @foreach($pengurus as $index => $p)
-                            <tr>
+                            <tr class="row-pengurus">
                                 <td class="fw-bold">{{ $index + 1 }}</td>
                                 <td>
                                     @if($p->foto && file_exists(public_path('storage/' . $p->foto)))
@@ -864,25 +888,25 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="kol-nama">
                                     <div class="fw-bold text-dark mb-1">{{ $p->nama }}</div>
                                     @if($p->deskripsi)
                                         <small class="text-muted">{{ Str::limit($p->deskripsi, 50) }}</small>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="kol-jabatan">
                                     <span class="badge-jabatan">{{ $p->jabatan }}</span>
                                 </td>
-                                <td>
+                                <td class="kol-email">
                                     @if($p->email)
                                         <a href="mailto:{{ $p->email }}" class="text-decoration-none text-primary">
-                                            {{ Str::limit($p->email, 20) }}
+                                            {{ Str::limit($p->email, 50) }}
                                         </a>
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="kol-telepon">
                                     @if($p->telepon)
                                         <a href="tel:{{ $p->telepon }}" class="text-decoration-none text-primary">
                                             {{ $p->telepon }}
@@ -939,4 +963,27 @@
         @endif
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('searchPengurus');
+        const rows = Array.from(document.querySelectorAll('#tablePengurus tbody tr.row-pengurus'));
+
+        function normal(str){ return (str || '').toString().toLowerCase(); }
+
+        input?.addEventListener('input', function() {
+            const q = normal(this.value);
+            rows.forEach(row => {
+                const nama = normal(row.querySelector('.kol-nama')?.innerText);
+                const jabatan = normal(row.querySelector('.kol-jabatan')?.innerText);
+                const email = normal(row.querySelector('.kol-email')?.innerText);
+                const telp = normal(row.querySelector('.kol-telepon')?.innerText);
+                const match = nama.includes(q) || jabatan.includes(q) || email.includes(q) || telp.includes(q);
+                row.style.display = match ? '' : 'none';
+            });
+        });
+    });
+</script>
+@endpush
 @endsection

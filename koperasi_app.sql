@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 30, 2025 at 10:23 AM
+-- Generation Time: Oct 31, 2025 at 10:50 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -79,6 +79,13 @@ CREATE TABLE `iurans` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `iurans`
+--
+
+INSERT INTO `iurans` (`id`, `user_id`, `jumlah`, `bulan`, `tanggal_bayar`, `status`, `keterangan`, `created_at`, `updated_at`) VALUES
+(1, 9, 50000.00, '2025-10', '2025-10-31', 'lunas', NULL, '2025-10-31 02:20:48', '2025-10-31 02:20:48');
+
 -- --------------------------------------------------------
 
 --
@@ -143,7 +150,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (12, '2025_10_29_020730_add_workflow_fields_to_pinjamans_table', 5),
 (14, '2025_10_29_021617_add_status_tracking_to_pinjamans_table', 6),
 (15, '2025_10_29_031448_update_user_role_enum_to_anggota', 6),
-(16, '2025_10_29_063414_add_metode_pembayaran_to_pinjamans_table', 7);
+(16, '2025_10_29_063414_add_metode_pembayaran_to_pinjamans_table', 7),
+(17, '2025_10_31_021729_add_sisa_gaji_to_pinjamans_table', 8);
 
 -- --------------------------------------------------------
 
@@ -182,7 +190,11 @@ CREATE TABLE `pembayarans` (
 
 INSERT INTO `pembayarans` (`id`, `pinjaman_id`, `bulan_ke`, `nominal_pembayaran`, `tanggal_jatuh_tempo`, `tanggal_pembayaran`, `status`, `keterangan`, `created_at`, `updated_at`) VALUES
 (1, 3, 1, 2000000.00, '2025-11-30', NULL, 'belum_bayar', NULL, '2025-10-30 01:04:59', '2025-10-30 01:04:59'),
-(2, 3, 2, 2000000.00, '2025-12-30', NULL, 'belum_bayar', NULL, '2025-10-30 01:04:59', '2025-10-30 01:04:59');
+(2, 3, 2, 2000000.00, '2025-12-30', NULL, 'belum_bayar', NULL, '2025-10-30 01:04:59', '2025-10-30 01:04:59'),
+(3, 4, 1, 2000000.00, '2025-12-01', NULL, 'belum_bayar', NULL, '2025-10-30 22:59:33', '2025-10-30 22:59:33'),
+(4, 4, 2, 2000000.00, '2025-12-31', NULL, 'belum_bayar', NULL, '2025-10-30 22:59:33', '2025-10-30 22:59:33'),
+(5, 5, 1, 2500000.00, '2025-12-01', NULL, 'belum_bayar', NULL, '2025-10-30 23:06:22', '2025-10-30 23:06:22'),
+(6, 5, 2, 2500000.00, '2025-12-31', NULL, 'belum_bayar', NULL, '2025-10-30 23:06:22', '2025-10-30 23:06:22');
 
 -- --------------------------------------------------------
 
@@ -233,6 +245,7 @@ CREATE TABLE `pinjamans` (
   `bulan_terbayar` int(11) NOT NULL DEFAULT 0,
   `sisa_pinjaman` decimal(15,2) NOT NULL DEFAULT 0.00,
   `gaji_pokok` decimal(15,2) DEFAULT NULL,
+  `sisa_gaji` decimal(15,2) DEFAULT NULL,
   `metode_pembayaran` enum('potong_gaji','potong_tukin') DEFAULT NULL,
   `status` enum('menunggu','disetujui','ditolak','lunas') NOT NULL DEFAULT 'menunggu',
   `status_detail` varchar(255) NOT NULL DEFAULT 'menunggu_persetujuan_bendahara',
@@ -248,9 +261,10 @@ CREATE TABLE `pinjamans` (
 -- Dumping data for table `pinjamans`
 --
 
-INSERT INTO `pinjamans` (`id`, `user_id`, `jumlah_pinjaman`, `tenor_bulan`, `cicilan_per_bulan`, `bulan_terbayar`, `sisa_pinjaman`, `gaji_pokok`, `metode_pembayaran`, `status`, `status_detail`, `alasan_penolakan`, `disetujui_oleh`, `tanggal_persetujuan`, `keterangan`, `created_at`, `updated_at`) VALUES
-(2, 9, 5000000.00, 2, 2500000.00, 0, 5000000.00, 30000000.00, NULL, 'menunggu', 'menunggu_persetujuan_ketua', NULL, 'Retno Larasati, S.M.', '2025-10-29 01:50:44', 'Biaya Keperluan', '2025-10-28 20:27:01', '2025-10-29 01:50:44'),
-(3, 9, 4000000.00, 2, 2000000.00, 0, 4000000.00, 10000000.00, 'potong_tukin', 'menunggu', 'ditolak', 'Hutang Kemarin Belum Lunas!', 'Retno Larasati, S.M.', '2025-10-30 01:06:07', 'WKWKWKWKWK', '2025-10-30 01:04:59', '2025-10-30 01:06:07');
+INSERT INTO `pinjamans` (`id`, `user_id`, `jumlah_pinjaman`, `tenor_bulan`, `cicilan_per_bulan`, `bulan_terbayar`, `sisa_pinjaman`, `gaji_pokok`, `sisa_gaji`, `metode_pembayaran`, `status`, `status_detail`, `alasan_penolakan`, `disetujui_oleh`, `tanggal_persetujuan`, `keterangan`, `created_at`, `updated_at`) VALUES
+(2, 9, 5000000.00, 2, 2500000.00, 0, 5000000.00, 30000000.00, NULL, NULL, 'menunggu', 'menunggu_persetujuan_ketua', NULL, 'Retno Larasati, S.M.', '2025-10-29 01:50:44', 'Biaya Keperluan', '2025-10-28 20:27:01', '2025-10-29 01:50:44'),
+(3, 9, 4000000.00, 2, 2000000.00, 0, 4000000.00, 10000000.00, NULL, 'potong_tukin', 'menunggu', 'ditolak', 'Hutang Kemarin Belum Lunas!', 'Retno Larasati, S.M.', '2025-10-30 01:06:07', 'WKWKWKWKWK', '2025-10-30 01:04:59', '2025-10-30 01:06:07'),
+(4, 9, 4000000.00, 2, 2000000.00, 0, 4000000.00, 0.00, NULL, 'potong_tukin', 'menunggu', 'menunggu_persetujuan_bendahara', NULL, NULL, NULL, 'sfewrhgewvesa', '2025-10-30 22:59:33', '2025-10-30 22:59:33');
 
 -- --------------------------------------------------------
 
@@ -272,7 +286,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('A00TdSot8HprwoEzj6FfhxzPM9HIXzTQc7661S7E', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiakdCOHZGOTFjam43enVpUHRuc0VIZGd0RFFwZktUaFdYa1N2RkI4UiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvbGFwb3Jhbi1waW5qYW1hbiI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7fQ==', 1761813202);
+('RFZJHRvcGvNxmrB9CySzmjkv0GQkJFMoFQGx4gfJ', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoic2ZyNlJNMXdIbElNbG5EZXBxMjBNWWJ4NUp2S1haV24yNndoNlFkNCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6OTI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvaXVyYW4tcGVnYXdhaS9kYXRhP2J1bGFuPTEwJnN0YXR1cz1zZW11YSZ0YWh1bj0yMDI1Ijt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1761904244);
 
 -- --------------------------------------------------------
 
@@ -305,7 +319,7 @@ INSERT INTO `users` (`id`, `name`, `nip`, `golongan`, `jabatan`, `phone`, `photo
 (1, 'Dr. Arrief Chandra Setiawan, S.ST, M.Si.', NULL, NULL, 'Kepala BPS Kota Surabaya', NULL, NULL, 'arriefchandra@gmail.com', 'kepala_bps', NULL, '$2y$12$rGnoAX8ysFQNubkRQo52ceetBDECbX8X6HIxYggPQiifN4GFmYXxK', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
 (2, 'Retno Larasati, S.M.', NULL, NULL, 'Bendahara Koperasi Amanah BPS Kota Surabaya', NULL, NULL, 'retnolarasati@gmail.com', 'bendahara_koperasi', NULL, '$2y$12$LIlxqz0a8aRwB9okBPYJ/e1eCnXu/hbnzEsTFylWBewLuQmzBn/8G', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
 (3, 'Nurcholis, S.Si.', NULL, NULL, 'Ketua Koperasi Amanah BPS Kota Surabaya', NULL, NULL, 'nurcholis@gmail.com', 'ketua_koperasi', NULL, '$2y$12$.7Ol.DXCJXUwAJs9jWqHf.YZcV/A3lFiQD/6zddYD3.cKhRxF5LJG', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
-(4, 'Bilal Ali Maghshar Sri Muljono, SST', '', '', 'Administrator Website Koperasi Amanah BPS Kota Surabaya', '', NULL, 'bilalali@gmail.com', 'administrator', NULL, '$2y$12$PIpqdqMnO.iONxovCOeQ8u0DGA9RY.qmn5qNvfDio0Q1s2LztbnJ2', NULL, '2025-10-21 00:10:09', '2025-10-26 18:51:35'),
+(4, 'Bilal Ali Maghshar Sri Muljono, SST', '00000000000', NULL, 'Administrator Website Koperasi Amanah BPS Kota Surabaya', NULL, NULL, 'bilalali@gmail.com', 'administrator', NULL, '$2y$12$PIpqdqMnO.iONxovCOeQ8u0DGA9RY.qmn5qNvfDio0Q1s2LztbnJ2', NULL, '2025-10-21 00:10:09', '2025-10-31 01:41:54'),
 (9, 'Mohammed Firaz Rajief Bismaka', '23051204330', 'Magang', 'Mahasiswa', '085748867167', NULL, 'mohammed.23330@mhs.unesa.ac.id', 'anggota', NULL, '$2y$12$X9RyUBn8c6QEb4y4CYs/Fep0gauUkEKl93M/cUJeMECWKwQkN4YOe', NULL, '2025-10-22 20:50:12', '2025-10-28 01:32:55');
 
 --
@@ -413,7 +427,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `iurans`
 --
 ALTER TABLE `iurans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `jobs`
@@ -425,13 +439,13 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `pembayarans`
 --
 ALTER TABLE `pembayarans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `pengurus_koperasis`
@@ -443,13 +457,13 @@ ALTER TABLE `pengurus_koperasis`
 -- AUTO_INCREMENT for table `pinjamans`
 --
 ALTER TABLE `pinjamans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables

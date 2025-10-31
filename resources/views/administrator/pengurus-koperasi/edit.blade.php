@@ -137,10 +137,13 @@
     }
 
     .form-check {
-        padding: 1rem;
+        padding: 0.75rem 1rem;
         background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(96, 165, 250, 0.05) 100%);
         border-radius: 12px;
         border: 1px solid rgba(37, 99, 235, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .form-check-input {
@@ -149,6 +152,10 @@
         border-radius: 6px;
         border: 2px solid #d1d5db;
         transition: all 0.3s ease;
+        margin: 0; /* pastikan berada di dalam kotak */
+        margin-right: 0.5rem;
+        margin-left: 0 !important; /* override bootstrap default -1.5em */
+        float: none; /* override bootstrap */
     }
 
     .form-check-input:checked {
@@ -163,7 +170,7 @@
     .form-check-label {
         font-weight: 500;
         color: #374151;
-        margin-left: 0.5rem;
+        margin-left: 0; /* diselaraskan dengan input */
     }
 
     .file-upload-area {

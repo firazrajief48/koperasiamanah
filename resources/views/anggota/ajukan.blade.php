@@ -831,6 +831,10 @@
 
     @push('scripts')
         <script>
+            // CSRF & URLs
+            const CSRF_TOKEN = '{{ csrf_token() }}';
+            const SUBMIT_URL = '{{ route('anggota.ajukan.store') }}';
+            const RIWAYAT_URL = '{{ route('anggota.riwayat') }}';
             // Data tabel pinjaman sesuai gambar
             const tabelPinjaman = {
                 3000000: {
@@ -1154,18 +1158,51 @@
                 modal.show();
             });
 
-            // Handle konfirmasi submit
-            document.getElementById('konfirmSubmit').addEventListener('click', function() {
-                // Close modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('konfirmasiModal'));
-                modal.hide();
+            // Handle konfirmasi submit (AJAX + redirect)
+            document.getElementById('konfirmSubmit').addEventListener('click', async function() {
+                const btn = this;
+                btn.disabled = true;
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mengajukan...';
 
-                // Submit form setelah modal ditutup
-                setTimeout(function() {
-                    if (window.currentForm) {
-                        window.currentForm.submit();
+                try {
+                    if (!window.currentForm) {
+                        throw new Error('Form tidak ditemukan. Mohon coba lagi.');
                     }
-                }, 300);
+
+                    const formData = new FormData(window.currentForm);
+
+                    const res = await fetch(SUBMIT_URL, {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: {
+                            'X-CSRF-TOKEN': CSRF_TOKEN,
+                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+                        },
+                        body: formData
+                    });
+
+                    if (res.ok) {
+                        // Berhasil -> arahkan ke Riwayat Pinjaman
+                        window.location.href = RIWAYAT_URL + '?success=1';
+                        return;
+                    }
+
+                    // Jika 422 (validasi) atau lainnya, tampilkan pesan umum
+                    const text = await res.text();
+                    showErrorModal('Gagal Mengajukan', 'Pengajuan gagal dikirim. Pastikan semua field valid sesuai ketentuan.');
+                    console.error('Submit error:', res.status, text);
+                } catch (err) {
+                    showErrorModal('Kesalahan Sistem', err.message || 'Terjadi kesalahan tak terduga.');
+                    console.error(err);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHTML;
+                    // Tutup modal jika masih terbuka
+                    const modalEl = document.getElementById('konfirmasiModal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                }
             });
 
             // Handle cancel (optional - bisa menampilkan modal cancel)

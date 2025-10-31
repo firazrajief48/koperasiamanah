@@ -70,13 +70,15 @@
                                 </a>
                             </li>
                         @endif
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->is('*transparansi*') ? 'active' : '' }}"
-                                href="{{ route($routePrefix . '.transparansi') }}">
-                                <i class="bi bi-eye me-3"></i>
-                                <span>Transparansi Keuangan</span>
-                            </a>
-                        </li>
+                        @if (!isset($routePrefix) || $routePrefix !== 'administrator')
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->is('*transparansi*') ? 'active' : '' }}"
+                                    href="{{ route($routePrefix . '.transparansi') }}">
+                                    <i class="bi bi-eye me-3"></i>
+                                    <span>Transparansi Keuangan</span>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
 
                     <div class="px-3 pb-3 mt-auto" style="margin-top: auto !important; margin-bottom: 1rem;">
@@ -488,6 +490,161 @@
             transform: translateY(-6px);
             box-shadow: 0 12px 40px rgba(37, 99, 235, 0.12);
             border-color: rgba(37, 99, 235, 0.15);
+        }
+
+        /* === GLOBAL THEME UI - Konsisten untuk semua role === */
+
+        /* Page Header Modern (untuk semua halaman) */
+        .page-header-modern {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #6366f1 100%);
+            border-radius: 20px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(30, 64, 175, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header-modern .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .page-header-modern h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: white;
+        }
+
+        .page-header-modern small {
+            opacity: 0.9;
+            font-size: 0.875rem;
+        }
+
+        /* Card Modern Konsisten */
+        .card-modern, .card[style*="border-radius"] {
+            border-radius: 20px !important;
+            border: none !important;
+            box-shadow: 0 10px 40px rgba(30, 64, 175, 0.08) !important;
+        }
+
+        .card-header-modern, .card-header {
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%) !important;
+            border: none !important;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1.5rem 2rem;
+        }
+
+        .card-header-modern h5, .card-header h5 {
+            color: #1f2937;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* Form Controls Konsisten */
+        .form-control, .form-select {
+            border-radius: 12px !important;
+            border: 2px solid rgba(30, 64, 175, 0.12) !important;
+            padding: 0.75rem 1rem !important;
+            font-size: 0.925rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
+            outline: none;
+        }
+
+        /* Button Konsisten */
+        .btn-gradient, .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-gradient:hover, .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%) !important;
+            color: white !important;
+        }
+
+        .btn-outline-info {
+            border: 2px solid #06b6d4 !important;
+            color: #06b6d4 !important;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-info:hover {
+            background: #06b6d4 !important;
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid #d1d5db !important;
+            color: #6b7280 !important;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-secondary:hover {
+            background: #f8fafc !important;
+            border-color: #cbd5e1 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Badge Konsisten */
+        .badge {
+            border-radius: 999px !important;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+        }
+
+        /* Table Konsisten */
+        .table {
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .table thead {
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.08), rgba(99, 102, 241, 0.08));
+        }
+
+        .table thead th {
+            border: none;
+            color: #1f2937;
+            font-weight: 700;
+            padding: 1rem;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(59, 130, 246, 0.05);
         }
 
         .stat-card {

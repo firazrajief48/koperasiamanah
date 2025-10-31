@@ -13,24 +13,22 @@
 @section('main-content')
 <div class="container-fluid">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold mb-1" style="color: var(--dark-navy);">
-                <i class="bi bi-person-plus me-2"></i>Tambah User Baru
-            </h2>
-            <p class="text-muted mb-0">Tambahkan user baru ke sistem koperasi</p>
+    <div class="page-header-modern">
+        <div class="d-flex align-items-center gap-3">
+            <div class="icon-box"><i class="bi bi-person-plus text-white"></i></div>
+            <div>
+                <h2>Tambah User Baru</h2>
+                <small>Tambahkan user baru ke sistem koperasi</small>
+            </div>
         </div>
-        <a href="{{ route('administrator.kelola-user') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Kembali
-        </a>
     </div>
 
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
-                <div class="card-header bg-transparent border-0 p-4">
-                    <h5 class="fw-bold mb-0" style="color: var(--dark-navy);">
-                        <i class="bi bi-form me-2"></i>Form Tambah User
+            <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                <div class="card-header p-4">
+                    <h5 class="fw-bold mb-0">
+                        <i class="bi bi-ui-checks-grid me-2"></i>Form Tambah User
                     </h5>
                 </div>
                 <div class="card-body p-4">
@@ -67,7 +65,7 @@
                                 <select class="form-select @error('role') is-invalid @enderror"
                                         id="role" name="role" required>
                                     <option value="">Pilih Role</option>
-                                    <option value="peminjam" {{ old('role') == 'peminjam' ? 'selected' : '' }}>Anggota</option>
+                                    <!-- Anggota tidak dapat ditambahkan dari sini -->
                                     <option value="kepala_bps" {{ old('role') == 'kepala_bps' ? 'selected' : '' }}>Kepala BPS</option>
                                     <option value="bendahara_koperasi" {{ old('role') == 'bendahara_koperasi' ? 'selected' : '' }}>Bendahara Koperasi</option>
                                     <option value="ketua_koperasi" {{ old('role') == 'ketua_koperasi' ? 'selected' : '' }}>Ketua Koperasi</option>

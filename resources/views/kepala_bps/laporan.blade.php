@@ -738,9 +738,14 @@
         }
     </style>
 
-    <div class="page-header">
-        <h4>📊 Laporan Pinjaman</h4>
-        <p>Daftar pinjaman yang telah diverifikasi dan riwayat verifikasi lengkap</p>
+    <div class="page-header-modern">
+        <div class="d-flex align-items-center gap-3">
+            <div class="icon-box"><i class="bi bi-file-earmark-text text-white"></i></div>
+            <div>
+                <h2>📊 Laporan Pinjaman</h2>
+                <small>Daftar pinjaman yang telah diverifikasi dan riwayat verifikasi lengkap</small>
+            </div>
+        </div>
     </div>
 
     <div class="filter-container">

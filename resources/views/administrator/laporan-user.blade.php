@@ -464,9 +464,7 @@
             </h2>
             <p class="page-subtitle">Statistik dan analisis data user sistem koperasi</p>
         </div>
-        <a href="{{ route('administrator.kelola-user') }}" class="btn-back-admin">
-            <i class="bi bi-arrow-left"></i>Kembali
-        </a>
+
     </div>
 
     <!-- Stats Overview -->
@@ -495,7 +493,7 @@
                             <i class="bi bi-person-check-fill text-white"></i>
                         </div>
                         <div>
-                            <h3 class="stats-number">{{ $users_by_role->where('role', 'peminjam')->first()->total ?? 0 }}</h3>
+                            <h3 class="stats-number">{{ $users_by_role->where('role', 'anggota')->first()->total ?? 0 }}</h3>
                             <p class="stats-label">Anggota</p>
                         </div>
                     </div>
@@ -552,7 +550,7 @@
                             <div>
                                 @php
                                     $roleColors = [
-                                        'peminjam' => 'bg-primary',
+                                        'anggota' => 'bg-primary',
                                         'kepala_bps' => 'bg-info',
                                         'bendahara_koperasi' => 'bg-success',
                                         'ketua_koperasi' => 'bg-warning',

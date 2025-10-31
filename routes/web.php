@@ -67,6 +67,7 @@ Route::prefix('bendahara-koperasi')->name('bendahara_koperasi.')->middleware(['a
     Route::post('/iuran-pegawai/bayar', [BendaharaKoperasiController::class, 'bayarIuran'])->name('iuran_pegawai.bayar');
     Route::post('/iuran-pegawai/bayar-semua', [BendaharaKoperasiController::class, 'bayarSemuaPegawai'])->name('iuran_pegawai.bayar_semua');
     Route::post('/iuran-pegawai/tambah-manual', [BendaharaKoperasiController::class, 'tambahIuranManual'])->name('iuran_pegawai.tambah_manual');
+    Route::post('/iuran-pegawai/hapus', [BendaharaKoperasiController::class, 'hapusIuran'])->name('iuran_pegawai.hapus');
     Route::get('/iuran-pegawai/riwayat/{id}', [BendaharaKoperasiController::class, 'getRiwayatIuran'])->name('iuran_pegawai.riwayat');
     Route::get('/iuran-pegawai/export', [BendaharaKoperasiController::class, 'exportIuran'])->name('iuran_pegawai.export');
 });

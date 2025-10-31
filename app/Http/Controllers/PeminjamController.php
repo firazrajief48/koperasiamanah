@@ -89,6 +89,12 @@ class PeminjamController extends Controller
         ]);
 
         if ($validator->fails()) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
             return back()->withErrors($validator)->withInput();
         }
 
@@ -128,6 +134,14 @@ class PeminjamController extends Controller
             $this->generatePembayaranBulanan($pinjaman->id);
         } catch (\Throwable $e) {
             // Abaikan jika tabel pembayaran belum ada; proses pengajuan tetap lanjut
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengajuan pinjaman berhasil disimpan! Pinjaman Anda akan segera diproses oleh tim koperasi.',
+                'redirect' => route('anggota.riwayat')
+            ]);
         }
 
         return redirect()->route('anggota.riwayat')->with('success', 'Pengajuan pinjaman berhasil disimpan! Pinjaman Anda akan segera diproses oleh tim koperasi.');
