@@ -19,6 +19,7 @@ class Pinjaman extends Model
         'bulan_terbayar',
         'sisa_pinjaman',
         'gaji_pokok',
+        'sisa_gaji',
         'metode_pembayaran',
         'status',
         'status_detail',
@@ -33,6 +34,7 @@ class Pinjaman extends Model
         'cicilan_per_bulan' => 'decimal:2',
         'sisa_pinjaman' => 'decimal:2',
         'gaji_pokok' => 'decimal:2',
+        'sisa_gaji' => 'decimal:2',
     ];
 
     /**

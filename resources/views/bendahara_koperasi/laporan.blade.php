@@ -1054,8 +1054,8 @@
                     (strpos($l['status'], 'Kepala') !== false || strpos($l['status'], 'BPS') !== false ? 'Kepala BPS Kota Surabaya' :
                     ($l['status'] == 'Disetujui' || $l['status'] == 'Ditolak' ? 'Bendahara Koperasi' : 'Proses Verifikasi'))
                 }}",
-                gaji_pokok: {{ $l['gaji_pokok'] ?? 'null' }},
-                sisa_gaji: {{ $l['sisa_gaji'] ?? 'null' }},
+                gaji_pokok: {{ $l['gaji_pokok'] !== null ? $l['gaji_pokok'] : 'null' }},
+                sisa_gaji: {{ $l['sisa_gaji'] !== null ? $l['sisa_gaji'] : 'null' }},
                 catatan_verifikasi: "{{ $l['catatan_verifikasi'] ?? '' }}",
                 tanggal_verifikasi: "{{ $l['tanggal_verifikasi'] ?? '' }}",
                 angsuran: [
@@ -1155,44 +1155,67 @@
         function loadVerifikasiSection(data) {
             const verifikasiSection = document.getElementById('verifikasiSection');
 
-            if (data.status === 'Diverifikasi' || data.status === 'Ditolak') {
-                const formatCurrency = (value) => {
-                    if (value === null || value === undefined || value === '') {
-                        return '-';
-                    }
-                    const num = Number(value);
-                    if (Number.isNaN(num)) {
-                        return '-';
-                    }
-                    return 'Rp ' + num.toLocaleString('id-ID');
-                };
+            const formatCurrency = (value) => {
+                if (value === null || value === undefined || value === '' || value === 'null') {
+                    return '-';
+                }
+                const num = Number(value);
+                if (Number.isNaN(num)) {
+                    return '-';
+                }
+                return 'Rp ' + num.toLocaleString('id-ID');
+            };
 
+            // Cek apakah gaji pokok atau sisa gaji sudah ada (sudah pernah diisi bendahara)
+            const hasGajiData = (data.gaji_pokok && data.gaji_pokok !== null && data.gaji_pokok !== 'null') ||
+                                (data.sisa_gaji && data.sisa_gaji !== null && data.sisa_gaji !== 'null');
+
+            if (data.status === 'Diverifikasi' || data.status === 'Ditolak' || data.status === 'Disetujui' || hasGajiData) {
                 const tanggalVerifikasi = (data.tanggal_verifikasi && data.tanggal_verifikasi !== '')
                     ? data.tanggal_verifikasi
                     : '-';
 
+                // Tentukan badge class berdasarkan status
+                let badgeClass = 'pending';
+                let badgeIcon = 'clock';
+                let badgeText = data.status;
+
+                if (data.status === 'Diverifikasi' || data.status === 'Disetujui') {
+                    badgeClass = 'approved';
+                    badgeIcon = 'check-circle';
+                } else if (data.status === 'Ditolak') {
+                    badgeClass = 'rejected';
+                    badgeIcon = 'x-circle';
+                } else {
+                    badgeIcon = 'hourglass-split';
+                    badgeText = 'Sedang Diproses';
+                }
+
                 verifikasiSection.innerHTML = `
                     <div class="detail-section-title">
-                        📋 Histori Verifikasi
+                        📋 ${hasGajiData ? 'Histori Verifikasi' : 'Status Verifikasi'}
                     </div>
                     <div class="histori-info">
                         <div class="histori-header">
                             <div class="histori-title">
                                 <i class="bi bi-person-check me-2"></i>${data.verifier_name ? data.verifier_name + ' - Bendahara Koperasi' : 'Bendahara Koperasi'}
                             </div>
-                            <span class="histori-badge ${data.status === 'Diverifikasi' ? 'approved' : 'rejected'}">
-                                <i class="bi bi-${data.status === 'Diverifikasi' ? 'check' : 'x'}-circle"></i>
-                                <span>${data.status}</span>
+                            <span class="histori-badge ${badgeClass}">
+                                <i class="bi bi-${badgeIcon}"></i>
+                                <span>${badgeText}</span>
                             </span>
                         </div>
 
+                        ${tanggalVerifikasi !== '-' ? `
                         <div class="histori-meta">
                             <div class="histori-meta-item">
                                 <i class="bi bi-clock"></i>
                                 <span>${tanggalVerifikasi}</span>
                             </div>
                         </div>
+                        ` : ''}
 
+                        ${hasGajiData ? `
                         <div class="histori-data">
                             <div class="histori-data-item">
                                 <div class="histori-data-label">Gaji Pokok</div>
@@ -1203,6 +1226,7 @@
                                 <div class="histori-data-value">${formatCurrency(data.sisa_gaji)}</div>
                             </div>
                         </div>
+                        ` : ''}
 
                         ${data.catatan_verifikasi ? `
                         <div class="catatan-box">
@@ -1212,7 +1236,15 @@
                             </div>
                             <div class="text">${data.catatan_verifikasi}</div>
                         </div>
-                        ` : ''}
+                        ` : (!hasGajiData ? `
+                        <div class="catatan-box">
+                            <div class="label">
+                                <i class="bi bi-lightbulb"></i>
+                                <span>Informasi</span>
+                            </div>
+                            <div class="text">Pinjaman ini masih menunggu untuk diverifikasi. Status akan diperbarui setelah proses verifikasi selesai.</div>
+                        </div>
+                        ` : '')}
                     </div>
                 `;
             } else {

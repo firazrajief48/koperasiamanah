@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pinjaman;
+use App\Models\Iuran;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class BendaharaKoperasiController extends Controller
 {
@@ -71,7 +74,7 @@ class BendaharaKoperasiController extends Controller
                 'verifier_name' => $p->disetujui_oleh,
                 'tanggal_verifikasi' => optional($p->tanggal_persetujuan)->format('d/m/Y H:i'),
                 'gaji_pokok' => $p->gaji_pokok,
-                'sisa_gaji' => null,
+                'sisa_gaji' => $p->sisa_gaji,
                 'catatan_verifikasi' => $p->alasan_penolakan,
             ];
         }
@@ -246,7 +249,7 @@ class BendaharaKoperasiController extends Controller
         $pinjaman = Pinjaman::findOrFail($validated['id']);
 
         $pinjaman->gaji_pokok = $validated['gaji_pokok'];
-        // sisa_gaji tidak disimpan sebagai kolom; gunakan pada validasi logika jika diperlukan
+        $pinjaman->sisa_gaji = $validated['sisa_gaji'];
 
         if ($validated['aksi'] === 'setujui') {
             $pinjaman->status = 'menunggu';
@@ -383,12 +386,252 @@ class BendaharaKoperasiController extends Controller
 
     public function kelolaIuran()
     {
-        $iuran = [
-            ['id' => 1, 'nama' => 'Andi Wijaya', 'total_iuran' => 50000, 'terbayar' => 20000, 'sisa' => 30000],
-            ['id' => 2, 'nama' => 'Citra Dewi', 'total_iuran' => 75000, 'terbayar' => 75000, 'sisa' => 0],
-        ];
+        return view('bendahara_koperasi.iuran_pegawai');
+    }
 
-        return view('bendahara_koperasi.iuran_pegawai', compact('iuran'));
+    public function getDataIuran(Request $request)
+    {
+        $bulan = $request->input('bulan', date('n'));
+        $tahun = $request->input('tahun', date('Y'));
+        $statusFilter = $request->input('status', 'semua');
+
+        // Format bulan untuk query (YYYY-MM)
+        $bulanFormat = sprintf('%04d-%02d', $tahun, $bulan);
+
+        // Ambil semua anggota (user dengan role anggota)
+        $users = User::where('role', 'anggota')->get();
+
+        $data = [];
+
+        foreach ($users as $user) {
+            // Cek apakah sudah ada iuran untuk bulan ini
+            $iuran = Iuran::where('user_id', $user->id)
+                ->where('bulan', $bulanFormat)
+                ->first();
+
+            $sudahBayar = $iuran && $iuran->status === 'lunas';
+            $nominal = 50000; // Iuran fix Rp 50.000
+
+            // Filter berdasarkan status
+            if ($statusFilter === 'lunas' && !$sudahBayar) {
+                continue;
+            }
+            if ($statusFilter === 'belum' && $sudahBayar) {
+                continue;
+            }
+
+            $data[] = [
+                'id' => $user->id,
+                'nama' => $user->name,
+                'nip' => $user->nip ?? '-',
+                'jabatan' => $user->jabatan ?? '-',
+                'nominal' => $nominal,
+                'sudah_bayar' => $sudahBayar ? 1 : 0,
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
+    }
+
+    public function bayarIuran(Request $request)
+    {
+        $validated = $request->validate([
+            'pegawai_id' => 'required|exists:users,id',
+            'bulan' => 'required|integer|min:1|max:12',
+            'tahun' => 'required|integer|min:2020',
+            'nominal' => 'required|numeric|min:0',
+        ]);
+
+        $bulanFormat = sprintf('%04d-%02d', $validated['tahun'], $validated['bulan']);
+
+        // Cek apakah sudah ada iuran untuk bulan ini
+        $iuran = Iuran::where('user_id', $validated['pegawai_id'])
+            ->where('bulan', $bulanFormat)
+            ->first();
+
+        if ($iuran && $iuran->status === 'lunas') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Iuran untuk bulan ini sudah dibayar'
+            ], 400);
+        }
+
+        // Update atau create iuran
+        if ($iuran) {
+            $iuran->update([
+                'jumlah' => $validated['nominal'],
+                'tanggal_bayar' => now(),
+                'status' => 'lunas',
+            ]);
+        } else {
+            Iuran::create([
+                'user_id' => $validated['pegawai_id'],
+                'jumlah' => $validated['nominal'],
+                'bulan' => $bulanFormat,
+                'tanggal_bayar' => now(),
+                'status' => 'lunas',
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pembayaran berhasil dicatat'
+        ]);
+    }
+
+    public function bayarSemuaPegawai(Request $request)
+    {
+        $validated = $request->validate([
+            'bulan' => 'required|integer|min:1|max:12',
+            'tahun' => 'required|integer|min:2020',
+            'nominal' => 'required|numeric|min:0',
+        ]);
+
+        $bulanFormat = sprintf('%04d-%02d', $validated['tahun'], $validated['bulan']);
+        $nominal = $validated['nominal'];
+
+        // Ambil semua anggota yang belum bayar untuk bulan ini
+        $users = User::where('role', 'anggota')->get();
+
+        $count = 0;
+        $total = 0;
+
+        DB::beginTransaction();
+        try {
+            foreach ($users as $user) {
+                // Cek apakah sudah ada iuran untuk bulan ini
+                $iuran = Iuran::where('user_id', $user->id)
+                    ->where('bulan', $bulanFormat)
+                    ->first();
+
+                // Skip jika sudah lunas
+                if ($iuran && $iuran->status === 'lunas') {
+                    continue;
+                }
+
+                // Update atau create iuran
+                if ($iuran) {
+                    $iuran->update([
+                        'jumlah' => $nominal,
+                        'tanggal_bayar' => now(),
+                        'status' => 'lunas',
+                    ]);
+                } else {
+                    Iuran::create([
+                        'user_id' => $user->id,
+                        'jumlah' => $nominal,
+                        'bulan' => $bulanFormat,
+                        'tanggal_bayar' => now(),
+                        'status' => 'lunas',
+                    ]);
+                }
+
+                $count++;
+                $total += $nominal;
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Berhasil mencatat pembayaran untuk {$count} pegawai",
+                'count' => $count,
+                'total' => $total
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function tambahIuranManual(Request $request)
+    {
+        $validated = $request->validate([
+            'pegawai_id' => 'required|exists:users,id',
+            'bulan' => 'required|integer|min:1|max:12',
+            'tahun' => 'required|integer|min:2020',
+            'nominal' => 'required|numeric|min:0',
+            'tanggal_bayar' => 'nullable|date',
+            'keterangan' => 'nullable|string|max:1000',
+        ]);
+
+        $bulanFormat = sprintf('%04d-%02d', $validated['tahun'], $validated['bulan']);
+
+        // Cek apakah sudah ada iuran untuk bulan ini
+        $iuran = Iuran::where('user_id', $validated['pegawai_id'])
+            ->where('bulan', $bulanFormat)
+            ->first();
+
+        if ($iuran && $iuran->status === 'lunas') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Iuran untuk bulan ini sudah dibayar'
+            ], 400);
+        }
+
+        // Update atau create iuran
+        if ($iuran) {
+            $iuran->update([
+                'jumlah' => $validated['nominal'],
+                'tanggal_bayar' => $validated['tanggal_bayar'] ?? now(),
+                'status' => 'lunas',
+                'keterangan' => $validated['keterangan'] ?? null,
+            ]);
+        } else {
+            Iuran::create([
+                'user_id' => $validated['pegawai_id'],
+                'jumlah' => $validated['nominal'],
+                'bulan' => $bulanFormat,
+                'tanggal_bayar' => $validated['tanggal_bayar'] ?? now(),
+                'status' => 'lunas',
+                'keterangan' => $validated['keterangan'] ?? null,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Iuran berhasil ditambahkan'
+        ]);
+    }
+
+    public function getRiwayatIuran($id, Request $request)
+    {
+        $tahun = $request->input('tahun', date('Y'));
+
+        $riwayat = Iuran::where('user_id', $id)
+            ->whereYear('bulan', $tahun)
+            ->orderBy('bulan', 'asc')
+            ->get()
+            ->map(function ($iuran) {
+                // Parse bulan format YYYY-MM menjadi integer bulan (1-12)
+                $bulanParts = explode('-', $iuran->bulan);
+                $bulan = (int) $bulanParts[1];
+
+                return [
+                    'bulan' => $bulan,
+                    'nominal' => $iuran->jumlah,
+                    'tanggal_bayar' => $iuran->tanggal_bayar ? $iuran->tanggal_bayar->format('Y-m-d') : null,
+                    'status' => $iuran->status,
+                ];
+            })
+            ->toArray();
+
+        return response()->json([
+            'success' => true,
+            'riwayat' => $riwayat
+        ]);
+    }
+
+    public function exportIuran(Request $request)
+    {
+        // Placeholder untuk export excel
+        return redirect()->back()->with('info', 'Fitur export Excel akan tersedia segera');
     }
 
     public function downloadPDF($filename)
