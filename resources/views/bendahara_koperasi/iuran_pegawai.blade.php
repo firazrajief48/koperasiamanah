@@ -660,7 +660,7 @@
                         <td>
                             <span class="fw-bold text-dark">${pegawai.nip}</span>
                         </td>
-                        <td>
+                        <td>m
                             <span class="fw-bold text-dark">${pegawai.jabatan}</span>
                         </td>
                         <td class="fw-bold ${sudahBayar ? 'text-success' : 'text-muted'}">
