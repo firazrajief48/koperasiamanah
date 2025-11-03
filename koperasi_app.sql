@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 03, 2025 at 06:42 AM
+-- Generation Time: Nov 03, 2025 at 08:18 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -85,7 +85,8 @@ CREATE TABLE `iurans` (
 
 INSERT INTO `iurans` (`id`, `user_id`, `jumlah`, `bulan`, `tanggal_bayar`, `status`, `keterangan`, `created_at`, `updated_at`) VALUES
 (10, 9, 50000.00, '2025-11', '2025-11-03 03:41:57', 'lunas', NULL, '2025-11-02 20:41:57', '2025-11-02 20:41:57'),
-(16, 12, 50000.00, '2025-11', '2025-11-03 04:29:06', 'lunas', NULL, '2025-11-02 21:29:06', '2025-11-02 21:29:06');
+(16, 12, 50000.00, '2025-11', '2025-11-03 04:29:06', 'lunas', NULL, '2025-11-02 21:29:06', '2025-11-02 21:29:06'),
+(17, 9, 15000.00, '2025-11', '2025-11-03 06:20:34', 'lunas', 'Tambahan manual', '2025-11-02 23:20:34', '2025-11-02 23:20:34');
 
 -- --------------------------------------------------------
 
@@ -196,7 +197,11 @@ INSERT INTO `pembayarans` (`id`, `pinjaman_id`, `bulan_ke`, `nominal_pembayaran`
 (3, 4, 1, 2000000.00, '2025-12-01', NULL, 'belum_bayar', NULL, '2025-10-30 22:59:33', '2025-10-30 22:59:33'),
 (4, 4, 2, 2000000.00, '2025-12-31', NULL, 'belum_bayar', NULL, '2025-10-30 22:59:33', '2025-10-30 22:59:33'),
 (5, 5, 1, 2500000.00, '2025-12-01', NULL, 'belum_bayar', NULL, '2025-10-30 23:06:22', '2025-10-30 23:06:22'),
-(6, 5, 2, 2500000.00, '2025-12-31', NULL, 'belum_bayar', NULL, '2025-10-30 23:06:22', '2025-10-30 23:06:22');
+(6, 5, 2, 2500000.00, '2025-12-31', NULL, 'belum_bayar', NULL, '2025-10-30 23:06:22', '2025-10-30 23:06:22'),
+(7, 6, 1, 1250000.00, '2025-12-03', NULL, 'belum_bayar', NULL, '2025-11-03 00:14:57', '2025-11-03 00:14:57'),
+(8, 6, 2, 1250000.00, '2026-01-03', NULL, 'belum_bayar', NULL, '2025-11-03 00:14:57', '2025-11-03 00:14:57'),
+(9, 6, 3, 1250000.00, '2026-02-03', NULL, 'belum_bayar', NULL, '2025-11-03 00:14:57', '2025-11-03 00:14:57'),
+(10, 6, 4, 1250000.00, '2026-03-03', NULL, 'belum_bayar', NULL, '2025-11-03 00:14:57', '2025-11-03 00:14:57');
 
 -- --------------------------------------------------------
 
@@ -266,7 +271,8 @@ CREATE TABLE `pinjamans` (
 INSERT INTO `pinjamans` (`id`, `user_id`, `jumlah_pinjaman`, `tenor_bulan`, `cicilan_per_bulan`, `bulan_terbayar`, `sisa_pinjaman`, `gaji_pokok`, `sisa_gaji`, `metode_pembayaran`, `status`, `status_detail`, `alasan_penolakan`, `disetujui_oleh`, `tanggal_persetujuan`, `keterangan`, `created_at`, `updated_at`) VALUES
 (2, 9, 5000000.00, 2, 2500000.00, 0, 5000000.00, 30000000.00, NULL, NULL, 'menunggu', 'menunggu_persetujuan_ketua', NULL, 'Retno Larasati, S.M.', '2025-10-29 01:50:44', 'Biaya Keperluan', '2025-10-28 20:27:01', '2025-10-29 01:50:44'),
 (3, 9, 4000000.00, 2, 2000000.00, 0, 4000000.00, 10000000.00, NULL, 'potong_tukin', 'menunggu', 'ditolak', 'Hutang Kemarin Belum Lunas!', 'Retno Larasati, S.M.', '2025-10-30 01:06:07', 'WKWKWKWKWK', '2025-10-30 01:04:59', '2025-10-30 01:06:07'),
-(4, 9, 4000000.00, 2, 2000000.00, 0, 4000000.00, 0.00, NULL, 'potong_tukin', 'menunggu', 'menunggu_persetujuan_bendahara', NULL, NULL, NULL, 'sfewrhgewvesa', '2025-10-30 22:59:33', '2025-10-30 22:59:33');
+(4, 9, 4000000.00, 2, 2000000.00, 0, 4000000.00, 0.00, NULL, 'potong_tukin', 'menunggu', 'menunggu_persetujuan_bendahara', NULL, NULL, NULL, 'sfewrhgewvesa', '2025-10-30 22:59:33', '2025-10-30 22:59:33'),
+(6, 12, 5000000.00, 4, 1250000.00, 0, 5000000.00, 0.00, NULL, 'potong_gaji', 'menunggu', 'menunggu_persetujuan_bendahara', NULL, NULL, NULL, 'degeewrbrac', '2025-11-03 00:14:57', '2025-11-03 00:14:57');
 
 -- --------------------------------------------------------
 
@@ -288,7 +294,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('k90vNVRNDmRwW4EzjspGJ09XC1uMJVE47DolcQi3', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoicFZsVTMyaFJZY1pndDVtclJoQWpLT1diZzdKWDFyTnBlR2FXcmdzVCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvbGFwb3Jhbi1rZXVhbmdhbiI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7fQ==', 1762148466);
+('GQL86NxayDXntsZpPXcJnAEcRpuU33oMETwOJcBL', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoicmwwalFKMG1KaGxXRGNaTFdKQkFrMnNobVZHb2dlcDNnT3pXYjl5MSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6OTI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvaXVyYW4tcGVnYXdhaS9kYXRhP2J1bGFuPTExJnN0YXR1cz1zZW11YSZ0YWh1bj0yMDI1Ijt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1762154137);
 
 -- --------------------------------------------------------
 
@@ -430,7 +436,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `iurans`
 --
 ALTER TABLE `iurans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `jobs`
@@ -448,7 +454,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `pembayarans`
 --
 ALTER TABLE `pembayarans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `pengurus_koperasis`
@@ -460,7 +466,7 @@ ALTER TABLE `pengurus_koperasis`
 -- AUTO_INCREMENT for table `pinjamans`
 --
 ALTER TABLE `pinjamans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
