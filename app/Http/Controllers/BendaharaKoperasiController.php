@@ -280,23 +280,37 @@ class BendaharaKoperasiController extends Controller
 
     public function transparansi()
     {
-        // Get all approved loans with user data
-        $pinjamans = Pinjaman::with('user')
+        // Ambil pinjaman yang sudah aktif (disetujui semua: bendahara, ketua, kepala) atau sudah lunas
+        // Status 'disetujui' berarti sudah melewati semua persetujuan (bendahara -> ketua -> kepala)
+        // Status 'lunas' berarti sudah selesai dibayar
+        $pinjamans = Pinjaman::with(['user', 'pembayarans'])
             ->whereIn('status', ['disetujui', 'lunas'])
+            ->whereNotIn('status_detail', ['menunggu_persetujuan_bendahara', 'menunggu_persetujuan_ketua', 'menunggu_persetujuan_kepala', 'ditolak'])
             ->orderBy('created_at', 'desc')
             ->get();
 
         $pinjaman = [];
         foreach ($pinjamans as $p) {
+            // Hitung total pembayaran dari pembayaran yang sudah dilakukan (realtime dari database)
+            $totalPembayaran = $p->pembayarans()
+                ->where('status', 'lunas')
+                ->sum('nominal_pembayaran');
+
+            // Jika belum ada pembayaran di tabel pembayarans, gunakan perhitungan default
+            if ($totalPembayaran == 0) {
+                $totalPembayaran = $p->jumlah_pinjaman - $p->sisa_pinjaman;
+            }
+
+            // Tentukan status berdasarkan sisa pinjaman
             $statusLabel = $p->sisa_pinjaman > 0 ? 'Berjalan' : 'Lunas';
 
             $pinjaman[] = [
                 'id' => $p->id,
                 'nama' => $p->user->name,
-                'nip' => $p->user->nip ?? 'N/A',
-                'jumlah' => $p->jumlah_pinjaman,
-                'total_bayar' => $p->jumlah_pinjaman - $p->sisa_pinjaman,
-                'sisa' => $p->sisa_pinjaman,
+                'nip' => $p->user->nip ?? '-',
+                'jumlah' => (float) $p->jumlah_pinjaman,
+                'total_bayar' => (float) $totalPembayaran,
+                'sisa' => (float) $p->sisa_pinjaman,
                 'status' => $statusLabel
             ];
         }
@@ -386,7 +400,42 @@ class BendaharaKoperasiController extends Controller
 
     public function kelolaIuran()
     {
-        return view('bendahara_koperasi.iuran_pegawai');
+        // Tahun sekarang (selalu dinamis, akan otomatis update setiap tahun)
+        $currentYear = (int)date('Y');
+
+        // Ambil semua tahun dari data iuran yang ada
+        // Format bulan adalah YYYY-MM, extract tahunnya
+        $yearsFromData = Iuran::whereNotNull('bulan')
+            ->pluck('bulan')
+            ->map(function($bulan) {
+                // Extract tahun dari format YYYY-MM
+                $parts = explode('-', $bulan);
+                return isset($parts[0]) ? (int)$parts[0] : null;
+            })
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values();
+
+        // Jika ada data, gunakan tahun minimum dari data
+        // Jika tidak ada data, gunakan tahun sekarang - 10 sebagai minimum
+        $minYearFromData = $yearsFromData->isNotEmpty() ? $yearsFromData->first() : null;
+        $minYear = $minYearFromData ? min($minYearFromData, $currentYear - 10) : max(2020, $currentYear - 10);
+
+        // Pastikan minimum tidak kurang dari 2020
+        $minYear = max(2020, $minYear);
+
+        // Tahun maksimum: SELALU tahun sekarang + 5 tahun ke depan
+        // Ini akan otomatis update setiap tahun, jadi tidak akan pernah habis
+        // Contoh: jika sekarang 2025, max = 2030
+        //         jika nanti 2031, max = 2036 (otomatis!)
+        $maxYear = $currentYear + 5;
+
+        return view('bendahara_koperasi.iuran_pegawai', [
+            'minYear' => $minYear,
+            'maxYear' => $maxYear,
+            'currentYear' => $currentYear
+        ]);
     }
 
     public function getDataIuran(Request $request)
@@ -398,21 +447,22 @@ class BendaharaKoperasiController extends Controller
         // Format bulan untuk query (YYYY-MM)
         $bulanFormat = sprintf('%04d-%02d', $tahun, $bulan);
 
-        // Ambil semua anggota (user dengan role anggota)
-        $users = User::where('role', 'anggota')->get();
+        // Ambil semua iuran untuk bulan yang dipilih (bukan hanya satu per user)
+        $iurans = Iuran::with('user')
+            ->where('bulan', $bulanFormat)
+            ->whereHas('user', function($query) {
+                $query->where('role', 'anggota');
+            })
+            ->orderBy('tanggal_bayar', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+
 
         $data = [];
 
-        foreach ($users as $user) {
-            // Cek apakah sudah ada iuran untuk bulan ini
-            $iuran = Iuran::where('user_id', $user->id)
-                ->where('bulan', $bulanFormat)
-                ->first();
-
-            // Hanya tampilkan pegawai yang MEMILIKI record iuran pada bulan yang dipilih
-            if (!$iuran) {
-                continue;
-            }
+        foreach ($iurans as $iuran) {
+            $user = $iuran->user;
 
             $sudahBayar = $iuran->status !== 'belum';
             $nominal = (float) $iuran->jumlah;
@@ -425,13 +475,24 @@ class BendaharaKoperasiController extends Controller
                 continue;
             }
 
+            // Format tanggal_bayar dengan timezone Asia/Jakarta
+            $tanggalBayarFormatted = null;
+            if ($iuran->tanggal_bayar) {
+                $tanggalBayar = \Carbon\Carbon::parse($iuran->tanggal_bayar);
+                // Set timezone ke Asia/Jakarta
+                $tanggalBayar->setTimezone('Asia/Jakarta');
+                $tanggalBayarFormatted = $tanggalBayar->format('Y-m-d H:i:s');
+            }
+
             $data[] = [
                 'id' => $user->id,
+                'iuran_id' => $iuran->id,
                 'nama' => $user->name,
                 'nip' => $user->nip ?? '-',
                 'jabatan' => $user->jabatan ?? '-',
                 'nominal' => $nominal,
                 'sudah_bayar' => $sudahBayar ? 1 : 0,
+                'tanggal_bayar' => $tanggalBayarFormatted,
             ];
         }
 
@@ -593,46 +654,34 @@ class BendaharaKoperasiController extends Controller
 
         $bulanFormat = sprintf('%04d-%02d', $validated['tahun'], $validated['bulan']);
 
-        // Cek apakah sudah ada iuran untuk bulan ini
-        $iuran = Iuran::where('user_id', $validated['pegawai_id'])
-            ->where('bulan', $bulanFormat)
-            ->first();
-
         $nominalBaru = $validated['nominal'];
-        $tanggalBayar = $validated['tanggal_bayar'] ?? now()->toDateString();
-
-        // Jika sudah ada iuran, tambahkan nominal baru ke nominal yang sudah ada
-        if ($iuran) {
-            $nominalLama = (float) $iuran->jumlah;
-            $nominalTotal = $nominalLama + $nominalBaru;
-
-            // Buat keterangan untuk mencatat tambahan manual
-            $keteranganTambahan = 'Tambahan manual: Rp ' . number_format($nominalBaru, 0, ',', '.');
-            $keteranganBaru = $iuran->keterangan
-                ? $iuran->keterangan . '; ' . $keteranganTambahan
-                : $keteranganTambahan;
-
-            $iuran->update([
-                'jumlah' => $nominalTotal,
-                'tanggal_bayar' => $tanggalBayar,
-                'status' => 'lunas', // Set status menjadi lunas
-                'keterangan' => $keteranganBaru,
-            ]);
-
-            $message = 'Iuran tambahan berhasil ditambahkan. Total iuran sekarang: Rp ' . number_format($nominalTotal, 0, ',', '.');
+        // Jika ada tanggal_bayar yang diinput, gunakan itu dengan waktu sekarang
+        // Jika tidak ada, gunakan waktu real-time sekarang
+        if (isset($validated['tanggal_bayar']) && $validated['tanggal_bayar']) {
+            // Jika hanya tanggal, tambahkan waktu sekarang
+            $tanggalBayarInput = \Carbon\Carbon::parse($validated['tanggal_bayar']);
+            if (!$tanggalBayarInput->format('H:i:s') || $tanggalBayarInput->format('H:i:s') === '00:00:00') {
+                // Jika tidak ada waktu atau waktu 00:00:00, gunakan waktu sekarang
+                $tanggalBayar = now();
+            } else {
+                $tanggalBayar = $tanggalBayarInput;
+            }
         } else {
-            // Jika belum ada iuran, buat record baru
-            Iuran::create([
-                'user_id' => $validated['pegawai_id'],
-                'jumlah' => $nominalBaru,
-                'bulan' => $bulanFormat,
-                'tanggal_bayar' => $tanggalBayar,
-                'status' => 'lunas',
-                'keterangan' => 'Tambahan manual',
-            ]);
-
-            $message = 'Iuran berhasil ditambahkan';
+            // Gunakan waktu real-time sekarang
+            $tanggalBayar = now();
         }
+
+        // Selalu buat record baru untuk iuran manual, tidak peduli sudah ada atau belum
+        Iuran::create([
+            'user_id' => $validated['pegawai_id'],
+            'jumlah' => $nominalBaru,
+            'bulan' => $bulanFormat,
+            'tanggal_bayar' => $tanggalBayar,
+            'status' => 'lunas',
+            'keterangan' => 'Tambahan manual',
+        ]);
+
+        $message = 'Iuran manual berhasil ditambahkan';
 
         return response()->json([
             'success' => true,
@@ -643,17 +692,24 @@ class BendaharaKoperasiController extends Controller
     public function hapusIuran(Request $request)
     {
         $validated = $request->validate([
-            'pegawai_id' => 'required|exists:users,id',
-            'bulan' => 'required|integer|min:1|max:12',
-            'tahun' => 'required|integer|min:2020',
+            'iuran_id' => 'nullable|exists:iurans,id',
+            'pegawai_id' => 'required_without:iuran_id|exists:users,id',
+            'bulan' => 'required_without:iuran_id|integer|min:1|max:12',
+            'tahun' => 'required_without:iuran_id|integer|min:2020',
         ]);
 
-        $bulanFormat = sprintf('%04d-%02d', $validated['tahun'], $validated['bulan']);
-
-        // Cari iuran untuk bulan ini
-        $iuran = Iuran::where('user_id', $validated['pegawai_id'])
-            ->where('bulan', $bulanFormat)
-            ->first();
+        // Jika ada iuran_id, gunakan itu (untuk menghapus spesifik)
+        if (isset($validated['iuran_id'])) {
+            $iuran = Iuran::find($validated['iuran_id']);
+        } else {
+            // Fallback ke cara lama (untuk backward compatibility)
+            $bulanFormat = sprintf('%04d-%02d', $validated['tahun'], $validated['bulan']);
+            $iuran = Iuran::where('user_id', $validated['pegawai_id'])
+                ->where('bulan', $bulanFormat)
+                ->orderBy('tanggal_bayar', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->first();
+        }
 
         if (!$iuran) {
             return response()->json([
@@ -669,11 +725,9 @@ class BendaharaKoperasiController extends Controller
             ], 400);
         }
 
-        // Ubah status menjadi belum lunas dan hapus tanggal bayar
-        $iuran->update([
-            'status' => 'belum',
-            'tanggal_bayar' => null,
-        ]);
+        // Hapus record iuran secara permanen (hard delete) karena ini adalah record spesifik
+        // Jika ingin soft delete, bisa diubah ke update status
+        $iuran->delete();
 
         return response()->json([
             'success' => true,
@@ -713,13 +767,101 @@ class BendaharaKoperasiController extends Controller
 
     public function exportIuran(Request $request)
     {
-        // Placeholder untuk export excel
-        return redirect()->back()->with('info', 'Fitur export Excel akan tersedia segera');
+        $bulan = $request->input('bulan', date('n'));
+        $tahun = $request->input('tahun', date('Y'));
+
+        // Format bulan untuk query (YYYY-MM)
+        $bulanFormat = sprintf('%04d-%02d', $tahun, $bulan);
+
+        // Ambil semua iuran untuk bulan yang dipilih
+        $iurans = Iuran::with('user')
+            ->where('bulan', $bulanFormat)
+            ->whereHas('user', function($query) {
+                $query->where('role', 'anggota');
+            })
+            ->orderBy('tanggal_bayar', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Nama file dengan tanggal
+        $bulanNama = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $namaBulan = $bulanNama[$bulan - 1];
+        $filename = 'Iuran_Pegawai_' . $namaBulan . '_' . $tahun . '_' . date('YmdHis') . '.csv';
+
+        // Headers untuk download (CSV yang bisa dibuka langsung di Excel)
+        $headers = [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+            'Pragma' => 'public',
+        ];
+
+        // Callback untuk stream output CSV yang bisa dibuka di Excel
+        $callback = function() use ($iurans, $tahun, $namaBulan) {
+            $file = fopen('php://output', 'w');
+
+            // BOM UTF-8 untuk Excel agar karakter Indonesia terbaca dengan benar
+            fprintf($file, "\xEF\xBB\xBF");
+
+            // Header
+            fputcsv($file, ['Laporan Iuran Pegawai - ' . $namaBulan . ' ' . $tahun]);
+            fputcsv($file, []); // Baris kosong
+            fputcsv($file, ['No', 'Nama Pegawai', 'NIP', 'Jabatan', 'Total Iuran (Rp)', 'Status Pembayaran', 'Tanggal Waktu Pembayaran']);
+
+            $no = 1;
+            foreach ($iurans as $iuran) {
+                $user = $iuran->user;
+                $status = $iuran->status === 'lunas' ? 'Lunas' : 'Belum Lunas';
+
+                // Format tanggal pembayaran
+                $tanggalBayar = '-';
+                if ($iuran->tanggal_bayar) {
+                    $tanggalBayar = $iuran->tanggal_bayar->setTimezone('Asia/Jakarta')->format('d/m/Y H:i');
+                }
+
+                // Format nominal dengan titik sebagai pemisah ribuan
+                // Menggunakan formula Excel =TEXT() untuk memaksa Excel menampilkan sebagai teks
+                // Formula ini akan membuat Excel menampilkan "50.000" tanpa tanda petik
+                $nominal = number_format($iuran->jumlah, 0, ',', '.');
+                $nominalFormatted = '="' . $nominal . '"';
+
+                fputcsv($file, [
+                    $no++,
+                    $user->name,
+                    $user->nip ?? '-',
+                    $user->jabatan ?? '-',
+                    $nominalFormatted,
+                    $status,
+                    $tanggalBayar
+                ]);
+            }
+
+            // Baris kosong
+            fputcsv($file, []);
+
+            // Total
+            $totalLunas = $iurans->where('status', 'lunas')->sum('jumlah');
+            $jumlahLunas = $iurans->where('status', 'lunas')->count();
+            $totalFormatted = number_format($totalLunas, 0, ',', '.');
+            fputcsv($file, ['Total Pemasukan (Lunas):', '="Rp ' . $totalFormatted . '"']);
+            fputcsv($file, ['Jumlah Pegawai (Lunas):', $jumlahLunas . ' pegawai']);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function downloadPDF($filename)
     {
         $filepath = storage_path('app/public/laporan/' . $filename);
         return redirect()->back()->with('info', 'Fitur download PDF akan tersedia setelah integrasi dengan generator PDF');
+    }
+
+    public function laporanKeuangan()
+    {
+        return view('bendahara_koperasi.laporan_keuangan');
     }
 }

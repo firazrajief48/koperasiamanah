@@ -64,6 +64,7 @@ Route::prefix('bendahara-koperasi')->name('bendahara_koperasi.')->middleware(['a
     Route::get('/transparansi', [BendaharaKoperasiController::class, 'transparansi'])->name('transparansi');
     Route::get('/iuran-pegawai', [BendaharaKoperasiController::class, 'kelolaIuran'])->name('iuran_pegawai');
     Route::get('/iuran-pegawai/data', [BendaharaKoperasiController::class, 'getDataIuran'])->name('iuran_pegawai.data');
+    Route::get('/laporan-keuangan', [BendaharaKoperasiController::class, 'laporanKeuangan'])->name('laporan_keuangan');
     Route::get('/iuran-pegawai/pegawai-list', [BendaharaKoperasiController::class, 'getAllPegawai'])->name('iuran_pegawai.pegawai_list');
     Route::post('/iuran-pegawai/bayar', [BendaharaKoperasiController::class, 'bayarIuran'])->name('iuran_pegawai.bayar');
     Route::post('/iuran-pegawai/bayar-semua', [BendaharaKoperasiController::class, 'bayarSemuaPegawai'])->name('iuran_pegawai.bayar_semua');

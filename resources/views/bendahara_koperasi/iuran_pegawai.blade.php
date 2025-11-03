@@ -74,15 +74,16 @@
             background-color: #3b82f6;
             border: none;
             color: white;
-            padding: 0.45rem 1rem;
+            padding: 0.4rem 0.6rem;
             border-radius: 6px;
             font-weight: 600;
             transition: all 0.3s ease;
             font-size: 0.875rem;
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
             justify-content: center;
+            width: 36px;
+            height: 36px;
         }
 
         .btn-detail:hover {
@@ -96,11 +97,16 @@
             background-color: #ef4444;
             border: none;
             color: white;
-            padding: 0.4rem 0.75rem;
+            padding: 0.4rem 0.6rem;
             border-radius: 6px;
             font-weight: 500;
             transition: all 0.3s ease;
             font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
         }
 
         .btn-danger:hover {
@@ -110,20 +116,56 @@
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
+        /* Styling untuk tombol action yang seragam */
+        .btn-action-custom {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 180px;
+            white-space: nowrap;
+        }
+
         .btn-bayar-semua {
             background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
             border: none;
             color: white;
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
         }
 
         .btn-bayar-semua:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
             color: white;
+        }
+
+        .btn-tambah-manual {
+            border: 2px solid #10b981;
+            background: white;
+            color: #10b981;
+        }
+
+        .btn-tambah-manual:hover {
+            background: #10b981;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-export-excel {
+            border: 2px solid #3b82f6;
+            background: white;
+            color: #3b82f6;
+        }
+
+        .btn-export-excel:hover {
+            background: #3b82f6;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
         }
 
         .badge-lunas {
@@ -239,14 +281,9 @@
     </style>
 
     <div class="welcome-banner">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h3 class="fw-bold mb-0">💰 Iuran Pegawai</h3>
-                <small class="opacity-75">Kelola pembayaran iuran pegawai koperasi per bulan</small>
-            </div>
-            <a href="{{ route('bendahara_koperasi.dashboard') }}" class="btn btn-outline-light">
-                <i class="bi bi-arrow-left me-2"></i>Kembali
-            </a>
+        <div>
+            <h3 class="fw-bold mb-0">💰 Iuran Pegawai</h3>
+            <small class="opacity-75">Kelola pembayaran iuran pegawai koperasi per bulan</small>
         </div>
     </div>
 
@@ -276,31 +313,21 @@
                             <i class="bi bi-calendar3 me-1"></i>Pilih Tahun
                         </label>
                         <select id="yearFilter" class="form-select">
-                            @for ($year = date('Y'); $year >= 2020; $year--)
-                                <option value="{{ $year }}" {{ $year == date('Y') ? 'selected' : '' }}>
+                            @for ($year = $maxYear; $year >= $minYear; $year--)
+                                <option value="{{ $year }}" {{ $year == $currentYear ? 'selected' : '' }}>
                                     {{ $year }}
                                 </option>
                             @endfor
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold">
-                            <i class="bi bi-funnel me-1"></i>Status Pembayaran
-                        </label>
-                        <select id="statusFilter" class="form-select">
-                            <option value="semua">Semua Status</option>
-                            <option value="lunas">Lunas</option>
-                            <option value="belum">Belum Lunas</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <button class="btn btn-outline-success me-2" onclick="openTambahManualModal()">
+                    <div class="col-md-9 text-end d-flex gap-2 justify-content-end">
+                        <button class="btn btn-action-custom btn-tambah-manual" onclick="openTambahManualModal()">
                             <i class="bi bi-plus-circle me-2"></i>Tambah Iuran Manual
                         </button>
-                        <button class="btn btn-bayar-semua" onclick="bayarSemua()">
+                        <button class="btn btn-action-custom btn-bayar-semua" onclick="bayarSemua()">
                             <i class="bi bi-cash-stack me-2"></i>Bayar Semua Pegawai
                         </button>
-                        <button class="btn btn-outline-primary ms-2" onclick="exportData()">
+                        <button class="btn btn-action-custom btn-export-excel" onclick="exportData()">
                             <i class="bi bi-download me-2"></i>Export Excel
                         </button>
                     </div>
@@ -336,12 +363,13 @@
                             <th>Jabatan</th>
                             <th style="width:150px">Total Iuran (Rp)</th>
                             <th style="width:140px">Status Pembayaran</th>
-                            <th style="width:120px">Aksi</th>
+                            <th style="width:180px">Tanggal Waktu Pembayaran</th>
+                            <th style="width:100px">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
                         <tr>
-                            <td colspan="7" class="text-center py-5">
+                            <td colspan="8" class="text-center py-5">
                                 <div class="spinner-border text-primary" role="status">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
@@ -424,14 +452,15 @@
                             <label class="form-label fw-bold">
                                 <i class="bi bi-cash me-1"></i>Nominal (Rp) <span class="text-danger">*</span>
                             </label>
-                            <input type="number" id="manualNominal" class="form-control" value="" min="0" step="1000" placeholder="Masukkan nominal iuran (contoh: 50000)" required>
+                            <input type="text" id="manualNominal" class="form-control" value="" placeholder="Masukkan nominal iuran (contoh: 50000)" required inputmode="numeric">
                             <small class="text-muted">Iuran standar: Rp 50.000 (dapat diubah sesuai kebutuhan)</small>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold">
-                                <i class="bi bi-calendar-event me-1"></i>Tanggal Bayar
+                                <i class="bi bi-calendar-event me-1"></i>Tanggal & Waktu Bayar
                             </label>
-                            <input type="date" id="manualTanggalBayar" class="form-control" value="{{ date('Y-m-d') }}">
+                            <input type="datetime-local" id="manualTanggalBayar" class="form-control" value="{{ date('Y-m-d\TH:i') }}">
+                            <small class="text-muted">Kosongkan untuk menggunakan waktu real-time sekarang</small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -475,6 +504,56 @@
         </div>
     </div>
 
+    <!-- Modal Konfirmasi Hapus Iuran (Website Style) -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:16px; border:none; overflow:hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div class="modal-header" style="background: linear-gradient(135deg, #ef4444, #dc2626); color:white; border:none; padding: 1.25rem 1.5rem;">
+                    <h5 class="modal-title fw-bold mb-0" style="font-size: 1.1rem;">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Konfirmasi Hapus Pembayaran
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="opacity: 0.9;"></button>
+                </div>
+                <div class="modal-body" style="padding: 1.5rem;">
+                    <p class="mb-3 fw-semibold" style="color: #374151; font-size: 0.95rem;">Hapus pembayaran iuran untuk:</p>
+                    <div class="mb-3 p-3" style="background-color: #f9fafb; border-radius: 8px; border-left: 3px solid #ef4444;">
+                        <div class="mb-2">
+                            <strong style="color: #374151;">Nama Pegawai:</strong>
+                            <span id="deleteNamaPegawai" style="color: #1f2937; display: block; margin-top: 0.25rem;">-</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong style="color: #374151;">Nominal Iuran:</strong>
+                            <span id="deleteNominalText" style="color: #1f2937; display: block; margin-top: 0.25rem; font-weight: 600; color: #059669;">-</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong style="color: #374151;">Tanggal Pembayaran:</strong>
+                            <span id="deleteTanggalText" style="color: #1f2937; display: block; margin-top: 0.25rem;">-</span>
+                        </div>
+                        <div>
+                            <strong style="color: #374151;">Bulan:</strong>
+                            <span id="deleteBulanText" style="color: #1f2937; display: block; margin-top: 0.25rem;">-</span>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger d-flex align-items-start" style="border-radius:12px; border: 1px solid #fecaca; background-color: #fef2f2; margin-bottom: 0;">
+                        <i class="bi bi-exclamation-triangle-fill me-2 mt-1" style="font-size: 1.1rem;"></i>
+                        <div style="color: #991b1b; line-height: 1.6;">
+                            Record pembayaran ini akan <strong>dihapus permanen</strong> dari sistem. Tindakan ini tidak dapat dibatalkan.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border:none; padding: 1rem 1.5rem; background-color: #f9fafb; border-radius: 0 0 16px 16px; display: flex; gap: 0.75rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 500; width: 150px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center; border: 1px solid #d1d5db;">
+                        Batal
+                    </button>
+                    <button type="button" class="btn btn-danger" id="deleteConfirmBtn" style="border-radius: 8px; font-weight: 600; width: 150px; height: 42px; padding: 0; white-space: nowrap; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border: none;">
+                        <i class="bi bi-trash" style="font-size: 1rem;"></i>
+                        <span>Ya, Hapus</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Configuration
         const NOMINAL_IURAN = 50000;
@@ -483,7 +562,6 @@
         // State Management
         let currentMonth = {{ date('n') }};
         let currentYear = {{ date('Y') }};
-        let statusFilter = 'semua';
         let currentData = [];
 
         /**
@@ -508,7 +586,7 @@
         function loadData() {
             showLoading(true);
 
-            const url = `/bendahara-koperasi/iuran-pegawai/data?bulan=${currentMonth}&tahun=${currentYear}&status=${statusFilter}`;
+            const url = `/bendahara-koperasi/iuran-pegawai/data?bulan=${currentMonth}&tahun=${currentYear}&status=semua`;
 
             fetch(url, {
                 method: 'GET',
@@ -552,6 +630,26 @@
             data.forEach((pegawai, index) => {
                 const sudahBayar = pegawai.sudah_bayar == 1;
                 const nominal = parseInt(pegawai.nominal) || 0;
+                const tanggalBayar = pegawai.tanggal_bayar || null;
+                const iuranId = pegawai.iuran_id || null;
+
+                let tanggalDisplay = '-';
+                if (tanggalBayar) {
+                    // Parse langsung dari string (format: YYYY-MM-DD HH:MM:SS)
+                    // Waktu sudah dalam timezone Asia/Jakarta dari server
+                    // Parse manual tanpa menggunakan Date constructor untuk menghindari konversi timezone
+                    const parts = tanggalBayar.split(' ');
+                    const datePart = parts[0].split('-'); // YYYY-MM-DD
+                    const timePart = parts[1] ? parts[1].split(':') : ['00', '00', '00']; // HH:MM:SS
+
+                    const day = datePart[2];
+                    const month = datePart[1];
+                    const year = datePart[0];
+                    const hours = timePart[0].padStart(2, '0');
+                    const minutes = timePart[1].padStart(2, '0');
+
+                    tanggalDisplay = `${day}/${month}/${year} ${hours}:${minutes}`;
+                }
 
                 const row = `
                     <tr>
@@ -574,11 +672,25 @@
                                 : '<span class="badge-belum">✗ Belum Lunas</span>'}
                         </td>
                         <td>
-                            <button class="btn btn-detail btn-sm w-100"
-                                    onclick="showRiwayat(${pegawai.id}, '${pegawai.nama.replace(/'/g, "\\'")}'); return false;"
-                                    title="Lihat Riwayat Iuran">
-                                <i class="bi bi-eye me-1"></i>Detail
-                            </button>
+                            <span class="text-dark">
+                                ${tanggalDisplay}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2 justify-content-center">
+                                <button class="btn btn-detail btn-sm"
+                                        onclick="showRiwayat(${pegawai.id}, '${pegawai.nama.replace(/'/g, "\\'")}'); return false;"
+                                        title="Lihat Riwayat Iuran">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                ${sudahBayar ? `
+                                <button class="btn btn-danger btn-sm"
+                                        onclick="hapusIuran(${iuranId ? iuranId : 'null'}, '${pegawai.nama.replace(/'/g, "\\'")}', ${pegawai.id}, ${nominal}, '${tanggalDisplay}'); return false;"
+                                        title="Hapus Pembayaran Iuran">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                ` : ''}
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -591,7 +703,7 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="7" class="text-center text-muted py-5">
+                    <td colspan="8" class="text-center text-muted py-5">
                         <i class="bi bi-inbox" style="font-size: 3rem;"></i>
                         <p class="mt-2">Tidak ada data sesuai filter</p>
                     </td>
@@ -603,14 +715,26 @@
         function calculateTotal(data) {
             let totalPemasukan = 0;
             let jumlahLunas = 0;
-            let totalPegawai = data.length;
+
+            // Hitung jumlah pegawai unik berdasarkan user_id (id)
+            let uniquePegawaiIds = new Set();
+            let uniqueLunasIds = new Set();
 
             data.forEach(pegawai => {
+                // Tambahkan id pegawai ke Set untuk menghitung pegawai unik
+                uniquePegawaiIds.add(pegawai.id);
+
                 if (pegawai.sudah_bayar == 1) {
                     totalPemasukan += parseFloat(pegawai.nominal) || 0;
-                    jumlahLunas++;
+                    // Tambahkan id pegawai yang sudah lunas ke Set untuk menghitung pegawai unik yang sudah lunas
+                    uniqueLunasIds.add(pegawai.id);
                 }
             });
+
+            // Hitung jumlah pegawai unik yang sudah lunas
+            jumlahLunas = uniqueLunasIds.size;
+            // Hitung total pegawai unik
+            let totalPegawai = uniquePegawaiIds.size;
 
             document.getElementById('totalPemasukan').textContent =
                 'Rp ' + totalPemasukan.toLocaleString('id-ID');
@@ -625,8 +749,10 @@
          * ========================================
          */
 
-        // Bayar Iuran Single
+        // Bayar Iuran Single - Tidak digunakan lagi karena sudah ada fitur bayar semua
+        // Function ini tetap ada untuk backward compatibility tapi sebaiknya menggunakan modal juga
         function bayarIuran(pegawaiId, namaPegawai) {
+            // Untuk saat ini tetap menggunakan confirm, bisa diubah ke modal jika diperlukan
             if (!confirm(`Konfirmasi pembayaran iuran sebesar Rp ${NOMINAL_IURAN.toLocaleString('id-ID')} untuk:\n\n${namaPegawai}\n\nLanjutkan?`)) {
                 return;
             }
@@ -760,18 +886,55 @@
             document.getElementById('manualTahun').value = currentYear;
             // Nominal default kosong, user bebas mengisi berapapun
             document.getElementById('manualNominal').value = '';
-            document.getElementById('manualTanggalBayar').value = new Date().toISOString().split('T')[0];
+
+            // Set tanggal dan waktu sekarang untuk datetime-local
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('manualTanggalBayar').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+
             document.getElementById('manualPegawaiId').value = '';
 
             new bootstrap.Modal(document.getElementById('tambahManualModal')).show();
         }
+
+        // Format nominal dengan titik ribuan
+        function formatNominal(value) {
+            // Hapus semua karakter non-numerik
+            const numericValue = value.replace(/[^\d]/g, '');
+            // Format dengan titik sebagai separator ribuan
+            return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Parse nominal dari format dengan titik
+        function parseNominal(value) {
+            // Hapus semua titik dan ambil hanya angka
+            return parseFloat(value.replace(/\./g, '')) || 0;
+        }
+
+        // Event listener untuk format otomatis nominal
+        document.getElementById('manualNominal')?.addEventListener('input', function(e) {
+            const cursorPos = e.target.selectionStart;
+            const oldValue = e.target.value;
+            const newValue = formatNominal(oldValue);
+
+            e.target.value = newValue;
+
+            // Restore cursor position setelah format
+            const diff = newValue.length - oldValue.length;
+            e.target.setSelectionRange(cursorPos + diff, cursorPos + diff);
+        });
 
         // Handle form tambah manual
         document.getElementById('formTambahManual')?.addEventListener('submit', function(e) {
             e.preventDefault();
 
             const pegawaiId = document.getElementById('manualPegawaiId').value;
-            const nominal = parseFloat(document.getElementById('manualNominal').value);
+            // Parse nominal yang sudah diformat dengan titik
+            const nominal = parseNominal(document.getElementById('manualNominal').value);
             const tanggalBayar = document.getElementById('manualTanggalBayar').value;
 
             if (!pegawaiId || nominal <= 0) {
@@ -831,43 +994,79 @@
             });
         });
 
-        // Hapus Iuran
-        function hapusIuran(pegawaiId, namaPegawai) {
-            if (!confirm(`Hapus pembayaran iuran untuk:\n\n${namaPegawai}\n\nBulan: ${getBulanName(currentMonth)} ${currentYear}\n\nStatus akan kembali menjadi "Belum Lunas". Lanjutkan?`)) {
-                return;
-            }
+        // Variable untuk menyimpan data modal hapus (di scope global untuk akses handler)
+        let currentDeleteData = null;
 
-            showLoading(true);
+        // Hapus Iuran - Tampilkan Modal Konfirmasi
+        function hapusIuran(iuranId, namaPegawai, pegawaiId, nominal, tanggalBayar) {
+            // Simpan data untuk digunakan saat konfirmasi
+            currentDeleteData = {
+                iuranId: iuranId,
+                pegawaiId: pegawaiId,
+                namaPegawai: namaPegawai
+            };
 
-            fetch('/bendahara-koperasi/iuran-pegawai/hapus', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': CSRF_TOKEN
-                },
-                body: JSON.stringify({
-                    pegawai_id: pegawaiId,
+            // Set data di modal
+            document.getElementById('deleteNamaPegawai').textContent = namaPegawai;
+            document.getElementById('deleteNominalText').textContent = 'Rp ' + (nominal || 0).toLocaleString('id-ID');
+            document.getElementById('deleteTanggalText').textContent = tanggalBayar || '-';
+            document.getElementById('deleteBulanText').textContent = `${getBulanName(currentMonth)} ${currentYear}`;
+
+            // Tampilkan modal
+            const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+            modal.show();
+
+            // Binding handler untuk tombol konfirmasi
+            const btn = document.getElementById('deleteConfirmBtn');
+            // Hapus event listener sebelumnya jika ada
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+
+            newBtn.addEventListener('click', function() {
+                modal.hide();
+                showLoading(true);
+
+                // Pastikan iuranId adalah number atau null, bukan string
+                const validIuranId = (currentDeleteData.iuranId && currentDeleteData.iuranId !== 'null' && currentDeleteData.iuranId !== null && !isNaN(currentDeleteData.iuranId))
+                    ? parseInt(currentDeleteData.iuranId)
+                    : null;
+
+                // Kirim iuran_id jika tersedia, jika tidak gunakan pegawai_id + bulan (backward compatibility)
+                const requestBody = validIuranId ? {
+                    iuran_id: validIuranId
+                } : {
+                    pegawai_id: currentDeleteData.pegawaiId,
                     bulan: currentMonth,
                     tahun: currentYear
+                };
+
+                fetch('/bendahara-koperasi/iuran-pegawai/hapus', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': CSRF_TOKEN
+                    },
+                    body: JSON.stringify(requestBody)
                 })
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    loadData();
-                    showToast(`✅ Pembayaran iuran untuk ${namaPegawai} berhasil dihapus!\nStatus kembali menjadi "Belum Lunas".`);
-                } else {
-                    showError(result.message || 'Gagal menghapus pembayaran');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showError('Terjadi kesalahan saat menghapus pembayaran');
-            })
-            .finally(() => {
-                showLoading(false);
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        loadData();
+                        showToast(`✅ Pembayaran iuran untuk ${currentDeleteData.namaPegawai} berhasil dihapus!`);
+                    } else {
+                        showError(result.message || 'Gagal menghapus pembayaran');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('Terjadi kesalahan saat menghapus pembayaran');
+                })
+                .finally(() => {
+                    showLoading(false);
+                    currentDeleteData = null; // Clear data setelah selesai
+                });
             });
         }
 
@@ -1035,11 +1234,6 @@
                 loadData();
             });
 
-            // Status filter
-            document.getElementById('statusFilter')?.addEventListener('change', function() {
-                statusFilter = this.value;
-                loadData();
-            });
         });
     </script>
 @endsection

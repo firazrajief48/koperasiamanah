@@ -68,38 +68,74 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'nip' => 'required|string|max:20',
-            'golongan' => 'required|string|max:50',
-            'jabatan' => 'required|string|max:100',
-            'phone' => 'required|string|max:15',
-            'role' => 'required|in:anggota', // Only allow anggota registration
-        ]);
+        try {
+            // Validasi dengan pesan error yang lebih jelas
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8|confirmed',
+                'nip' => 'required|string|max:20',
+                'golongan' => 'required|string|max:50',
+                'jabatan' => 'required|string|max:100',
+                'phone' => 'required|string|max:15|regex:/^[0-9]+$/',
+                'role' => 'required|in:anggota', // Only allow anggota registration
+            ], [
+                'name.required' => 'Nama lengkap wajib diisi.',
+                'email.required' => 'Email wajib diisi.',
+                'email.email' => 'Format email tidak valid.',
+                'email.unique' => 'Email sudah terdaftar. Silakan gunakan email lain.',
+                'password.required' => 'Password wajib diisi.',
+                'password.min' => 'Password minimal 8 karakter.',
+                'password.confirmed' => 'Konfirmasi password tidak cocok.',
+                'nip.required' => 'NIP wajib diisi.',
+                'nip.max' => 'NIP maksimal 20 karakter.',
+                'golongan.required' => 'Golongan wajib diisi.',
+                'jabatan.required' => 'Jabatan wajib diisi.',
+                'phone.required' => 'Nomor HP wajib diisi.',
+                'phone.regex' => 'Nomor HP hanya boleh berisi angka.',
+                'phone.max' => 'Nomor HP maksimal 15 karakter.',
+                'role.required' => 'Role wajib diisi.',
+                'role.in' => 'Hanya anggota yang dapat mendaftar.',
+            ]);
 
-        // Check if role is anggota (only allowed role for registration)
-        if ($request->role !== 'anggota') {
+            // Check if role is anggota (only allowed role for registration)
+            if ($request->role !== 'anggota') {
+                return back()->withErrors([
+                    'role' => 'Hanya anggota yang dapat mendaftar melalui form ini.',
+                ])->withInput()->with('showModal', true)->with('showRegisterTab', true);
+            }
+
+            // Create user
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role' => 'anggota', // Force role to anggota
+                'nip' => $validated['nip'],
+                'golongan' => $validated['golongan'],
+                'jabatan' => $validated['jabatan'],
+                'phone' => $validated['phone'],
+            ]);
+
+            // Login user automatically
+            Auth::login($user);
+
+            // Redirect to dashboard
+            return $this->redirectToRole($user);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Validation errors - redirect back with errors and show register tab
+            return back()
+                ->withErrors($e->errors())
+                ->withInput()
+                ->with('showModal', true)
+                ->with('showRegisterTab', true);
+        } catch (\Exception $e) {
+            // Other errors
             return back()->withErrors([
-                'role' => 'Hanya anggota yang dapat mendaftar melalui form ini.',
-            ])->withInput()->with('showModal', true);
+                'general' => 'Terjadi kesalahan saat mendaftar: ' . $e->getMessage(),
+            ])->withInput()->with('showModal', true)->with('showRegisterTab', true);
         }
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'anggota', // Force role to anggota
-            'nip' => $request->nip,
-            'golongan' => $request->golongan,
-            'jabatan' => $request->jabatan,
-            'phone' => $request->phone,
-        ]);
-
-        Auth::login($user);
-
-        return $this->redirectToRole($user);
     }
 
     /**

@@ -2016,45 +2016,80 @@
                                         <div class="row g-3">
                                             <div class="col-12">
                                                 <label for="regNama" class="form-label fw-semibold" style="font-size: 0.938rem;">Nama Lengkap</label>
-                                                <input type="text" class="form-control" id="regNama" name="name"
+                                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="regNama" name="name"
                                                     placeholder="Nama lengkap Anda" required value="{{ old('name') }}"
                                                     style="border-radius: 10px; padding: 0.625rem 1rem; font-size: 0.938rem;">
+                                                @error('name')
+                                                    <div class="invalid-feedback" style="display: block; font-size: 0.875rem;">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="regNip" class="form-label fw-semibold" style="font-size: 0.938rem;">NIP</label>
-                                                <input type="text" class="form-control" id="regNip" name="nip"
+                                                <input type="text" class="form-control @error('nip') is-invalid @enderror" id="regNip" name="nip"
                                                     placeholder="Nomor Induk Pegawai" required value="{{ old('nip') }}"
                                                     style="border-radius: 10px; padding: 0.625rem 1rem; font-size: 0.938rem;">
+                                                @error('nip')
+                                                    <div class="invalid-feedback" style="display: block; font-size: 0.875rem;">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="regGolongan" class="form-label fw-semibold" style="font-size: 0.938rem;">Golongan</label>
-                                                <input type="text" class="form-control" id="regGolongan" name="golongan"
+                                                <input type="text" class="form-control @error('golongan') is-invalid @enderror" id="regGolongan" name="golongan"
                                                     placeholder="Golongan" required value="{{ old('golongan') }}"
                                                     style="border-radius: 10px; padding: 0.625rem 1rem; font-size: 0.938rem;">
+                                                @error('golongan')
+                                                    <div class="invalid-feedback" style="display: block; font-size: 0.875rem;">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                             </div>
                                             <div class="col-12">
                                                 <label for="regJabatan" class="form-label fw-semibold" style="font-size: 0.938rem;">Jabatan</label>
-                                                <input type="text" class="form-control" id="regJabatan" name="jabatan"
+                                                <input type="text" class="form-control @error('jabatan') is-invalid @enderror" id="regJabatan" name="jabatan"
                                                     placeholder="Jabatan Anda" required value="{{ old('jabatan') }}"
                                                     style="border-radius: 10px; padding: 0.625rem 1rem; font-size: 0.938rem;">
+                                                @error('jabatan')
+                                                    <div class="invalid-feedback" style="display: block; font-size: 0.875rem;">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="regHp" class="form-label fw-semibold" style="font-size: 0.938rem;">No HP</label>
-                                                <input type="tel" class="form-control" id="regHp" name="phone"
+                                                <input type="tel" class="form-control @error('phone') is-invalid @enderror" id="regHp" name="phone"
                                                     placeholder="08xxxxxxxxxx" required value="{{ old('phone') }}"
                                                     style="border-radius: 10px; padding: 0.625rem 1rem; font-size: 0.938rem;">
+                                                @error('phone')
+                                                    <div class="invalid-feedback" style="display: block; font-size: 0.875rem;">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="regEmail" class="form-label fw-semibold" style="font-size: 0.938rem;">Email</label>
-                                                <input type="email" class="form-control" id="regEmail" name="email"
+                                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="regEmail" name="email"
                                                     placeholder="email@example.com" required value="{{ old('email') }}"
                                                     style="border-radius: 10px; padding: 0.625rem 1rem; font-size: 0.938rem;">
+                                                @error('email')
+                                                    <div class="invalid-feedback" style="display: block; font-size: 0.875rem;">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="regPassword" class="form-label fw-semibold" style="font-size: 0.938rem;">Password</label>
-                                                <input type="password" class="form-control" id="regPassword" name="password"
+                                                <input type="password" class="form-control @error('password') is-invalid @enderror" id="regPassword" name="password"
                                                     placeholder="Min. 8 karakter" required
                                                     style="border-radius: 10px; padding: 0.625rem 1rem; font-size: 0.938rem;">
+                                                @error('password')
+                                                    <div class="invalid-feedback" style="display: block; font-size: 0.875rem;">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="regConfirmPassword" class="form-label fw-semibold" style="font-size: 0.938rem;">Konfirmasi Password</label>
@@ -2498,12 +2533,33 @@
 
             // Check if we should show modal (from session or errors)
             const shouldShowModal = @json(session('showModal', false));
+            const shouldShowRegisterTab = @json(session('showRegisterTab', false));
             const hasErrors = document.querySelector('.alert-danger');
 
             if (loginModal && (shouldShowModal || hasErrors)) {
                 // Show modal if there are errors or session flag is set
                 const modal = new bootstrap.Modal(loginModal);
                 modal.show();
+
+                // Switch to register tab if needed
+                if (shouldShowRegisterTab) {
+                    setTimeout(() => {
+                        const registerTab = document.getElementById('register-tab');
+                        const registerPane = document.getElementById('register');
+                        const loginTab = document.getElementById('login-tab');
+                        const loginPane = document.getElementById('login');
+
+                        if (registerTab && registerPane && loginTab && loginPane) {
+                            // Remove active from login
+                            loginTab.classList.remove('active');
+                            loginPane.classList.remove('active', 'show');
+                            
+                            // Add active to register
+                            registerTab.classList.add('active');
+                            registerPane.classList.add('active', 'show');
+                        }
+                    }, 100);
+                }
 
                 // Clear the session flag after showing modal
                 @if(session('showModal'))

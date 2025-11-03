@@ -19,7 +19,18 @@ class RoleMiddleware
             return redirect('/')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        if (auth()->user()->role !== $role) {
+        $user = auth()->user();
+        
+        // Cek apakah role user sesuai dengan role yang diharapkan
+        if ($user->role !== $role) {
+            // Log untuk debugging (opsional, bisa dihapus di production)
+            \Log::warning('403 Access Denied', [
+                'user_id' => $user->id,
+                'user_role' => $user->role,
+                'required_role' => $role,
+                'route' => $request->path()
+            ]);
+            
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 

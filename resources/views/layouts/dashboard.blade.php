@@ -42,7 +42,7 @@
                         @endif
                         @if (isset($showLaporan) && $showLaporan)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->is('*laporan*') ? 'active' : '' }}" href="{{ route($routePrefix . ($routePrefix === 'administrator' ? '.laporan-user' : '.laporan')) }}">
+                                <a class="nav-link {{ request()->routeIs($routePrefix . '.laporan') && !request()->routeIs($routePrefix . '.laporan_keuangan') ? 'active' : '' }}" href="{{ route($routePrefix . ($routePrefix === 'administrator' ? '.laporan-user' : '.laporan')) }}">
                                     <i class="bi bi-file-text me-3"></i>
                                     <span>Laporan {{ $routePrefix === 'administrator' ? 'User' : 'Pinjaman' }}</span>
                                 </a>
@@ -67,6 +67,12 @@
                                 <a class="nav-link {{ request()->is('bendahara-koperasi/iuran-pegawai*') ? 'active' : '' }}" href="{{ route('bendahara_koperasi.iuran_pegawai') }}">
                                     <i class="bi bi-wallet2 me-3"></i>
                                     <span>Iuran Pegawai</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->is('bendahara-koperasi/laporan-keuangan*') ? 'active' : '' }}" href="{{ route('bendahara_koperasi.laporan_keuangan') }}">
+                                    <i class="bi bi-graph-up-arrow me-3"></i>
+                                    <span>Laporan Keuangan</span>
                                 </a>
                             </li>
                         @endif

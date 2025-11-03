@@ -757,58 +757,69 @@
                     </tr>
                 </thead>
                 <tbody id="tableBody">
-                    @foreach ($pinjaman as $p)
-                        <tr data-nama="{{ strtolower($p['nama']) }}" data-nip="{{ $p['nip'] }}">
-                            <td>
-                                <div class="name-cell">
-                                    <div class="name-avatar">
-                                        {{ strtoupper(substr($p['nama'], 0, 1)) }}
+                    @if(count($pinjaman) > 0)
+                        @foreach ($pinjaman as $p)
+                            <tr data-nama="{{ strtolower($p['nama']) }}" data-nip="{{ $p['nip'] }}">
+                                <td>
+                                    <div class="name-cell">
+                                        <div class="name-avatar">
+                                            {{ strtoupper(substr($p['nama'], 0, 1)) }}
+                                        </div>
+                                        <div class="name-info">
+                                            <span class="name-primary">{{ $p['nama'] }}</span>
+                                        </div>
                                     </div>
-                                    <div class="name-info">
-                                        <span class="name-primary">{{ $p['nama'] }}</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="name-secondary">{{ $p['nip'] }}</span>
-                            </td>
-                            <td>
-                                <span class="amount-cell">Rp {{ number_format($p['jumlah'], 0, ',', '.') }}</span>
-                            </td>
-                            <td>
-                                <span class="amount-cell" id="totalBayar{{ $p['id'] }}">Rp {{ number_format($p['total_bayar'] ?? 0, 0, ',', '.') }}</span>
-                            </td>
-                            <td>
-                                <span class="amount-cell" id="sisaPinjaman{{ $p['id'] }}">Rp {{ number_format($p['sisa'], 0, ',', '.') }}</span>
-                            </td>
-                            <td>
-                                @if ($p['status'] == 'Lunas')
-                                    <span class="status-badge status-lunas" id="status{{ $p['id'] }}">
-                                        <i class="bi bi-check-circle-fill"></i>
-                                        <span>Lunas</span>
-                                    </span>
-                                @else
-                                    <span class="status-badge status-berjalan" id="status{{ $p['id'] }}">
-                                        <i class="bi bi-clock-history"></i>
-                                        <span>Berjalan</span>
-                                    </span>
-                                @endif
-                            </td>
-                            <td>
-                                <button class="btn-edit" data-bs-toggle="modal" data-bs-target="#editModal{{ $p['id'] }}">
-                                    <i class="bi bi-pencil-square"></i>
-                                    <span>Edit</span>
-                                </button>
+                                </td>
+                                <td>
+                                    <span class="name-secondary">{{ $p['nip'] }}</span>
+                                </td>
+                                <td>
+                                    <span class="amount-cell">Rp {{ number_format($p['jumlah'], 0, ',', '.') }}</span>
+                                </td>
+                                <td>
+                                    <span class="amount-cell" id="totalBayar{{ $p['id'] }}">Rp {{ number_format($p['total_bayar'] ?? 0, 0, ',', '.') }}</span>
+                                </td>
+                                <td>
+                                    <span class="amount-cell" id="sisaPinjaman{{ $p['id'] }}">Rp {{ number_format($p['sisa'], 0, ',', '.') }}</span>
+                                </td>
+                                <td>
+                                    @if ($p['status'] == 'Lunas')
+                                        <span class="status-badge status-lunas" id="status{{ $p['id'] }}">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span>Lunas</span>
+                                        </span>
+                                    @else
+                                        <span class="status-badge status-berjalan" id="status{{ $p['id'] }}">
+                                            <i class="bi bi-clock-history"></i>
+                                            <span>Berjalan</span>
+                                        </span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <button class="btn-edit" data-bs-toggle="modal" data-bs-target="#editModal{{ $p['id'] }}">
+                                        <i class="bi bi-pencil-square"></i>
+                                        <span>Edit</span>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 3rem 1rem; color: #64748b;">
+                                <i class="bi bi-inbox" style="font-size: 3rem; opacity: 0.3; display: block; margin-bottom: 1rem;"></i>
+                                <p style="margin: 0; font-size: 0.938rem; font-weight: 600;">Belum ada pinjaman yang aktif atau lunas</p>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.813rem; opacity: 0.7;">Pinjaman akan muncul di sini setelah melewati semua persetujuan (Bendahara, Ketua, Kepala)</p>
                             </td>
                         </tr>
-                    @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>
     </div>
 
     <!-- Modals -->
-    @foreach ($pinjaman as $p)
+    @if(count($pinjaman) > 0)
+        @foreach ($pinjaman as $p)
         <div class="modal fade" id="editModal{{ $p['id'] }}" tabindex="-1" aria-labelledby="modalLabel{{ $p['id'] }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -954,7 +965,8 @@
                 </div>
             </div>
         </div>
-    @endforeach
+        @endforeach
+    @endif
 
     @push('scripts')
         <script>

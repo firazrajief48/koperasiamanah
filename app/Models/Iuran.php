@@ -21,7 +21,7 @@ class Iuran extends Model
     ];
 
     protected $casts = [
-        'tanggal_bayar' => 'date',
+        'tanggal_bayar' => 'datetime',
     ];
 
     /**
