@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 31, 2025 at 10:50 AM
+-- Generation Time: Nov 03, 2025 at 06:42 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -72,7 +72,7 @@ CREATE TABLE `iurans` (
   `user_id` bigint(20) UNSIGNED NOT NULL,
   `jumlah` decimal(15,2) NOT NULL DEFAULT 0.00,
   `bulan` varchar(20) DEFAULT NULL,
-  `tanggal_bayar` date DEFAULT NULL,
+  `tanggal_bayar` datetime DEFAULT NULL,
   `status` enum('lunas','belum') NOT NULL DEFAULT 'belum',
   `keterangan` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -84,7 +84,8 @@ CREATE TABLE `iurans` (
 --
 
 INSERT INTO `iurans` (`id`, `user_id`, `jumlah`, `bulan`, `tanggal_bayar`, `status`, `keterangan`, `created_at`, `updated_at`) VALUES
-(1, 9, 50000.00, '2025-10', '2025-10-31', 'lunas', NULL, '2025-10-31 02:20:48', '2025-10-31 02:20:48');
+(10, 9, 50000.00, '2025-11', '2025-11-03 03:41:57', 'lunas', NULL, '2025-11-02 20:41:57', '2025-11-02 20:41:57'),
+(16, 12, 50000.00, '2025-11', '2025-11-03 04:29:06', 'lunas', NULL, '2025-11-02 21:29:06', '2025-11-02 21:29:06');
 
 -- --------------------------------------------------------
 
@@ -151,7 +152,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (14, '2025_10_29_021617_add_status_tracking_to_pinjamans_table', 6),
 (15, '2025_10_29_031448_update_user_role_enum_to_anggota', 6),
 (16, '2025_10_29_063414_add_metode_pembayaran_to_pinjamans_table', 7),
-(17, '2025_10_31_021729_add_sisa_gaji_to_pinjamans_table', 8);
+(17, '2025_10_31_021729_add_sisa_gaji_to_pinjamans_table', 8),
+(18, '2025_11_03_000000_change_tanggal_bayar_to_datetime_in_iurans_table', 9);
 
 -- --------------------------------------------------------
 
@@ -286,7 +288,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('RFZJHRvcGvNxmrB9CySzmjkv0GQkJFMoFQGx4gfJ', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoic2ZyNlJNMXdIbElNbG5EZXBxMjBNWWJ4NUp2S1haV24yNndoNlFkNCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6OTI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvaXVyYW4tcGVnYXdhaS9kYXRhP2J1bGFuPTEwJnN0YXR1cz1zZW11YSZ0YWh1bj0yMDI1Ijt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1761904244);
+('k90vNVRNDmRwW4EzjspGJ09XC1uMJVE47DolcQi3', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoicFZsVTMyaFJZY1pndDVtclJoQWpLT1diZzdKWDFyTnBlR2FXcmdzVCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvbGFwb3Jhbi1rZXVhbmdhbiI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7fQ==', 1762148466);
 
 -- --------------------------------------------------------
 
@@ -320,7 +322,8 @@ INSERT INTO `users` (`id`, `name`, `nip`, `golongan`, `jabatan`, `phone`, `photo
 (2, 'Retno Larasati, S.M.', NULL, NULL, 'Bendahara Koperasi Amanah BPS Kota Surabaya', NULL, NULL, 'retnolarasati@gmail.com', 'bendahara_koperasi', NULL, '$2y$12$LIlxqz0a8aRwB9okBPYJ/e1eCnXu/hbnzEsTFylWBewLuQmzBn/8G', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
 (3, 'Nurcholis, S.Si.', NULL, NULL, 'Ketua Koperasi Amanah BPS Kota Surabaya', NULL, NULL, 'nurcholis@gmail.com', 'ketua_koperasi', NULL, '$2y$12$.7Ol.DXCJXUwAJs9jWqHf.YZcV/A3lFiQD/6zddYD3.cKhRxF5LJG', NULL, '2025-10-21 00:10:09', '2025-10-21 00:10:09'),
 (4, 'Bilal Ali Maghshar Sri Muljono, SST', '00000000000', NULL, 'Administrator Website Koperasi Amanah BPS Kota Surabaya', NULL, NULL, 'bilalali@gmail.com', 'administrator', NULL, '$2y$12$PIpqdqMnO.iONxovCOeQ8u0DGA9RY.qmn5qNvfDio0Q1s2LztbnJ2', NULL, '2025-10-21 00:10:09', '2025-10-31 01:41:54'),
-(9, 'Mohammed Firaz Rajief Bismaka', '23051204330', 'Magang', 'Mahasiswa', '085748867167', NULL, 'mohammed.23330@mhs.unesa.ac.id', 'anggota', NULL, '$2y$12$X9RyUBn8c6QEb4y4CYs/Fep0gauUkEKl93M/cUJeMECWKwQkN4YOe', NULL, '2025-10-22 20:50:12', '2025-10-28 01:32:55');
+(9, 'Mohammed Firaz Rajief Bismaka', '23051204330', 'Magang', 'Mahasiswa', '085748867167', NULL, 'mohammed.23330@mhs.unesa.ac.id', 'anggota', NULL, '$2y$12$X9RyUBn8c6QEb4y4CYs/Fep0gauUkEKl93M/cUJeMECWKwQkN4YOe', NULL, '2025-10-22 20:50:12', '2025-10-28 01:32:55'),
+(12, 'Nabilla Cahya Yuniar', '23051204336', 'Magang', 'Mahasiswa', '082257649266', NULL, 'nabilla.23336@mhs.unesa.ac.id', 'anggota', NULL, '$2y$12$87hTf7pcmG2gVdyXx.aTzOzKwDu0ETuHDeUyiZ.HnKv5C3EWF1asG', NULL, '2025-11-02 20:38:23', '2025-11-02 20:38:23');
 
 --
 -- Indexes for dumped tables
@@ -427,7 +430,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `iurans`
 --
 ALTER TABLE `iurans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `jobs`
@@ -439,7 +442,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `pembayarans`
@@ -463,7 +466,7 @@ ALTER TABLE `pinjamans`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Constraints for dumped tables
