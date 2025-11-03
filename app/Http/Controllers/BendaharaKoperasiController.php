@@ -559,6 +559,28 @@ class BendaharaKoperasiController extends Controller
         }
     }
 
+    public function getAllPegawai()
+    {
+        // Ambil semua anggota untuk dropdown (tidak peduli sudah ada iuran atau belum)
+        $users = User::where('role', 'anggota')
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name', 'nip']);
+
+        $data = [];
+        foreach ($users as $user) {
+            $data[] = [
+                'id' => $user->id,
+                'nama' => $user->name,
+                'nip' => $user->nip ?? '-',
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
+    }
+
     public function tambahIuranManual(Request $request)
     {
         $validated = $request->validate([
@@ -576,33 +598,45 @@ class BendaharaKoperasiController extends Controller
             ->where('bulan', $bulanFormat)
             ->first();
 
-        if ($iuran && $iuran->status === 'lunas') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Iuran untuk bulan ini sudah dibayar'
-            ], 400);
-        }
+        $nominalBaru = $validated['nominal'];
+        $tanggalBayar = $validated['tanggal_bayar'] ?? now()->toDateString();
 
-        // Update atau create iuran
+        // Jika sudah ada iuran, tambahkan nominal baru ke nominal yang sudah ada
         if ($iuran) {
+            $nominalLama = (float) $iuran->jumlah;
+            $nominalTotal = $nominalLama + $nominalBaru;
+
+            // Buat keterangan untuk mencatat tambahan manual
+            $keteranganTambahan = 'Tambahan manual: Rp ' . number_format($nominalBaru, 0, ',', '.');
+            $keteranganBaru = $iuran->keterangan
+                ? $iuran->keterangan . '; ' . $keteranganTambahan
+                : $keteranganTambahan;
+
             $iuran->update([
-                'jumlah' => $validated['nominal'],
-                'tanggal_bayar' => $validated['tanggal_bayar'] ?? now(),
-                'status' => 'lunas',
+                'jumlah' => $nominalTotal,
+                'tanggal_bayar' => $tanggalBayar,
+                'status' => 'lunas', // Set status menjadi lunas
+                'keterangan' => $keteranganBaru,
             ]);
+
+            $message = 'Iuran tambahan berhasil ditambahkan. Total iuran sekarang: Rp ' . number_format($nominalTotal, 0, ',', '.');
         } else {
+            // Jika belum ada iuran, buat record baru
             Iuran::create([
                 'user_id' => $validated['pegawai_id'],
-                'jumlah' => $validated['nominal'],
+                'jumlah' => $nominalBaru,
                 'bulan' => $bulanFormat,
-                'tanggal_bayar' => $validated['tanggal_bayar'] ?? now(),
+                'tanggal_bayar' => $tanggalBayar,
                 'status' => 'lunas',
+                'keterangan' => 'Tambahan manual',
             ]);
+
+            $message = 'Iuran berhasil ditambahkan';
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'Iuran berhasil ditambahkan'
+            'message' => $message
         ]);
     }
 

@@ -721,9 +721,9 @@
          * ========================================
          */
 
-        // Load daftar pegawai untuk dropdown
+        // Load daftar pegawai untuk dropdown (semua pegawai, tidak hanya yang sudah punya record iuran)
         function loadPegawaiList() {
-            fetch('/bendahara-koperasi/iuran-pegawai/data?bulan=' + currentMonth + '&tahun=' + currentYear + '&status=semua', {
+            fetch('/bendahara-koperasi/iuran-pegawai/pegawai-list', {
                 method: 'GET',
                 credentials: 'same-origin',
                 headers: {
@@ -747,6 +747,7 @@
             })
             .catch(error => {
                 console.error('Error loading pegawai:', error);
+                showError('Gagal memuat daftar pegawai');
             });
         }
 
@@ -800,19 +801,30 @@
                     tanggal_bayar: tanggalBayar || null
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                return response.json().then(data => {
+                    if (!response.ok) {
+                        return Promise.reject({ data, status: response.status });
+                    }
+                    return data;
+                });
+            })
             .then(result => {
                 if (result.success) {
                     bootstrap.Modal.getInstance(document.getElementById('tambahManualModal')).hide();
                     loadData();
-                    showToast(`✅ Berhasil menambahkan iuran manual untuk ${namaPegawai}!\nNominal: Rp ${nominal.toLocaleString('id-ID')}`);
+                    showToast(`✅ ${result.message || `Berhasil menambahkan iuran manual untuk ${namaPegawai}!\nNominal: Rp ${nominal.toLocaleString('id-ID')}`}`);
                 } else {
                     showError(result.message || 'Gagal menambahkan iuran');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showError('Terjadi kesalahan saat menambahkan iuran');
+                if (error.data && error.data.message) {
+                    showError(error.data.message);
+                } else {
+                    showError('Terjadi kesalahan saat menambahkan iuran');
+                }
             })
             .finally(() => {
                 showLoading(false);
