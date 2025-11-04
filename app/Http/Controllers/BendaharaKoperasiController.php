@@ -443,6 +443,7 @@ class BendaharaKoperasiController extends Controller
         $bulan = $request->input('bulan', date('n'));
         $tahun = $request->input('tahun', date('Y'));
         $statusFilter = $request->input('status', 'semua');
+        $search = $request->input('search', '');
 
         // Format bulan untuk query (YYYY-MM)
         $bulanFormat = sprintf('%04d-%02d', $tahun, $bulan);
@@ -450,8 +451,17 @@ class BendaharaKoperasiController extends Controller
         // Ambil semua iuran untuk bulan yang dipilih (bukan hanya satu per user)
         $iurans = Iuran::with('user')
             ->where('bulan', $bulanFormat)
-            ->whereHas('user', function($query) {
+            ->whereHas('user', function($query) use ($search) {
                 $query->where('role', 'anggota');
+
+                // Filter berdasarkan pencarian (nama, NIP, atau jabatan)
+                if (!empty($search)) {
+                    $query->where(function($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%')
+                          ->orWhere('nip', 'like', '%' . $search . '%')
+                          ->orWhere('jabatan', 'like', '%' . $search . '%');
+                    });
+                }
             })
             ->orderBy('tanggal_bayar', 'desc')
             ->orderBy('created_at', 'desc')

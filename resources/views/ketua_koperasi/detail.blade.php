@@ -680,16 +680,49 @@
                     }
 
                     if (confirm('❌ Apakah Anda yakin ingin menolak pengajuan ini?')) {
-                        alert('❌ Pengajuan ditolak!');
-                        window.location.href = '{{ route('ketua_koperasi.dashboard') }}';
+                        kirimVerifikasi('tolak');
                     }
                 }
             }
 
             function setujuiPengajuan() {
                 if (confirm('✅ Apakah Anda yakin ingin menyetujui pengajuan ini?')) {
-                    alert('✅ Pengajuan berhasil disetujui!');
-                    window.location.href = '{{ route('ketua_koperasi.dashboard') }}';
+                    kirimVerifikasi('setujui');
+                }
+            }
+
+            async function kirimVerifikasi(aksi) {
+                const catatan = document.getElementById('catatan')?.value || '';
+
+                if (aksi === 'tolak' && !catatan) {
+                    alert('⚠️ Catatan penolakan wajib diisi!');
+                    return;
+                }
+
+                try {
+                    const res = await fetch('{{ route('ketua_koperasi.verifikasi') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: {{ $pengajuan['id'] }},
+                            catatan: catatan,
+                            aksi: aksi
+                        })
+                    });
+                    const json = await res.json();
+                    if (json.success) {
+                        alert(json.message);
+                        setTimeout(function(){ window.location.href = '{{ route('ketua_koperasi.dashboard') }}'; }, 900);
+                    } else {
+                        alert('❌ ' + (json.message || 'Terjadi kesalahan.'));
+                    }
+                } catch (e) {
+                    alert('❌ Gagal mengirim data.');
+                    console.error(e);
                 }
             }
         </script>

@@ -268,7 +268,7 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            justify-content: center;
+            justify-content: flex-start;
         }
 
         .name-avatar {

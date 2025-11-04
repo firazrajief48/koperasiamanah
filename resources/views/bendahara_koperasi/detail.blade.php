@@ -614,11 +614,11 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label class="form-label">Gaji Pokok <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="gajiPokok" placeholder="Masukkan gaji pokok" value="{{ $pinjaman->gaji_pokok ?? '' }}" required>
+                        <input type="text" class="form-control" id="gajiPokok" placeholder="Masukkan gaji pokok" value="{{ $pinjaman->gaji_pokok ? number_format($pinjaman->gaji_pokok, 0, ',', '.') : '' }}" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Sisa Gaji <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="sisaGaji" placeholder="Masukkan sisa gaji" required>
+                        <input type="text" class="form-control" id="sisaGaji" placeholder="Masukkan sisa gaji" required>
                     </div>
                 </div>
 
@@ -689,6 +689,53 @@
             /* ==================== JAVASCRIPT ==================== */
             let catatanShown = false;
 
+            // Format angka dengan titik pemisah
+            function formatNumber(input) {
+                // Hapus semua karakter selain angka
+                let value = input.value.replace(/[^\d]/g, '');
+                
+                // Format dengan titik pemisah ribuan
+                if (value) {
+                    value = parseInt(value).toLocaleString('id-ID');
+                }
+                
+                input.value = value;
+            }
+
+            // Ambil nilai angka tanpa format
+            function getNumericValue(formattedValue) {
+                return formattedValue.replace(/\./g, '');
+            }
+
+            // Event listener untuk format otomatis
+            document.addEventListener('DOMContentLoaded', function() {
+                const gajiPokokInput = document.getElementById('gajiPokok');
+                const sisaGajiInput = document.getElementById('sisaGaji');
+
+                // Format saat mengetik
+                gajiPokokInput.addEventListener('input', function() {
+                    formatNumber(this);
+                });
+
+                // Format saat mengetik
+                sisaGajiInput.addEventListener('input', function() {
+                    formatNumber(this);
+                });
+
+                // Format saat focus out (jika belum terformat)
+                gajiPokokInput.addEventListener('blur', function() {
+                    if (this.value && !this.value.includes('.')) {
+                        formatNumber(this);
+                    }
+                });
+
+                sisaGajiInput.addEventListener('blur', function() {
+                    if (this.value && !this.value.includes('.')) {
+                        formatNumber(this);
+                    }
+                });
+            });
+
             function showCatatanTolak() {
                 if (!catatanShown) {
                     document.getElementById('catatanContainer').style.display = 'block';
@@ -696,8 +743,10 @@
                     document.getElementById('catatan').focus();
                     catatanShown = true;
                 } else {
-                    const gajiPokok = document.getElementById('gajiPokok').value;
-                    const sisaGaji = document.getElementById('sisaGaji').value;
+                    const gajiPokokFormatted = document.getElementById('gajiPokok').value;
+                    const sisaGajiFormatted = document.getElementById('sisaGaji').value;
+                    const gajiPokok = getNumericValue(gajiPokokFormatted);
+                    const sisaGaji = getNumericValue(sisaGajiFormatted);
                     const catatan = document.getElementById('catatan').value;
 
                     if (!gajiPokok || !sisaGaji) {
@@ -715,8 +764,11 @@
             }
 
             async function kirimVerifikasi(aksi) {
-                const gajiPokok = document.getElementById('gajiPokok').value;
-                const sisaGaji = document.getElementById('sisaGaji').value;
+                // Ambil nilai tanpa format (hanya angka)
+                const gajiPokokFormatted = document.getElementById('gajiPokok').value;
+                const sisaGajiFormatted = document.getElementById('sisaGaji').value;
+                const gajiPokok = getNumericValue(gajiPokokFormatted);
+                const sisaGaji = getNumericValue(sisaGajiFormatted);
                 const catatan = document.getElementById('catatan')?.value || '';
 
                 if (!gajiPokok || !sisaGaji) {

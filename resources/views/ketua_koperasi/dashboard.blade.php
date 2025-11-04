@@ -276,7 +276,16 @@
             color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            text-align: left;
+        }
+
+        .modern-table thead th:first-child,
+        .modern-table thead th:last-child {
             text-align: center;
+        }
+
+        .modern-table thead th:nth-child(3) {
+            text-align: right;
         }
 
         .modern-table tbody tr {
@@ -306,9 +315,21 @@
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             box-shadow: 0 2px 12px rgba(30, 64, 175, 0.06);
-            text-align: center;
+            text-align: left;
             position: relative;
             font-size: 0.875rem;
+        }
+
+        .modern-table tbody td:first-child {
+            text-align: center;
+        }
+
+        .modern-table tbody td:last-child {
+            text-align: center;
+        }
+
+        .modern-table tbody td:nth-child(3) {
+            text-align: right;
         }
 
         .modern-table tbody tr:hover td {
@@ -369,7 +390,8 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            justify-content: center;
+            justify-content: flex-start;
+            width: 100%;
         }
 
         .name-avatar {
@@ -387,7 +409,13 @@
         }
 
         .name-info {
-            text-align: left;
+            text-align: left !important;
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
         }
 
         .name-primary {
@@ -395,11 +423,17 @@
             color: var(--dark-navy);
             font-size: 0.875rem;
             margin-bottom: 0.125rem;
+            text-align: left !important;
+            width: 100%;
+            display: block;
         }
 
         .name-secondary {
             font-size: 0.75rem;
             color: #64748b;
+            text-align: left !important;
+            width: 100%;
+            display: block;
         }
 
         .amount-cell {
@@ -555,7 +589,7 @@
                 </div>
                 <div class="table-header-badge">
                     <i class="bi bi-list-check"></i>
-                    <span>{{ count($pengajuan) }} Pengajuan</span>
+                    <span>{{ count($pinjamans) }} Pengajuan</span>
                 </div>
             </div>
         </div>
@@ -573,18 +607,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($pengajuan as $p)
+                    @forelse ($pinjamans as $p)
                         <tr>
                             <td>
-                                <div class="id-badge">{{ $p['id'] }}</div>
+                                <div class="id-badge">{{ $p->id }}</div>
                             </td>
                             <td>
                                 <div class="name-cell">
                                     <div class="name-avatar">
-                                        {{ strtoupper(substr($p['nama'], 0, 1)) }}
+                                        {{ strtoupper(substr($p->user->name, 0, 1)) }}
                                     </div>
                                     <div class="name-info">
-                                        <div class="name-primary">{{ $p['nama'] }}</div>
+                                        <div class="name-primary">{{ $p->user->name }}</div>
                                         <div class="name-secondary">Anggota Koperasi</div>
                                     </div>
                                 </div>
@@ -594,36 +628,45 @@
                                     <div class="amount-icon">
                                         <i class="bi bi-cash"></i>
                                     </div>
-                                    <span>Rp {{ number_format($p['jumlah'], 0, ',', '.') }}</span>
+                                    <span>Rp {{ number_format($p->jumlah_pinjaman, 0, ',', '.') }}</span>
                                 </div>
                             </td>
                             <td>
                                 <div class="date-badge">
                                     <i class="bi bi-calendar-event"></i>
-                                    <span>{{ date('d/m/Y', strtotime($p['tanggal'])) }}</span>
+                                    <span>{{ $p->created_at->format('d/m/Y') }}</span>
                                 </div>
                             </td>
                             <td>
-                                @if ($p['status'] == 'Menunggu Persetujuan')
-                                    <span class="status-badge status-pending">
-                                        <i class="bi bi-clock"></i>
-                                        <span>Menunggu</span>
-                                    </span>
-                                @else
-                                    <span class="status-badge status-approved">
-                                        <i class="bi bi-check-circle"></i>
-                                        <span>Disetujui</span>
-                                    </span>
-                                @endif
+                                @php
+                                    $pos = $p->status_detail;
+                                @endphp
+                                <span class="status-badge status-pending">
+                                    <i class="bi bi-clock"></i>
+                                    @switch($pos)
+                                        @case('menunggu_persetujuan_bendahara') Menunggu (Bendahara) @break
+                                        @case('menunggu_persetujuan_ketua') Menunggu (Ketua) @break
+                                        @case('menunggu_persetujuan_kepala') Menunggu (Kepala) @break
+                                        @case('ditolak') Ditolak @break
+                                        @default {{ ucfirst($p->status) }}
+                                    @endswitch
+                                </span>
                             </td>
                             <td>
-                                <a href="{{ route('ketua_koperasi.detail', $p['id']) }}" class="btn-detail">
+                                <a href="{{ route('ketua_koperasi.detail', $p->id) }}" class="btn-detail">
                                     <i class="bi bi-eye"></i>
                                     <span>Detail</span>
                                 </a>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <i class="bi bi-inbox" style="font-size: 3rem; color: #cbd5e1;"></i>
+                                <p class="text-muted mt-3 mb-0">Tidak ada pengajuan pinjaman yang menunggu persetujuan</p>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

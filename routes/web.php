@@ -84,6 +84,7 @@ Route::prefix('ketua-koperasi')->name('ketua_koperasi.')->middleware(['auth', 'r
     Route::get('/profile', [KepalaKoperasiController::class, 'profile'])->name('profile');
     Route::put('/profile', [KepalaKoperasiController::class, 'updateProfile'])->name('profile.update');
     Route::get('/detail-pengajuan/{id}', [KepalaKoperasiController::class, 'detailPengajuan'])->name('detail');
+    Route::post('/verifikasi', [KepalaKoperasiController::class, 'submitVerifikasi'])->name('verifikasi');
     Route::get('/laporan-pinjaman', [KepalaKoperasiController::class, 'laporanPinjaman'])->name('laporan');
     Route::get('/transparansi', [KepalaKoperasiController::class, 'transparansi'])->name('transparansi');
 });

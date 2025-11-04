@@ -278,6 +278,25 @@
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
+
+        #searchInput {
+            border-radius: 8px 0 0 8px;
+        }
+
+        #clearSearchBtn {
+            border-radius: 0 8px 8px 0;
+            border-left: none;
+        }
+
+        #clearSearchBtn:hover {
+            background-color: #f3f4f6;
+            color: #ef4444;
+        }
+
+        .input-group:focus-within #searchInput {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
     </style>
 
     <div class="welcome-banner">
@@ -349,6 +368,24 @@
                             🔹 {{ $namaBulan }}
                         </div>
                     @endforeach
+                </div>
+
+                <!-- Search Section -->
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-search me-1"></i>Cari Pegawai
+                        </label>
+                        <div class="input-group">
+                            <input type="text" id="searchInput" class="form-control"
+                                   placeholder="Cari berdasarkan nama, NIP, atau jabatan..."
+                                   autocomplete="off">
+                            <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn" style="display: none;" onclick="clearSearch()">
+                                <i class="bi bi-x-circle"></i>
+                            </button>
+                        </div>
+                        <small class="text-muted">Tekan Enter atau tunggu beberapa detik untuk mencari</small>
+                    </div>
                 </div>
             </div>
 
@@ -563,6 +600,8 @@
         let currentMonth = {{ date('n') }};
         let currentYear = {{ date('Y') }};
         let currentData = [];
+        let currentSearch = '';
+        let searchTimeout = null;
 
         /**
          * ========================================
@@ -586,7 +625,11 @@
         function loadData() {
             showLoading(true);
 
-            const url = `/bendahara-koperasi/iuran-pegawai/data?bulan=${currentMonth}&tahun=${currentYear}&status=semua`;
+            // Build URL with search parameter
+            let url = `/bendahara-koperasi/iuran-pegawai/data?bulan=${currentMonth}&tahun=${currentYear}&status=semua`;
+            if (currentSearch.trim() !== '') {
+                url += `&search=${encodeURIComponent(currentSearch.trim())}`;
+            }
 
             fetch(url, {
                 method: 'GET',
@@ -1220,6 +1263,41 @@
 
         /**
          * ========================================
+         * SEARCH FUNCTIONS
+         * ========================================
+         */
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            currentSearch = '';
+            document.getElementById('clearSearchBtn').style.display = 'none';
+            loadData();
+        }
+
+        function handleSearch() {
+            const searchValue = document.getElementById('searchInput').value;
+            currentSearch = searchValue;
+
+            // Show/hide clear button
+            if (searchValue.trim() !== '') {
+                document.getElementById('clearSearchBtn').style.display = 'block';
+            } else {
+                document.getElementById('clearSearchBtn').style.display = 'none';
+            }
+
+            // Clear previous timeout
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+
+            // Debounce search - wait 500ms after user stops typing
+            searchTimeout = setTimeout(() => {
+                loadData();
+            }, 500);
+        }
+
+        /**
+         * ========================================
          * EVENT LISTENERS
          * ========================================
          */
@@ -1233,6 +1311,31 @@
                 currentYear = parseInt(this.value);
                 loadData();
             });
+
+            // Search input
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                // Search on input (with debounce)
+                searchInput.addEventListener('input', handleSearch);
+
+                // Search on Enter key (immediate)
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (searchTimeout) {
+                            clearTimeout(searchTimeout);
+                        }
+                        const searchValue = searchInput.value;
+                        currentSearch = searchValue;
+                        if (searchValue.trim() !== '') {
+                            document.getElementById('clearSearchBtn').style.display = 'block';
+                        } else {
+                            document.getElementById('clearSearchBtn').style.display = 'none';
+                        }
+                        loadData();
+                    }
+                });
+            }
 
         });
     </script>
