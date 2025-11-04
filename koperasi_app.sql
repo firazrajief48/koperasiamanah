@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 03, 2025 at 09:52 AM
+-- Generation Time: Nov 04, 2025 at 07:15 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -272,7 +272,7 @@ INSERT INTO `pinjamans` (`id`, `user_id`, `jumlah_pinjaman`, `tenor_bulan`, `cic
 (2, 9, 5000000.00, 2, 2500000.00, 0, 5000000.00, 30000000.00, NULL, NULL, 'menunggu', 'menunggu_persetujuan_ketua', NULL, 'Retno Larasati, S.M.', '2025-10-29 01:50:44', 'Biaya Keperluan', '2025-10-28 20:27:01', '2025-10-29 01:50:44'),
 (3, 9, 4000000.00, 2, 2000000.00, 0, 4000000.00, 10000000.00, NULL, 'potong_tukin', 'menunggu', 'ditolak', 'Hutang Kemarin Belum Lunas!', 'Retno Larasati, S.M.', '2025-10-30 01:06:07', 'WKWKWKWKWK', '2025-10-30 01:04:59', '2025-10-30 01:06:07'),
 (4, 9, 4000000.00, 2, 2000000.00, 0, 4000000.00, 0.00, NULL, 'potong_tukin', 'menunggu', 'menunggu_persetujuan_bendahara', NULL, NULL, NULL, 'sfewrhgewvesa', '2025-10-30 22:59:33', '2025-10-30 22:59:33'),
-(6, 12, 5000000.00, 4, 1250000.00, 0, 5000000.00, 0.00, NULL, 'potong_gaji', 'menunggu', 'menunggu_persetujuan_bendahara', NULL, NULL, NULL, 'degeewrbrac', '2025-11-03 00:14:57', '2025-11-03 00:14:57');
+(6, 12, 5000000.00, 4, 1250000.00, 0, 5000000.00, 30000000.00, 28000000.00, 'potong_gaji', 'menunggu', 'menunggu_persetujuan_ketua', NULL, 'Retno Larasati, S.M.', '2025-11-03 21:19:25', 'degeewrbrac', '2025-11-03 00:14:57', '2025-11-03 21:19:25');
 
 -- --------------------------------------------------------
 
@@ -294,7 +294,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('GQL86NxayDXntsZpPXcJnAEcRpuU33oMETwOJcBL', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoicmwwalFKMG1KaGxXRGNaTFdKQkFrMnNobVZHb2dlcDNnT3pXYjl5MSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6OTI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvaXVyYW4tcGVnYXdhaS9kYXRhP2J1bGFuPTExJnN0YXR1cz1zZW11YSZ0YWh1bj0yMDI1Ijt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1762158644);
+('Ww5haPw5lNvtJALn2hBjNrKWCkcG4kcsQXULiZb3', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiajRVMUMyM243YTVDc2FDaEFNN0pYeDExN3hZRWFmQk9OVFN4UnFSSiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvbGFwb3Jhbi1waW5qYW1hbiI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7fQ==', 1762236460);
 
 -- --------------------------------------------------------
 
