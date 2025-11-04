@@ -377,8 +377,9 @@
         .name-cell {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            justify-content: center;
+            gap: 1rem;
+            justify-content: flex-start;
+            margin-left: 100px;
         }
 
         .name-avatar {
