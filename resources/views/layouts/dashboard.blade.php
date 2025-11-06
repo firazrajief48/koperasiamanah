@@ -3,112 +3,125 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <nav class="col-md-2 d-md-block sidebar p-0">
-                <div class="position-sticky pt-5" style="height: 100vh; display: flex; flex-direction: column;">
-                    <div class="text-center px-4 mb-4">
-                        <a href="{{ route($routePrefix . '.profile') }}" class="text-decoration-none" style="display: block;">
-                            <div class="profile-avatar mx-auto mb-3" style="cursor: pointer; transition: all 0.3s ease;">
-                                <i class="bi bi-person-circle text-white fs-2"></i>
+            <!-- Sidebar Overlay for Mobile -->
+            <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+            <nav class="col-md-2 d-md-block sidebar p-0" id="sidebar">
+                <div class="sidebar-inner">
+                    <!-- Toggle Button inside Sidebar -->
+                    <div class="sidebar-toggle-inner">
+                        <button class="btn-toggle-sidebar" id="sidebarToggleBtnInner" title="Toggle Sidebar">
+                            <i class="bi bi-list"></i>
+                        </button>
+                    </div>
+
+                    <div class="sidebar-profile">
+                        <a href="{{ route($routePrefix . '.profile') }}" class="sidebar-profile-link">
+                            <div class="profile-avatar">
+                                <i class="bi bi-person-circle"></i>
                             </div>
-                            <h6 class="fw-bold mb-1 text-dark">{{ $nama ?? 'User' }}</h6>
-                            <small class="text-secondary opacity-70">{{ $role ?? 'Dashboard' }}</small>
+                            <h6 class="sidebar-name sidebar-text">{{ $nama ?? 'User' }}</h6>
+                            <small class="sidebar-role sidebar-text">{{ $role ?? 'Dashboard' }}</small>
                         </a>
                     </div>
 
-                    <hr class="opacity-15 mx-3 mb-4">
+                    <hr class="sidebar-divider">
 
-                    <ul class="nav flex-column px-3 flex-grow-1 gap-2">
+                    <ul class="nav flex-column sidebar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('*dashboard*') ? 'active' : '' }}" href="{{ route($routePrefix . '.dashboard') }}">
-                                <i class="bi bi-speedometer2 me-3"></i>
-                                <span>Dashboard</span>
+                            <a class="nav-link {{ request()->is('*dashboard*') ? 'active' : '' }}" href="{{ route($routePrefix . '.dashboard') }}" data-tooltip="Dashboard">
+                                <i class="bi bi-speedometer2"></i>
+                                <span class="sidebar-text">Dashboard</span>
                             </a>
                         </li>
                         @if (isset($showAjukan) && $showAjukan)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->is('*ajukan*') ? 'active' : '' }}" href="{{ route($routePrefix . '.ajukan') }}">
-                                    <i class="bi bi-file-earmark-plus me-3"></i>
-                                    <span>Ajukan Pinjaman</span>
+                                <a class="nav-link {{ request()->is('*ajukan*') ? 'active' : '' }}" href="{{ route($routePrefix . '.ajukan') }}" data-tooltip="Ajukan Pinjaman">
+                                    <i class="bi bi-file-earmark-plus"></i>
+                                    <span class="sidebar-text">Ajukan Pinjaman</span>
                                 </a>
                             </li>
                         @endif
                         @if (isset($showRiwayat) && $showRiwayat)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->is('*riwayat*') ? 'active' : '' }}" href="{{ route($routePrefix . '.riwayat') }}">
-                                    <i class="bi bi-clock-history me-3"></i>
-                                    <span>Riwayat Pinjaman</span>
+                                <a class="nav-link {{ request()->is('*riwayat*') ? 'active' : '' }}" href="{{ route($routePrefix . '.riwayat') }}" data-tooltip="Riwayat Pinjaman">
+                                    <i class="bi bi-clock-history"></i>
+                                    <span class="sidebar-text">Riwayat Pinjaman</span>
                                 </a>
                             </li>
                         @endif
                         @if (isset($showLaporan) && $showLaporan)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs($routePrefix . '.laporan') && !request()->routeIs($routePrefix . '.laporan_keuangan') ? 'active' : '' }}" href="{{ route($routePrefix . ($routePrefix === 'administrator' ? '.laporan-user' : '.laporan')) }}">
-                                    <i class="bi bi-file-text me-3"></i>
-                                    <span>Laporan {{ $routePrefix === 'administrator' ? 'User' : 'Pinjaman' }}</span>
+                                <a class="nav-link {{ request()->routeIs($routePrefix . '.laporan') && !request()->routeIs($routePrefix . '.laporan_keuangan') ? 'active' : '' }}" href="{{ route($routePrefix . ($routePrefix === 'administrator' ? '.laporan-user' : '.laporan')) }}" data-tooltip="Laporan {{ $routePrefix === 'administrator' ? 'User' : 'Pinjaman' }}">
+                                    <i class="bi bi-file-text"></i>
+                                    <span class="sidebar-text">Laporan {{ $routePrefix === 'administrator' ? 'User' : 'Pinjaman' }}</span>
                                 </a>
                             </li>
                         @endif
                         @if (isset($routePrefix) && $routePrefix === 'administrator')
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->is('administrator/pengurus-koperasi*') ? 'active' : '' }}" href="{{ route('administrator.pengurus-koperasi.index') }}">
-                                    <i class="bi bi-people-fill me-3"></i>
-                                    <span>Kelola Pengurus</span>
+                                <a class="nav-link {{ request()->is('administrator/pengurus-koperasi*') ? 'active' : '' }}" href="{{ route('administrator.pengurus-koperasi.index') }}" data-tooltip="Kelola Pengurus">
+                                    <i class="bi bi-people-fill"></i>
+                                    <span class="sidebar-text">Kelola Pengurus</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->is('administrator/kelola-user*') ? 'active' : '' }}" href="{{ route('administrator.kelola-user') }}">
-                                    <i class="bi bi-person-gear me-3"></i>
-                                    <span>Kelola User</span>
+                                <a class="nav-link {{ request()->is('administrator/kelola-user*') ? 'active' : '' }}" href="{{ route('administrator.kelola-user') }}" data-tooltip="Kelola User">
+                                    <i class="bi bi-person-gear"></i>
+                                    <span class="sidebar-text">Kelola User</span>
                                 </a>
                             </li>
                         @endif
                         @if (isset($routePrefix) && $routePrefix === 'bendahara_koperasi')
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->is('bendahara-koperasi/iuran-pegawai*') ? 'active' : '' }}" href="{{ route('bendahara_koperasi.iuran_pegawai') }}">
-                                    <i class="bi bi-wallet2 me-3"></i>
-                                    <span>Iuran Pegawai</span>
+                                <a class="nav-link {{ request()->is('bendahara-koperasi/iuran-pegawai*') ? 'active' : '' }}" href="{{ route('bendahara_koperasi.iuran_pegawai') }}" data-tooltip="Iuran Pegawai">
+                                    <i class="bi bi-wallet2"></i>
+                                    <span class="sidebar-text">Iuran Pegawai</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->is('bendahara-koperasi/laporan-keuangan*') ? 'active' : '' }}" href="{{ route('bendahara_koperasi.laporan_keuangan') }}">
-                                    <i class="bi bi-graph-up-arrow me-3"></i>
-                                    <span>Laporan Keuangan</span>
+                                <a class="nav-link {{ request()->is('bendahara-koperasi/laporan-keuangan*') ? 'active' : '' }}" href="{{ route('bendahara_koperasi.laporan_keuangan') }}" data-tooltip="Laporan Keuangan">
+                                    <i class="bi bi-graph-up-arrow"></i>
+                                    <span class="sidebar-text">Laporan Keuangan</span>
                                 </a>
                             </li>
                         @endif
                         @if (!isset($routePrefix) || $routePrefix !== 'administrator')
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->is('*transparansi*') ? 'active' : '' }}"
-                                    href="{{ route($routePrefix . '.transparansi') }}">
-                                    <i class="bi bi-eye me-3"></i>
-                                    <span>Transparansi Keuangan</span>
+                                    href="{{ route($routePrefix . '.transparansi') }}" data-tooltip="Transparansi Keuangan">
+                                    <i class="bi bi-eye"></i>
+                                    <span class="sidebar-text">Transparansi Keuangan</span>
                                 </a>
                             </li>
                         @endif
                     </ul>
 
-                    <div class="px-3 pb-3 mt-auto" style="margin-top: auto !important; margin-bottom: 1rem;">
-                        <button class="btn-logout w-100" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                            <i class="bi bi-box-arrow-right me-2"></i>
-                            Logout
+                    <div class="sidebar-footer">
+                        <button class="btn-logout" data-bs-toggle="modal" data-bs-target="#logoutModal" data-tooltip="Logout">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span class="sidebar-text">Logout</span>
                         </button>
                     </div>
                 </div>
             </nav>
 
-            <main class="col-md-10 ms-sm-auto px-md-4" style="min-height: 100vh; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); margin-left: 280px;">
-                <div class="d-flex justify-content-between align-items-center py-4 mb-2">
-                    <div>
-                        <h2 class="fw-bold mb-1 gradient-text-modern" style="font-size: 2rem;">@yield('page-title')</h2>
-                        <small class="text-secondary opacity-70">Koperasi Amanah BPS Kota Surabaya</small>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <!-- Profile button removed - now handled by sidebar profile image -->
+            <main class="main-content">
+                <div class="main-header">
+                    <div class="main-header-left">
+                        <!-- Mobile Toggle Button -->
+                        <button class="btn-toggle-sidebar d-md-none" id="sidebarToggleBtnMobile" title="Toggle Menu">
+                            <i class="bi bi-list"></i>
+                        </button>
+                        <div class="main-header-content">
+                            <h1 class="page-title">@yield('page-title')</h1>
+                            <p class="page-subtitle">Koperasi Amanah BPS Kota Surabaya</p>
+                        </div>
                     </div>
                 </div>
-                <div class="page-separator mt-3 mb-4"></div>
+                <div class="page-separator"></div>
 
-                <div class="pb-5">
+                <div class="main-content-wrapper">
                     @yield('main-content')
                 </div>
             </main>
@@ -155,6 +168,75 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                // Sidebar Toggle Functionality
+                const sidebar = document.getElementById('sidebar');
+                const sidebarOverlay = document.getElementById('sidebarOverlay');
+                const toggleBtnInner = document.getElementById('sidebarToggleBtnInner');
+                const toggleBtnMobile = document.getElementById('sidebarToggleBtnMobile');
+                const mainContent = document.querySelector('.main-content');
+                
+                // Check localStorage for saved sidebar state
+                const savedState = localStorage.getItem('sidebarCollapsed');
+                const isMobile = window.innerWidth < 768;
+                
+                // Initialize sidebar state
+                if (!isMobile && savedState === 'true') {
+                    document.body.classList.add('sidebar-collapsed');
+                }
+
+                function toggleSidebar() {
+                    const isMobile = window.innerWidth < 768;
+                    
+                    if (isMobile) {
+                        // Mobile: toggle drawer
+                        sidebar.classList.toggle('show');
+                        sidebarOverlay.classList.toggle('active');
+                        document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
+                    } else {
+                        // Desktop: toggle collapsed
+                        document.body.classList.toggle('sidebar-collapsed');
+                        const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+                        localStorage.setItem('sidebarCollapsed', isCollapsed);
+                    }
+                }
+
+                // Event listeners for toggle buttons
+                if (toggleBtnInner) {
+                    toggleBtnInner.addEventListener('click', toggleSidebar);
+                }
+                
+                if (toggleBtnMobile) {
+                    toggleBtnMobile.addEventListener('click', toggleSidebar);
+                }
+
+                // Close sidebar on overlay click (mobile)
+                if (sidebarOverlay) {
+                    sidebarOverlay.addEventListener('click', function() {
+                        sidebar.classList.remove('show');
+                        sidebarOverlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                }
+
+                // Close sidebar on window resize if switching from mobile to desktop
+                let resizeTimer;
+                window.addEventListener('resize', function() {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(function() {
+                        const isMobile = window.innerWidth < 768;
+                        
+                        if (!isMobile) {
+                            // Desktop: remove mobile classes
+                            sidebar.classList.remove('show');
+                            sidebarOverlay.classList.remove('active');
+                            document.body.style.overflow = '';
+                        } else {
+                            // Mobile: remove collapsed class
+                            document.body.classList.remove('sidebar-collapsed');
+                        }
+                    }, 250);
+                });
+
                 // Handle logout confirmation
                 const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
                 if (confirmLogoutBtn) {
@@ -249,38 +331,299 @@
             background: #ffffff;
             min-height: 100vh;
             border-right: 1px solid var(--gray-200);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: fixed;
             top: 0;
             left: 0;
             width: 280px;
             z-index: 1000;
             overflow-y: auto;
+            overflow-x: hidden;
             scrollbar-width: thin;
             scrollbar-color: rgba(37, 99, 235, 0.3) transparent;
+        }
+
+        .sidebar-inner {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 1.5rem 0;
+            position: relative;
+        }
+
+        /* Sidebar Overlay for Mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Toggle Button Styles */
+        .btn-toggle-sidebar {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+            flex-shrink: 0;
+        }
+
+        .btn-toggle-sidebar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+        }
+
+        .btn-toggle-sidebar:active {
+            transform: scale(0.95);
+        }
+
+        .btn-toggle-sidebar i {
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
         }
 
         /* Collapsed sidebar styles */
         body.sidebar-collapsed .sidebar {
             width: 80px;
         }
-        body.sidebar-collapsed .sidebar .text-center h6,
-        body.sidebar-collapsed .sidebar .text-center small,
-        body.sidebar-collapsed .sidebar hr {
-            display: none !important;
-        }
-        body.sidebar-collapsed .sidebar .nav-link span {
+
+        body.sidebar-collapsed .sidebar .sidebar-text,
+        body.sidebar-collapsed .sidebar .sidebar-divider,
+        body.sidebar-collapsed .sidebar .sidebar-name,
+        body.sidebar-collapsed .sidebar .sidebar-role {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: none;
         }
+
+        body.sidebar-collapsed .sidebar .nav-link span.sidebar-text {
+            display: none;
+        }
+
         body.sidebar-collapsed .sidebar .nav-link {
             justify-content: center;
+            padding: 0.875rem;
+            margin: 0 0.5rem 0.5rem;
+            width: calc(100% - 1rem);
+            position: relative;
+            transform: none;
         }
-        body.sidebar-collapsed .sidebar .profile-avatar { width: 48px; height: 48px; }
-        body.sidebar-collapsed main { margin-left: 80px !important; }
-        /* Toggle button placement hint for fixed sidebar width changes */
-        @media (min-width: 769px) {
-            #sidebarToggleBtn { margin-left: 0.5rem; }
+
+        body.sidebar-collapsed .sidebar .nav-link i {
+            margin: 0 !important;
+            width: auto;
+        }
+
+        body.sidebar-collapsed .sidebar .profile-avatar { 
+            width: 48px; 
+            height: 48px;
+            margin: 0 auto 0.75rem;
+        }
+
+        body.sidebar-collapsed .sidebar .sidebar-profile {
+            padding: 0;
+            margin-top: 5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        body.sidebar-collapsed .sidebar .sidebar-profile-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        body.sidebar-collapsed .sidebar .sidebar-toggle-inner {
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%) !important;
+            right: auto;
+        }
+        
+        body.sidebar-collapsed .sidebar .btn-toggle-sidebar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            margin: 0 auto;
+        }
+        
+        body.sidebar-collapsed .sidebar .btn-toggle-sidebar i {
+            font-size: 1.25rem;
+        }
+
+        /* Hamburger icon doesn't need rotation */
+
+        body.sidebar-collapsed .sidebar .sidebar-nav {
+            padding: 0 0.5rem;
+        }
+
+        body.sidebar-collapsed .sidebar .sidebar-footer {
+            padding: 1rem 0.75rem;
+        }
+
+        body.sidebar-collapsed .sidebar .btn-logout {
+            padding: 0.875rem;
+            justify-content: center;
+        }
+
+        body.sidebar-collapsed .sidebar .btn-logout .sidebar-text {
+            display: none;
+        }
+
+        /* Tooltip for collapsed sidebar */
+        body.sidebar-collapsed .sidebar .nav-link::after,
+        body.sidebar-collapsed .sidebar .btn-logout::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: calc(100% + 12px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.813rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1001;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        body.sidebar-collapsed .sidebar .nav-link::before,
+        body.sidebar-collapsed .sidebar .btn-logout::before {
+            content: '';
+            position: absolute;
+            left: calc(100% + 8px);
+            top: 50%;
+            transform: translateY(-50%);
+            border: 6px solid transparent;
+            border-right-color: #1f2937;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1002;
+        }
+
+        body.sidebar-collapsed .sidebar .nav-link:hover::after,
+        body.sidebar-collapsed .sidebar .nav-link:hover::before,
+        body.sidebar-collapsed .sidebar .btn-logout:hover::after,
+        body.sidebar-collapsed .sidebar .btn-logout:hover::before {
+            opacity: 1;
+        }
+
+        body.sidebar-collapsed .sidebar .btn-logout {
+            position: relative;
+        }
+
+        /* Toggle button inside sidebar */
+        .sidebar-toggle-inner {
+            position: absolute;
+            top: 1rem;
+            right: 0.75rem;
+            z-index: 10;
+        }
+
+        /* Sidebar Profile Section */
+        .sidebar-profile {
+            padding: 0 1rem 1.5rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .sidebar-profile-link {
+            display: block;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .sidebar-profile-link:hover {
+            transform: translateY(-2px);
+        }
+
+        .sidebar-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1f2937;
+            margin: 0.75rem 0 0.25rem;
+            line-height: 1.4;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-role {
+            font-size: 0.813rem;
+            color: #6b7280;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-divider {
+            margin: 0 1rem 1.25rem;
+            border: none;
+            border-top: 1px solid var(--gray-200);
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            padding: 0 1rem;
+            margin: 0;
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            list-style: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .sidebar-nav .nav-item {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            display: block;
+        }
+
+        .sidebar-nav .nav-item:not(:last-child) {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Sidebar Footer */
+        .sidebar-footer {
+            padding: 1.25rem 1rem 1rem;
+            margin-top: auto;
+            border-top: 1px solid var(--gray-200);
         }
 
         .sidebar::-webkit-scrollbar {
@@ -301,78 +644,78 @@
         }
 
         .profile-avatar {
-            width: 70px;
-            height: 70px;
+            width: 72px;
+            height: 72px;
             background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 100%);
-            border-radius: 18px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0 auto;
         }
 
-        .profile-avatar:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 12px 32px rgba(37, 99, 235, 0.3);
+        .profile-avatar i {
+            font-size: 2rem;
+            color: white;
         }
 
-        a:hover .profile-avatar {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 12px 32px rgba(37, 99, 235, 0.3);
+        .sidebar-profile-link:hover .profile-avatar {
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
         }
 
         .sidebar .nav-link {
             color: #4b5563;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: background-color 0.2s ease, color 0.2s ease;
             border-radius: 12px;
-            padding: 0.875rem 1.25rem;
+            padding: 0.875rem 1rem;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.938rem;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
             display: flex;
             align-items: center;
-        }
-
-        .sidebar .nav-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
+            gap: 0.75rem;
+            margin: 0;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.08), transparent);
-            transition: left 0.5s ease;
+            box-sizing: border-box;
+            text-decoration: none;
         }
 
-        .sidebar .nav-link:hover::before {
-            left: 100%;
-        }
+        /* Removed shimmer effect to prevent animation */
 
         .sidebar .nav-link:hover {
             background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
             color: var(--primary-blue);
-            transform: translateX(6px);
         }
 
         .sidebar .nav-link.active {
             background: linear-gradient(135deg, var(--accent-orange) 0%, #fb923c 100%);
             color: white;
-            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.3);
-            transform: translateX(6px);
+            box-shadow: 0 4px 16px rgba(249, 115, 22, 0.25);
+        }
+
+        .sidebar .nav-link.active::before {
+            display: none;
         }
 
         .sidebar .nav-link i {
-            width: 20px;
+            width: 22px;
+            min-width: 22px;
             flex-shrink: 0;
-            transition: transform 0.3s ease;
-            font-size: 1.1rem;
+            font-size: 1.125rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .sidebar .nav-link:hover i,
-        .sidebar .nav-link.active i {
-            transform: scale(1.1);
+        .sidebar .nav-link .sidebar-text {
+            transition: opacity 0.3s ease, width 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            flex: 1;
         }
 
         .btn-logout {
@@ -380,31 +723,106 @@
             color: white;
             border: none;
             font-weight: 600;
-            border-radius: 10px;
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
+            padding: 0.875rem 1.25rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.938rem;
         }
 
         .btn-logout:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
             background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
             color: white;
         }
 
-        main {
-            position: relative;
-            z-index: 1;
+        .btn-logout i {
+            font-size: 1.125rem;
         }
 
-        .gradient-text-modern {
+        /* Main Content */
+        .main-content {
+            position: relative;
+            z-index: 1;
+            margin-left: 280px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 2rem 2.5rem 4rem;
+            width: calc(100% - 280px);
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .main-content-wrapper {
+            padding-bottom: 4rem;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Desktop: adjust main content margin based on sidebar state */
+        @media (min-width: 992px) {
+            .main-content {
+                margin-left: 280px !important;
+                width: calc(100% - 280px) !important;
+            }
+
+            body.sidebar-collapsed .main-content {
+                margin-left: 80px !important;
+                width: calc(100% - 80px) !important;
+            }
+        }
+
+        /* Main Header */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-top: 0.5rem;
+        }
+
+        .main-header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .main-header-content {
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem;
             background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-orange) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             letter-spacing: -0.5px;
+            line-height: 1.2;
         }
+
+        .page-subtitle {
+            font-size: 0.938rem;
+            color: #6b7280;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .page-separator {
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.05), transparent);
+            margin: 0 0 2rem;
+            border: none;
+        }
+
 
         .profile-button {
             width: 48px;
@@ -782,13 +1200,46 @@
             transform: scale(1.002);
         }
 
-        @media (max-width: 768px) {
+        /* Responsive Design */
+        @media (max-width: 991.98px) {
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 1.5rem 1.5rem 3rem !important;
+            }
+            
+            .main-content-wrapper {
+                padding-bottom: 3rem;
+            }
+
+            .page-title {
+                font-size: 1.75rem !important;
+            }
+
+            .main-header {
+                margin-bottom: 1.5rem;
+            }
+
+            .sidebar {
+                z-index: 1000;
+            }
+
+            /* Disable tooltips on mobile */
+            body.sidebar-collapsed .sidebar .nav-link::after,
+            body.sidebar-collapsed .sidebar .nav-link::before,
+            body.sidebar-collapsed .sidebar .btn-logout::after,
+            body.sidebar-collapsed .sidebar .btn-logout::before {
+                display: none;
+            }
+        }
+
+        @media (max-width: 767.98px) {
             .sidebar {
                 position: fixed;
                 z-index: 1000;
                 width: 280px;
                 left: -280px;
-                transition: left 0.3s ease;
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 height: 100vh;
             }
 
@@ -796,11 +1247,124 @@
                 left: 0;
             }
 
-            main {
+            .main-content {
                 margin-left: 0 !important;
+                width: 100% !important;
+                padding: 1rem 1rem 3rem !important;
+                overflow-x: hidden;
             }
+            
+            .main-content-wrapper {
+                padding-bottom: 2rem;
+            }
+
             /* On mobile, ignore collapsed class and use drawer behavior */
-            body.sidebar-collapsed .sidebar { width: 280px; }
+            body.sidebar-collapsed .sidebar { 
+                width: 280px; 
+                left: -280px;
+            }
+
+            body.sidebar-collapsed .sidebar.show {
+                left: 0;
+            }
+
+            .sidebar-toggle-inner {
+                display: none !important;
+            }
+
+            .btn-toggle-sidebar {
+                width: 42px;
+                height: 42px;
+            }
+
+            .page-title {
+                font-size: 1.5rem !important;
+                word-wrap: break-word;
+            }
+
+            .page-subtitle {
+                font-size: 0.875rem !important;
+            }
+
+            .main-header {
+                margin-bottom: 1.25rem;
+                padding-top: 0.25rem;
+            }
+
+            .main-header-left {
+                gap: 0.75rem;
+                flex-wrap: wrap;
+            }
+
+            .page-separator {
+                margin-bottom: 1.5rem;
+            }
+
+            /* Ensure no content overflow */
+            .main-content > * {
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .main-content {
+                padding: 0.75rem !important;
+            }
+
+            .page-title {
+                font-size: 1.25rem !important;
+            }
+
+            .page-subtitle {
+                font-size: 0.813rem !important;
+            }
+
+            .main-header {
+                margin-bottom: 1rem;
+            }
+
+            .sidebar-profile {
+                padding: 0 1.25rem 1.25rem;
+                margin-top: 2.5rem;
+            }
+
+            .profile-avatar {
+                width: 64px;
+                height: 64px;
+            }
+
+            .profile-avatar i {
+                font-size: 1.75rem;
+            }
+
+            .sidebar-nav {
+                padding: 0 0.75rem;
+            }
+
+            .sidebar .nav-link {
+                padding: 0.75rem 0.875rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        /* Tablet adjustments */
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .sidebar {
+                width: 240px;
+            }
+
+            .main-content {
+                margin-left: 240px !important;
+            }
+
+            body.sidebar-collapsed .sidebar {
+                width: 80px;
+            }
+
+            body.sidebar-collapsed .main-content {
+                margin-left: 80px !important;
+            }
         }
 
         @keyframes fadeInUp {
