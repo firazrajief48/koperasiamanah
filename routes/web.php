@@ -45,6 +45,7 @@ Route::prefix('kepala-bps')->name('kepala_bps.')->middleware(['auth', 'role:kepa
     Route::get('/profile', [BendaharaKantorController::class, 'profile'])->name('profile');
     Route::put('/profile', [BendaharaKantorController::class, 'updateProfile'])->name('profile.update');
     Route::get('/detail-pengajuan/{id}', [BendaharaKantorController::class, 'detailPengajuan'])->name('detail');
+    Route::post('/submit-verifikasi', [BendaharaKantorController::class, 'submitVerifikasi'])->name('submit.verifikasi');
     Route::get('/laporan-pinjaman', [BendaharaKantorController::class, 'laporanPinjaman'])->name('laporan');
     Route::get('/transparansi', [BendaharaKantorController::class, 'transparansi'])->name('transparansi');
 });

@@ -35,6 +35,7 @@ class Pinjaman extends Model
         'sisa_pinjaman' => 'decimal:2',
         'gaji_pokok' => 'decimal:2',
         'sisa_gaji' => 'decimal:2',
+        'tanggal_persetujuan' => 'datetime',
     ];
 
     /**

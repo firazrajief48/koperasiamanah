@@ -566,6 +566,13 @@
             color: var(--dark-navy);
         }
 
+        .histori-role {
+            font-size: 0.813rem;
+            font-weight: 500;
+            color: var(--gray-600);
+            margin-left: 0.5rem;
+        }
+
         .histori-badge {
             display: inline-flex;
             align-items: center;
@@ -792,18 +799,15 @@
                 </thead>
                 <tbody id="tableBody">
                     @foreach ($laporan as $index => $l)
-                        @php
-                            // Use data_get to safely access status (avoid undefined index). On vinalisasi stage
-                            // status will only be either 'Diverifikasi' or 'Ditolak'. Default to 'Ditolak' if
-                            // empty to be conservative.
-                            $status = data_get($l, 'status', '');
-                            if ($status === '') {
-                                // If status missing, treat as 'Ditolak' to avoid showing 'Menunggu'
-                                $status = 'Ditolak';
-                            }
-                            // Verifier is always Bendahara Koperasi for finalized statuses
-                            $verifier = ($status === 'Diverifikasi' || $status === 'Ditolak') ? 'Bendahara Koperasi' : 'Bendahara Koperasi';
-                        @endphp
+            @php
+                // Use data_get to safely access status
+                $status = data_get($l, 'status', '');
+                if ($status === '') {
+                    $status = 'Ditolak';
+                }
+                // Verifier dari database
+                $verifier = data_get($l, 'verifikator', 'N/A');
+            @endphp
                         <tr data-status="{{ $status }}" data-verifier="{{ $verifier }}">
                             <td>
                                 <div class="name-cell">
@@ -845,7 +849,7 @@
                                 </div>
                             </td>
                             @php
-                                $rawTanggal = $l['tanggal_verifikasi'] ?? $l['tanggal'] ?? ($l['tanggal_pengajuan'] ?? ($l['created_at'] ?? null));
+                                $rawTanggal = $l['tanggal_verifikasi'] ?? $l['tanggal_pengajuan'] ?? null;
                             @endphp
                             <td>
                                 <div class="date-badge">
@@ -965,42 +969,28 @@
     </div>
 
     <script>
-                const detailData = [
+        const detailData = [
             @foreach ($laporan as $index => $l)
             {
-                nama: "{{ $l['nama'] }}",
-                nip: "199{{ sprintf('%02d', $index + 1) }}012020",
-                jabatan: "{{ ['Staff IT', 'Kepala Bagian Keuangan', 'Staff Administrasi', 'Supervisor Operasional'][$index % 4] }}",
-                golongan: "{{ ['III/A', 'III/C', 'III/B', 'IV/A'][$index % 4] }}",
-                no_hp: "0812345678{{ sprintf('%02d', 90 + $index) }}",
-                email: "{{ strtolower(str_replace(' ', '.', $l['nama'])) }}@example.com",
+                nama: @json($l['nama']),
+                nip: @json($l['nip']),
+                jabatan: @json($l['jabatan']),
+                golongan: @json($l['golongan']),
+                no_hp: @json($l['phone']),
+                email: @json($l['email']),
                 jumlah_pinjaman: {{ $l['jumlah'] }},
-                tenor: "{{ rand(12, 36) }} Bulan",
-                metode_pembayaran: "{{ ['Potong Gaji Pokok', 'Potong Tunjangan Kinerja'][$index % 2] }}",
-                tanggal_pengajuan: "{{ $l['tanggal_verifikasi'] ?? $l['tanggal'] ?? date('Y-m-d') }}",
-                tujuan: "{{ ['Renovasi rumah dan kebutuhan mendesak', 'Pendidikan anak', 'Biaya pengobatan', 'Investasi usaha'][$index % 4] }}",
-                // On vinalisasi stage, guarantee status is either 'Diverifikasi' or 'Ditolak'. Use data_get and
-                // default to 'Ditolak' if missing.
-                status: "{{ $s = data_get($l, 'status', '') ?: 'Ditolak' }}",
-                verifier: "Bendahara Koperasi",
-                gaji_pokok: {{ ($s == 'Diverifikasi' || $s == 'Ditolak') ? rand(5000000, 15000000) : 'null' }},
-                sisa_gaji: {{ ($s == 'Diverifikasi' || $s == 'Ditolak') ? rand(2000000, 8000000) : 'null' }},
-                catatan_verifikasi: "{{ $s == 'Diverifikasi' ? 'Memenuhi syarat dan ketentuan' : ($s == 'Ditolak' ? 'Sisa gaji tidak mencukupi untuk angsuran' : '') }}",
-                tanggal_verifikasi: "{{ ($s == 'Diverifikasi' || $s == 'Ditolak') ? date('d/m/Y H:i', strtotime((data_get($l, 'tanggal_verifikasi') ?? data_get($l, 'tanggal') ?? date('Y-m-d')) . ' +2 days')) : '' }}",
-                angsuran: [
-                    @php
-                        $jumlah = $l['jumlah'];
-                        $tenor = rand(12, 36);
-                        $angsuranPerBulan = $jumlah / $tenor;
-                    @endphp
-                    @for ($i = 1; $i <= $tenor; $i++)
-                    {
-                        bulan: {{ $i }},
-                        nominal: {{ round($angsuranPerBulan) }},
-                        sisa: {{ round($jumlah - ($angsuranPerBulan * $i)) }}
-                    }{{ $i < $tenor ? ',' : '' }}
-                    @endfor
-                ]
+                tenor: "{{ $l['tenor_bulan'] }} Bulan",
+                metode_pembayaran: @json($l['metode_pembayaran']),
+                tanggal_pengajuan: @json($l['tanggal_pengajuan']),
+                tujuan: @json($l['keterangan']),
+                status: @json($l['status']),
+                verifier: @json($l['verifikator']),
+                verifikator_role: @json($l['verifikator_role'] ?? 'N/A'),
+                gaji_pokok: @json($l['gaji_pokok']),
+                sisa_gaji: @json($l['sisa_gaji']),
+                catatan_verifikasi: @json($l['alasan_penolakan'] ?? ($l['status'] === 'Diverifikasi' ? 'Memenuhi syarat dan ketentuan' : '')),
+                tanggal_verifikasi: @json($l['tanggal_verifikasi'] ? date('d/m/Y H:i', strtotime($l['tanggal_verifikasi'])) : ''),
+                angsuran: @json($l['angsuran'] ?? [])
             }{{ $index < count($laporan) - 1 ? ',' : '' }}
             @endforeach
         ];
@@ -1050,10 +1040,10 @@
             document.getElementById('modalGolongan').textContent = data.golongan;
             document.getElementById('modalNoHp').textContent = data.no_hp;
             document.getElementById('modalEmail').textContent = data.email;
-            document.getElementById('modalJumlahPinjaman').textContent = 'Rp ' + data.jumlah_pinjaman.toLocaleString('id-ID');
+            document.getElementById('modalJumlahPinjaman').textContent = 'Rp ' + Number(data.jumlah_pinjaman).toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: 0});
             document.getElementById('modalTenor').textContent = data.tenor;
             document.getElementById('modalMetodePembayaran').textContent = data.metode_pembayaran;
-            document.getElementById('modalTanggalPengajuan').textContent = new Date(data.tanggal_pengajuan).toLocaleDateString('id-ID');
+            document.getElementById('modalTanggalPengajuan').textContent = data.tanggal_pengajuan ? new Date(data.tanggal_pengajuan).toLocaleDateString('id-ID') : '-';
             document.getElementById('modalTujuan').textContent = data.tujuan;
 
             const angsuranTableBody = document.getElementById('angsuranTableBody');
@@ -1062,8 +1052,8 @@
                 const row = `
                     <tr>
                         <td><strong>Bulan ${item.bulan}</strong></td>
-                        <td>Rp ${item.nominal.toLocaleString('id-ID')}</td>
-                        <td>Rp ${item.sisa.toLocaleString('id-ID')}</td>
+                        <td>Rp ${Number(item.nominal).toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</td>
+                        <td>Rp ${Number(item.sisa).toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</td>
                     </tr>
                 `;
                 angsuranTableBody.innerHTML += row;
@@ -1087,7 +1077,8 @@
                     <div class="histori-info">
                         <div class="histori-header">
                             <div class="histori-title">
-                                <i class="bi bi-person-check me-2"></i>Siti Nurhaliza - Bendahara Koperasi
+                                <i class="bi bi-person-check me-2"></i>${data.verifier}
+                                ${data.verifikator_role && data.verifikator_role !== 'N/A' ? '<span class="histori-role">(' + data.verifikator_role + ')</span>' : ''}
                             </div>
                             <span class="histori-badge ${data.status === 'Diverifikasi' ? 'approved' : 'rejected'}">
                                 <i class="bi bi-${data.status === 'Diverifikasi' ? 'check' : 'x'}-circle"></i>
@@ -1098,18 +1089,18 @@
                         <div class="histori-meta">
                             <div class="histori-meta-item">
                                 <i class="bi bi-clock"></i>
-                                <span>${data.tanggal_verifikasi}</span>
+                                <span>${data.tanggal_verifikasi || 'N/A'}</span>
                             </div>
                         </div>
 
                         <div class="histori-data">
                             <div class="histori-data-item">
                                 <div class="histori-data-label">Gaji Pokok</div>
-                                <div class="histori-data-value">Rp ${data.gaji_pokok.toLocaleString('id-ID')}</div>
+                                <div class="histori-data-value">Rp ${data.gaji_pokok != null && data.gaji_pokok !== undefined ? Number(data.gaji_pokok).toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: 0}) : 'N/A'}</div>
                             </div>
                             <div class="histori-data-item">
                                 <div class="histori-data-label">Sisa Gaji</div>
-                                <div class="histori-data-value">Rp ${data.sisa_gaji.toLocaleString('id-ID')}</div>
+                                <div class="histori-data-value">Rp ${data.sisa_gaji != null && data.sisa_gaji !== undefined ? Number(data.sisa_gaji).toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: 0}) : 'N/A'}</div>
                             </div>
                         </div>
 

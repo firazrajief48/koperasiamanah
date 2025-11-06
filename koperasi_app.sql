@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 06, 2025 at 03:33 AM
+-- Generation Time: Nov 06, 2025 at 08:33 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -84,9 +84,8 @@ CREATE TABLE `iurans` (
 --
 
 INSERT INTO `iurans` (`id`, `user_id`, `jumlah`, `bulan`, `tanggal_bayar`, `status`, `keterangan`, `created_at`, `updated_at`) VALUES
-(10, 9, 50000.00, '2025-11', '2025-11-03 03:41:57', 'lunas', NULL, '2025-11-02 20:41:57', '2025-11-02 20:41:57'),
-(16, 12, 50000.00, '2025-11', '2025-11-03 04:29:06', 'lunas', NULL, '2025-11-02 21:29:06', '2025-11-02 21:29:06'),
-(17, 9, 15000.00, '2025-11', '2025-11-03 06:20:34', 'lunas', 'Tambahan manual', '2025-11-02 23:20:34', '2025-11-02 23:20:34');
+(1, 9, 50000.00, '2025-11', '2025-11-06 06:44:05', 'lunas', NULL, '2025-11-05 23:44:05', '2025-11-05 23:44:05'),
+(2, 12, 50000.00, '2025-11', '2025-11-06 06:44:05', 'lunas', NULL, '2025-11-05 23:44:05', '2025-11-05 23:44:05');
 
 -- --------------------------------------------------------
 
@@ -192,16 +191,9 @@ CREATE TABLE `pembayarans` (
 --
 
 INSERT INTO `pembayarans` (`id`, `pinjaman_id`, `bulan_ke`, `nominal_pembayaran`, `tanggal_jatuh_tempo`, `tanggal_pembayaran`, `status`, `keterangan`, `created_at`, `updated_at`) VALUES
-(1, 3, 1, 2000000.00, '2025-11-30', NULL, 'belum_bayar', NULL, '2025-10-30 01:04:59', '2025-10-30 01:04:59'),
-(2, 3, 2, 2000000.00, '2025-12-30', NULL, 'belum_bayar', NULL, '2025-10-30 01:04:59', '2025-10-30 01:04:59'),
-(3, 4, 1, 2000000.00, '2025-12-01', NULL, 'belum_bayar', NULL, '2025-10-30 22:59:33', '2025-10-30 22:59:33'),
-(4, 4, 2, 2000000.00, '2025-12-31', NULL, 'belum_bayar', NULL, '2025-10-30 22:59:33', '2025-10-30 22:59:33'),
-(5, 5, 1, 2500000.00, '2025-12-01', NULL, 'belum_bayar', NULL, '2025-10-30 23:06:22', '2025-10-30 23:06:22'),
-(6, 5, 2, 2500000.00, '2025-12-31', NULL, 'belum_bayar', NULL, '2025-10-30 23:06:22', '2025-10-30 23:06:22'),
-(7, 6, 1, 1250000.00, '2025-12-03', NULL, 'belum_bayar', NULL, '2025-11-03 00:14:57', '2025-11-03 00:14:57'),
-(8, 6, 2, 1250000.00, '2026-01-03', NULL, 'belum_bayar', NULL, '2025-11-03 00:14:57', '2025-11-03 00:14:57'),
-(9, 6, 3, 1250000.00, '2026-02-03', NULL, 'belum_bayar', NULL, '2025-11-03 00:14:57', '2025-11-03 00:14:57'),
-(10, 6, 4, 1250000.00, '2026-03-03', NULL, 'belum_bayar', NULL, '2025-11-03 00:14:57', '2025-11-03 00:14:57');
+(1, 1, 1, 1000000.00, '2025-12-06', NULL, 'belum_bayar', NULL, '2025-11-05 23:43:07', '2025-11-05 23:43:07'),
+(2, 1, 2, 1000000.00, '2026-01-06', NULL, 'belum_bayar', NULL, '2025-11-05 23:43:07', '2025-11-05 23:43:07'),
+(3, 1, 3, 1000000.00, '2026-02-06', NULL, 'belum_bayar', NULL, '2025-11-05 23:43:07', '2025-11-05 23:43:07');
 
 -- --------------------------------------------------------
 
@@ -269,10 +261,7 @@ CREATE TABLE `pinjamans` (
 --
 
 INSERT INTO `pinjamans` (`id`, `user_id`, `jumlah_pinjaman`, `tenor_bulan`, `cicilan_per_bulan`, `bulan_terbayar`, `sisa_pinjaman`, `gaji_pokok`, `sisa_gaji`, `metode_pembayaran`, `status`, `status_detail`, `alasan_penolakan`, `disetujui_oleh`, `tanggal_persetujuan`, `keterangan`, `created_at`, `updated_at`) VALUES
-(2, 9, 5000000.00, 2, 2500000.00, 0, 5000000.00, 30000000.00, NULL, NULL, 'menunggu', 'menunggu_persetujuan_ketua', NULL, 'Retno Larasati, S.M.', '2025-10-29 01:50:44', 'Biaya Keperluan', '2025-10-28 20:27:01', '2025-10-29 01:50:44'),
-(3, 9, 4000000.00, 2, 2000000.00, 0, 4000000.00, 10000000.00, NULL, 'potong_tukin', 'menunggu', 'ditolak', 'Hutang Kemarin Belum Lunas!', 'Retno Larasati, S.M.', '2025-10-30 01:06:07', 'WKWKWKWKWK', '2025-10-30 01:04:59', '2025-10-30 01:06:07'),
-(4, 9, 4000000.00, 2, 2000000.00, 0, 4000000.00, 0.00, NULL, 'potong_tukin', 'menunggu', 'menunggu_persetujuan_bendahara', NULL, NULL, NULL, 'sfewrhgewvesa', '2025-10-30 22:59:33', '2025-10-30 22:59:33'),
-(6, 12, 5000000.00, 4, 1250000.00, 0, 5000000.00, 30000000.00, 28000000.00, 'potong_gaji', 'menunggu', 'menunggu_persetujuan_ketua', NULL, 'Retno Larasati, S.M.', '2025-11-03 21:19:25', 'degeewrbrac', '2025-11-03 00:14:57', '2025-11-03 21:19:25');
+(1, 9, 3000000.00, 3, 1000000.00, 0, 3000000.00, 8000000.00, 7500000.00, 'potong_gaji', 'menunggu', 'menunggu_persetujuan_kepala', NULL, 'Nurcholis, S.Si.', '2025-11-06 00:25:26', 'Kebutuhan sekolah anak.', '2025-11-05 23:43:07', '2025-11-06 00:25:26');
 
 -- --------------------------------------------------------
 
@@ -294,9 +283,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('NsUE2HjoB8v3ApjAZORaA85QPQ7GTgjWqYFA0ojW', 9, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiWTY4UzdHcTg4MDFYbzVSOEtYVkEyTExZVm5RZGFGeWtoNWZuQWNJMCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hbmdnb3RhL2Rhc2hib2FyZCI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjk7fQ==', 1762357457),
-('UNdloIicLv0B7iFVAyBn4NF5EBCd8obtK9x769f0', 9, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSTlUcUVFRXo2NVNMQURieFlrUldOUERlY094Z1BRaFBKRVJZclJyRSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hbmdnb3RhL2Rhc2hib2FyZCI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjk7fQ==', 1762395736),
-('Ww5haPw5lNvtJALn2hBjNrKWCkcG4kcsQXULiZb3', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiajRVMUMyM243YTVDc2FDaEFNN0pYeDExN3hZRWFmQk9OVFN4UnFSSiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Njc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvaXVyYW4tcGVnYXdhaS9wZWdhd2FpLWxpc3QiO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyO30=', 1762240633);
+('LTEVCOYOjCsATYNUvb247ySJmTNAA7fbfoYzoQyh', 9, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiV000VjRRVXhIcmtBa1F5WWJuTGNkSzJoTjlEcDRvdEtXT05TdUF2ayI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbmlzdHJhdG9yL2Rhc2hib2FyZCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjk7fQ==', 1762411889),
+('SfsqKjnpQYkY8fA5z5esNJvGXfhakijgItUQEK8B', 9, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSFE2MHdvaG1CRUhudEd3czIwNVN0R3FDeDJra3dpaDY3TDFGVXNNVCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDg6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbmlzdHJhdG9yL2xhcG9yYW4tdXNlciI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjk7fQ==', 1762412309),
+('VGTPWlm4CED7WA84rP6KYkcmUjcSYWoxi6o36eav', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiRnA3Y3Jpc2ZwcU8wU253bmdlY0t3bUg4eWVBMFJOVnFQNGhHczJwZyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9iZW5kYWhhcmEta29wZXJhc2kvbGFwb3Jhbi1waW5qYW1hbiI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7fQ==', 1762414127);
 
 -- --------------------------------------------------------
 
@@ -438,7 +427,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `iurans`
 --
 ALTER TABLE `iurans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `jobs`
@@ -456,7 +445,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `pembayarans`
 --
 ALTER TABLE `pembayarans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `pengurus_koperasis`
@@ -468,7 +457,7 @@ ALTER TABLE `pengurus_koperasis`
 -- AUTO_INCREMENT for table `pinjamans`
 --
 ALTER TABLE `pinjamans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`

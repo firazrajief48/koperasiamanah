@@ -4,7 +4,7 @@
 @section('page-title', 'Dashboard Kepala BPS')
 
 @php
-    $role = 'Kepala BPS';
+    $role = 'Kepala BPS Kota Surabaya';
     $nama = auth()->user()->name;
     $routePrefix = 'kepala_bps';
     $showLaporan = true;

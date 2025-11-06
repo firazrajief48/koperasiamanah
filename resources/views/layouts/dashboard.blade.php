@@ -13,7 +13,7 @@
                         <button class="btn-toggle-sidebar" id="sidebarToggleBtnInner" title="Toggle Sidebar">
                             <i class="bi bi-list"></i>
                         </button>
-                    </div>
+                            </div>
 
                     <div class="sidebar-profile">
                         <a href="{{ route($routePrefix . '.profile') }}" class="sidebar-profile-link">
@@ -116,7 +116,7 @@
                         <div class="main-header-content">
                             <h1 class="page-title">@yield('page-title')</h1>
                             <p class="page-subtitle">Koperasi Amanah BPS Kota Surabaya</p>
-                        </div>
+                    </div>
                     </div>
                 </div>
                 <div class="page-separator"></div>
@@ -300,6 +300,8 @@
                         modalContent.style.opacity = '0';
                     });
                 }
+
+
             });
         </script>
     @endpush
@@ -373,25 +375,24 @@
 
         /* Toggle Button Styles */
         .btn-toggle-sidebar {
-            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            background: transparent;
             border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            color: #4b5563;
+            width: auto;
+            height: auto;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+            box-shadow: none;
             flex-shrink: 0;
+            padding: 0.5rem;
         }
 
         .btn-toggle-sidebar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
-            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: var(--primary-blue);
+            transform: scale(1.1);
         }
 
         .btn-toggle-sidebar:active {
@@ -399,7 +400,7 @@
         }
 
         .btn-toggle-sidebar i {
-            font-size: 1.25rem;
+            font-size: 1.75rem;
             transition: transform 0.3s ease;
         }
 
@@ -472,14 +473,13 @@
         }
         
         body.sidebar-collapsed .sidebar .btn-toggle-sidebar {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+            width: auto;
+            height: auto;
             margin: 0 auto;
         }
         
         body.sidebar-collapsed .sidebar .btn-toggle-sidebar i {
-            font-size: 1.25rem;
+            font-size: 1.75rem;
         }
 
         /* Hamburger icon doesn't need rotation */
@@ -606,6 +606,7 @@
             list-style: none;
             width: 100%;
             box-sizing: border-box;
+            min-height: 0;
         }
 
         .sidebar-nav .nav-item {
@@ -624,6 +625,7 @@
             padding: 1.25rem 1rem 1rem;
             margin-top: auto;
             border-top: 1px solid var(--gray-200);
+            flex-shrink: 0;
         }
 
         .sidebar::-webkit-scrollbar {
@@ -764,6 +766,104 @@
             min-height: calc(100vh - 200px);
         }
 
+        /* Footer adjustment to match sidebar */
+        footer {
+            margin-left: 280px;
+            width: calc(100% - 280px);
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box;
+        }
+
+        footer .container {
+            padding-left: 2.5rem;
+            padding-right: 2.5rem;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        footer .row {
+            justify-content: flex-start;
+        }
+
+        footer .col-lg-4,
+        footer .col-lg-3,
+        footer .col-lg-2 {
+            text-align: left;
+        }
+
+        footer .d-flex {
+            justify-content: flex-start;
+        }
+
+        body.sidebar-collapsed footer {
+            margin-left: 80px;
+            width: calc(100% - 80px);
+        }
+
+        body.sidebar-collapsed footer .container {
+            padding-left: 2.5rem;
+            padding-right: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        body.sidebar-collapsed footer .row {
+            justify-content: flex-start;
+            margin-left: 10rem;
+        }
+
+        body.sidebar-collapsed footer hr {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            width: 100% !important;
+        }
+
+        body.sidebar-collapsed footer .text-center {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            width: 100% !important;
+            text-align: center !important;
+        }
+
+        body.sidebar-collapsed footer .col-lg-4,
+        body.sidebar-collapsed footer .col-lg-3,
+        body.sidebar-collapsed footer .col-lg-2 {
+            text-align: left;
+        }
+
+        body.sidebar-collapsed footer .d-flex {
+            justify-content: flex-start;
+        }
+
+        body.sidebar-collapsed footer .list-unstyled {
+            text-align: left;
+        }
+
+        body.sidebar-collapsed footer h5,
+        body.sidebar-collapsed footer h6 {
+            text-align: left;
+        }
+
+        /* Ensure social media icons remain perfect circles */
+        body.sidebar-collapsed footer .rounded-circle {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+            aspect-ratio: 1 / 1 !important;
+            min-width: 36px !important;
+            min-height: 36px !important;
+            max-width: 36px !important;
+            max-height: 36px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+            transform: none !important;
+            overflow: visible !important;
+        }
+
         /* Desktop: adjust main content margin based on sidebar state */
         @media (min-width: 992px) {
             .main-content {
@@ -774,6 +874,85 @@
             body.sidebar-collapsed .main-content {
                 margin-left: 80px !important;
                 width: calc(100% - 80px) !important;
+            }
+
+            footer {
+                margin-left: 280px !important;
+                width: calc(100% - 280px) !important;
+            }
+
+            footer .container {
+                padding-left: 2.5rem !important;
+                padding-right: 2.5rem !important;
+            }
+
+            body.sidebar-collapsed footer {
+                margin-left: 80px !important;
+                width: calc(100% - 80px) !important;
+            }
+
+            body.sidebar-collapsed footer .container {
+                padding-left: 2.5rem !important;
+                padding-right: 2.5rem !important;
+                max-width: 1200px !important;
+                margin: 0 auto !important;
+                text-align: left !important;
+            }
+
+            body.sidebar-collapsed footer .row {
+                justify-content: flex-start !important;
+                margin-left: 10rem !important;
+            }
+
+            body.sidebar-collapsed footer hr {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                width: 100% !important;
+            }
+
+            body.sidebar-collapsed footer .text-center {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                width: 100% !important;
+                text-align: center !important;
+            }
+
+            body.sidebar-collapsed footer .col-lg-4,
+            body.sidebar-collapsed footer .col-lg-3,
+            body.sidebar-collapsed footer .col-lg-2 {
+                text-align: left !important;
+            }
+
+            body.sidebar-collapsed footer .d-flex {
+                justify-content: flex-start !important;
+            }
+
+            body.sidebar-collapsed footer .list-unstyled {
+                text-align: left !important;
+            }
+
+            body.sidebar-collapsed footer h5,
+            body.sidebar-collapsed footer h6 {
+                text-align: left !important;
+            }
+
+            /* Ensure social media icons remain perfect circles */
+            body.sidebar-collapsed footer .rounded-circle {
+                width: 36px !important;
+                height: 36px !important;
+                border-radius: 50% !important;
+                aspect-ratio: 1 / 1 !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
+                max-width: 36px !important;
+                max-height: 36px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 0 !important;
+                box-sizing: border-box !important;
+                transform: none !important;
+                overflow: visible !important;
             }
         }
 
@@ -1212,6 +1391,21 @@
                 padding-bottom: 3rem;
             }
 
+            footer {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+
+            footer .container {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+            }
+
+            body.sidebar-collapsed footer {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+
             .page-title {
                 font-size: 1.75rem !important;
             }
@@ -1256,6 +1450,21 @@
             
             .main-content-wrapper {
                 padding-bottom: 2rem;
+            }
+
+            footer {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+
+            footer .container {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+
+            body.sidebar-collapsed footer {
+                margin-left: 0 !important;
+                width: 100% !important;
             }
 
             /* On mobile, ignore collapsed class and use drawer behavior */

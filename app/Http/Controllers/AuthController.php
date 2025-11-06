@@ -28,9 +28,10 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
             $user = Auth::user();
+            
+            // Regenerate session to prevent session fixation
+            $request->session()->regenerate();
 
             // Redirect based on user role
             return $this->redirectToRole($user);

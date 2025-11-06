@@ -11,65 +11,235 @@ class BendaharaKantorController extends Controller
 {
     public function dashboard()
     {
-        $pengajuan = [
-            ['id' => 1, 'nama' => 'Andi Wijaya', 'jumlah' => 20000000, 'tanggal' => '2024-09-15', 'status' => 'Menunggu'],
-            ['id' => 2, 'nama' => 'Citra Dewi', 'jumlah' => 25000000, 'tanggal' => '2024-09-20', 'status' => 'Menunggu'],
-            ['id' => 3, 'nama' => 'Eka Putri', 'jumlah' => 12000000, 'tanggal' => '2024-09-25', 'status' => 'Diverifikasi'],
-        ];
+        // Tampilkan hanya pengajuan yang sudah disetujui ketua koperasi dan menunggu persetujuan kepala BPS
+        $pinjamans = Pinjaman::with('user')
+            ->where('status_detail', 'menunggu_persetujuan_kepala')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    return view('kepala_bps.dashboard', compact('pengajuan'));
+        // Format data untuk view
+        $pengajuan = [];
+        foreach ($pinjamans as $p) {
+            $pengajuan[] = [
+                'id' => $p->id,
+                'nama' => $p->user->name,
+                'jumlah' => $p->jumlah_pinjaman,
+                'tanggal' => $p->created_at->format('Y-m-d'),
+                'status' => 'Menunggu'
+            ];
+        }
+
+        return view('kepala_bps.dashboard', compact('pengajuan'));
     }
 
     public function detailPengajuan($id)
     {
+        $pinjaman = Pinjaman::with('user')->findOrFail($id);
+
+        // Pastikan pinjaman ini sudah disetujui ketua dan menunggu persetujuan kepala BPS
+        if ($pinjaman->status_detail !== 'menunggu_persetujuan_kepala') {
+            abort(403, 'Pengajuan ini tidak dalam status menunggu persetujuan kepala BPS');
+        }
+
+        $user = $pinjaman->user;
+
+        // Format data sesuai dengan struktur yang diharapkan view
         $pengajuan = [
-            'id' => $id,
-            'nama' => 'Andi Wijaya',
-            'nip' => '199001012020',
-            'jabatan' => 'Staff IT',
-            'golongan' => 'III/A',
-            'no_hp' => '081234567890',
-            'email' => 'andi.wijaya@example.com',
-            'jumlah_pinjaman' => 20000000,
-            'metode_pembayaran' => 'Potong Gaji Pokok',
-            'tanggal_pengajuan' => '2024-09-15',
-            'tujuan' => 'Renovasi rumah dan kebutuhan mendesak',
-            'status' => 'Menunggu Verifikasi'
+            'id' => $pinjaman->id,
+            'nama' => $user->name,
+            'nip' => $user->nip ?? 'N/A',
+            'jabatan' => $user->jabatan ?? 'N/A',
+            'golongan' => $user->golongan ?? 'N/A',
+            'no_hp' => $user->phone ?? 'N/A',
+            'email' => $user->email,
+            'jumlah_pinjaman' => $pinjaman->jumlah_pinjaman,
+            'metode_pembayaran' => $pinjaman->metode_pembayaran === 'potong_gaji' ? 'Potong Gaji Pokok' : 'Potong Tunjangan Kinerja',
+            'tanggal_pengajuan' => $pinjaman->created_at->format('Y-m-d'),
+            'tujuan' => $pinjaman->keterangan ?? 'Tidak ada keterangan',
+            'status' => 'Menunggu Verifikasi Kepala BPS',
+            'gaji_pokok' => $pinjaman->gaji_pokok,
+            'sisa_gaji' => $pinjaman->sisa_gaji,
+            'tenor_bulan' => $pinjaman->tenor_bulan,
+            'cicilan_per_bulan' => $pinjaman->cicilan_per_bulan,
+            'disetujui_oleh' => $pinjaman->disetujui_oleh,
+            'tanggal_persetujuan' => $pinjaman->tanggal_persetujuan,
         ];
 
-    return view('kepala_bps.detail', compact('pengajuan'));
+        return view('kepala_bps.detail', compact('pengajuan'));
     }
 
     public function laporanPinjaman()
     {
-        $laporan = [
-            ['id' => 1, 'nama' => 'Andi Wijaya', 'nip' => '199001012020', 'jumlah' => 20000000, 'tanggal_verifikasi' => '2024-09-16 10:30:00', 'verifikator' => 'Ahmad Rizki', 'gaji_pokok' => 8000000, 'sisa_gaji' => 5500000],
-            ['id' => 2, 'nama' => 'Budi Santoso', 'nip' => '199002022021', 'jumlah' => 15000000, 'tanggal_verifikasi' => '2024-08-20 14:15:00', 'verifikator' => 'Ahmad Rizki', 'gaji_pokok' => 7500000, 'sisa_gaji' => 5000000],
-            ['id' => 3, 'nama' => 'Citra Dewi', 'nip' => '199003032022', 'jumlah' => 25000000, 'tanggal_verifikasi' => '2024-09-21 09:00:00', 'verifikator' => 'Ahmad Rizki', 'gaji_pokok' => 9000000, 'sisa_gaji' => 6000000],
-        ];
+        // Ambil semua pinjaman yang sudah keluar dari antrian kepala BPS (sudah disetujui atau ditolak kepala)
+        // atau yang sudah disetujui dan dalam proses pembayaran
+        $pinjamans = Pinjaman::with('user')
+            ->whereIn('status_detail', ['disetujui', 'lunas', 'ditolak'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    return view('kepala_bps.laporan', compact('laporan'));
+        $laporan = [];
+        foreach ($pinjamans as $p) {
+            // Mapping status untuk tampilan
+            $statusLabel = '';
+            switch ($p->status_detail) {
+                case 'disetujui':
+                    $statusLabel = 'Diverifikasi';
+                    break;
+                case 'lunas':
+                    $statusLabel = 'Diverifikasi';
+                    break;
+                case 'ditolak':
+                    $statusLabel = 'Ditolak';
+                    break;
+                default:
+                    $statusLabel = ucfirst($p->status);
+            }
+
+            // Hitung angsuran untuk detail modal
+            $angsuran = [];
+            if ($p->tenor_bulan > 0 && $p->cicilan_per_bulan > 0) {
+                $sisaPinjaman = $p->jumlah_pinjaman;
+                for ($i = 1; $i <= $p->tenor_bulan; $i++) {
+                    $sisaPinjaman -= $p->cicilan_per_bulan;
+                    if ($sisaPinjaman < 0) $sisaPinjaman = 0;
+                    $angsuran[] = [
+                        'bulan' => $i,
+                        'nominal' => round($p->cicilan_per_bulan),
+                        'sisa' => round($sisaPinjaman)
+                    ];
+                }
+            }
+
+            // Tentukan role verifikator berdasarkan nama
+            $verifikatorRole = 'N/A';
+            if ($p->disetujui_oleh) {
+                $verifikatorUser = \App\Models\User::where('name', $p->disetujui_oleh)->first();
+                if ($verifikatorUser) {
+                    switch ($verifikatorUser->role) {
+                        case 'bendahara_koperasi':
+                            $verifikatorRole = 'Bendahara Koperasi';
+                            break;
+                        case 'ketua_koperasi':
+                            $verifikatorRole = 'Ketua Koperasi';
+                            break;
+                        case 'kepala_bps':
+                            $verifikatorRole = 'Kepala BPS';
+                            break;
+                        default:
+                            $verifikatorRole = 'N/A';
+                    }
+                }
+            }
+
+            $laporan[] = [
+                'id' => $p->id,
+                'nama' => $p->user->name,
+                'nip' => $p->user->nip ?? 'N/A',
+                'jumlah' => $p->jumlah_pinjaman,
+                'tanggal_verifikasi' => $p->tanggal_persetujuan 
+                    ? $p->tanggal_persetujuan->format('Y-m-d H:i:s') 
+                    : null,
+                'tanggal_pengajuan' => $p->created_at->format('Y-m-d'),
+                'verifikator' => $p->disetujui_oleh ?? 'N/A',
+                'verifikator_role' => $verifikatorRole,
+                'gaji_pokok' => $p->gaji_pokok ?? null,
+                'sisa_gaji' => $p->sisa_gaji ?? null,
+                'status' => $statusLabel,
+                'status_detail' => $p->status_detail,
+                'metode_pembayaran' => $p->metode_pembayaran === 'potong_gaji' ? 'Potong Gaji Pokok' : 'Potong Tunjangan Kinerja',
+                'tenor_bulan' => $p->tenor_bulan,
+                'cicilan_per_bulan' => $p->cicilan_per_bulan,
+                'keterangan' => $p->keterangan ?? 'Tidak ada keterangan',
+                'alasan_penolakan' => $p->alasan_penolakan,
+                'jabatan' => $p->user->jabatan ?? 'N/A',
+                'golongan' => $p->user->golongan ?? 'N/A',
+                'phone' => $p->user->phone ?? 'N/A',
+                'email' => $p->user->email,
+                'angsuran' => $angsuran,
+            ];
+        }
+
+        return view('kepala_bps.laporan', compact('laporan'));
+    }
+
+    public function submitVerifikasi(Request $request)
+    {
+        $validated = $request->validate([
+            'id' => 'required|integer|exists:pinjamans,id',
+            'catatan' => 'nullable|string|max:1000',
+            'aksi' => 'required|in:setujui,tolak',
+        ]);
+
+        $pinjaman = Pinjaman::findOrFail($validated['id']);
+
+        // Pastikan pinjaman ini dalam status yang benar
+        if ($pinjaman->status_detail !== 'menunggu_persetujuan_kepala') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pengajuan ini tidak dalam status menunggu persetujuan kepala BPS'
+            ], 403);
+        }
+
+        if ($validated['aksi'] === 'setujui') {
+            $pinjaman->status = 'disetujui';
+            $pinjaman->status_detail = 'disetujui';
+            $pinjaman->alasan_penolakan = null;
+            // Simpan nama kepala BPS yang memverifikasi
+            $pinjaman->disetujui_oleh = auth()->user()->name;
+            $pinjaman->tanggal_persetujuan = now();
+        } else {
+            $request->validate(['catatan' => 'required|string|max:1000']);
+            $pinjaman->status = 'ditolak';
+            $pinjaman->status_detail = 'ditolak';
+            $pinjaman->alasan_penolakan = $validated['catatan'];
+            // Simpan nama kepala BPS yang menolak
+            $pinjaman->disetujui_oleh = auth()->user()->name;
+            $pinjaman->tanggal_persetujuan = now();
+        }
+
+        $pinjaman->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => $validated['aksi'] === 'setujui'
+                ? 'Pengajuan berhasil disetujui.'
+                : 'Pengajuan ditolak dengan alasan tersimpan.',
+        ]);
     }
 
     public function transparansi()
     {
-        // Get all approved loans with user data
-        $pinjamans = Pinjaman::with('user')
+        // Ambil pinjaman yang sudah aktif (disetujui semua: bendahara, ketua, kepala) atau sudah lunas
+        // Status 'disetujui' berarti sudah melewati semua persetujuan (bendahara -> ketua -> kepala)
+        // Status 'lunas' berarti sudah selesai dibayar
+        $pinjamans = Pinjaman::with(['user', 'pembayarans'])
             ->whereIn('status', ['disetujui', 'lunas'])
+            ->whereNotIn('status_detail', ['menunggu_persetujuan_bendahara', 'menunggu_persetujuan_ketua', 'menunggu_persetujuan_kepala', 'ditolak'])
             ->orderBy('created_at', 'desc')
             ->get();
 
         $pinjaman = [];
         foreach ($pinjamans as $p) {
+            // Hitung total pembayaran dari pembayaran yang sudah dilakukan (realtime dari database)
+            $totalPembayaran = $p->pembayarans()
+                ->where('status', 'lunas')
+                ->sum('nominal_pembayaran');
+
+            // Jika belum ada pembayaran di tabel pembayarans, gunakan perhitungan default
+            if ($totalPembayaran == 0) {
+                $totalPembayaran = $p->jumlah_pinjaman - $p->sisa_pinjaman;
+            }
+
+            // Tentukan status berdasarkan sisa pinjaman
             $statusLabel = $p->sisa_pinjaman > 0 ? 'Berjalan' : 'Lunas';
 
             $pinjaman[] = [
                 'id' => $p->id,
                 'nama' => $p->user->name,
-                'nip' => $p->user->nip ?? 'N/A',
-                'jumlah' => $p->jumlah_pinjaman,
-                'total_bayar' => $p->jumlah_pinjaman - $p->sisa_pinjaman,
-                'sisa' => $p->sisa_pinjaman,
+                'nip' => $p->user->nip ?? '-',
+                'jumlah' => (float) $p->jumlah_pinjaman,
+                'total_bayar' => (float) $totalPembayaran,
+                'sisa' => (float) $p->sisa_pinjaman,
                 'status' => $statusLabel
             ];
         }
